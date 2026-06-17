@@ -45,6 +45,7 @@ Temporary Items
 **/*.bak
 *.tgz
 index.yaml
+public/
 
 # Claude Code
 project-plans

@@ -9,11 +9,12 @@ Helm chart repository for the k8s-v2 homelab cluster.
 | whoami | Traefik whoami test service |
 | smtp | SMTP relay service |
 | glance | Glance dashboard |
+| homebridge | Homebridge for HomeKit |
 
 ## Usage
 
 ```bash
-helm repo add k8s-v2 https://<github-user>.github.io/helm
+helm repo add k8s-v2 https://lbenicio.github.io/helm
 helm repo update
 helm install whoami k8s-v2/whoami --namespace default
 ```
@@ -21,5 +22,6 @@ helm install whoami k8s-v2/whoami --namespace default
 ## Development
 
 ```bash
-make package    # Package all charts and rebuild index
+make package      # Package all charts and rebuild index
+make lint-charts  # Helm lint + kube-linter
 ```

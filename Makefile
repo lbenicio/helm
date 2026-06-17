@@ -2,12 +2,12 @@ SHELL := /bin/bash
 .PHONY: package lint
 
 package:
-	@rm -f *.tgz index.yaml
+	@rm -rf public && mkdir -p public
 	@for chart in $$(ls -d charts/*/); do \
 		echo "Packaging $$chart"; \
-		helm package $$chart -d . ; \
+		helm package $$chart -d public ; \
 	done
-	@helm repo index .
+	@helm repo index public
 	@echo "Charts packaged and index rebuilt"
 
 lint:

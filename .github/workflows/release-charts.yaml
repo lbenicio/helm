@@ -8,35 +8,40 @@ on:
       - ".github/workflows/release-charts.yaml"
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
   release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v6
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Install Helm
         uses: azure/setup-helm@v5
 
       - name: Package charts
         run: |
-          rm -f *.tgz index.yaml
+          mkdir -p public
           for chart in charts/*/; do
-            helm package "$chart" -d .
+            helm package "$chart" -d public
           done
-          helm repo index .
+          helm repo index public
 
-      - name: Publish to gh-pages
-        run: |
-          git checkout --orphan gh-pages
-          git rm -rf .
-          git checkout main -- index.yaml *.tgz
-          git add index.yaml *.tgz
-          git commit -m "chore: update chart repo"
-          git push -f origin gh-pages
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
