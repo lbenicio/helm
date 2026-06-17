@@ -1,0 +1,199 @@
+# helm install whoami ./charts/whoami --namespace default
+
+# -----------------------------------------------------------------------------
+# Global Docker image settings
+# -----------------------------------------------------------------------------
+image:
+  # -- Image repository
+  repository: traefik/whoami
+  # -- Image tag (defaults to Chart.appVersion)
+  tag: ""
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+
+# -- Image pull secrets for private registries
+imagePullSecrets: []
+# -- Override the name of the chart
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+# -- Number of replicas (ignored if autoscaling.enabled is true)
+replicaCount: 1
+
+# -----------------------------------------------------------------------------
+# ServiceAccount configuration
+# -----------------------------------------------------------------------------
+serviceAccount:
+  # -- Create a ServiceAccount
+  create: true
+  # -- ServiceAccount name (defaults to fullname)
+  name: ""
+
+# -----------------------------------------------------------------------------
+# Keel auto-update annotations
+# -----------------------------------------------------------------------------
+keel:
+  # -- Enable Keel auto-update annotations
+  enabled: false
+  # -- Keel update policy (e.g., force, major, minor, patch)
+  policy: force
+  # -- Keel trigger type (e.g., poll, webhook)
+  trigger: poll
+  # -- Keel poll schedule (cron syntax or @every duration)
+  pollSchedule: "@every 24h"
+  # -- Match tag pattern
+  matchTag: "true"
+
+# -----------------------------------------------------------------------------
+# Labels
+# -----------------------------------------------------------------------------
+# -- Common labels to add to all resources
+commonLabels: {}
+# -- Pod-specific labels
+podLabels: {}
+
+# -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+# -- Pod-level security context
+podSecurityContext:
+  fsGroup: 1000
+# -- Container-level security context
+containerSecurityContext:
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 1000
+
+# -----------------------------------------------------------------------------
+# Service configuration
+# -----------------------------------------------------------------------------
+service:
+  # -- Service type
+  type: ClusterIP
+  # -- Service port
+  port: 80
+  # -- Service annotations
+  annotations: {}
+
+# -----------------------------------------------------------------------------
+# Ingress configuration
+# -----------------------------------------------------------------------------
+ingress:
+  # -- Enable ingress
+  enabled: false
+  # -- Ingress class name
+  className: ""
+  # -- Ingress annotations
+  annotations: {}
+    # kubernetes.io/ingress.class: traefik
+    # traefik.ingress.kubernetes.io/router.entrypoints: web, websecure
+    # cert-manager.io/cluster-issuer: ca-issuer
+  # -- Ingress host rules
+  hosts:
+    - host: whoami.local
+      paths:
+        - path: /
+          pathType: Prefix
+  # -- Ingress TLS configuration
+  tls: []
+  #  - secretName: whoami-cert
+  #    hosts:
+  #      - whoami.local
+
+# -----------------------------------------------------------------------------
+# Resource requests and limits
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+# -----------------------------------------------------------------------------
+# Probes
+# -----------------------------------------------------------------------------
+readinessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 80
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+startupProbe:
+  httpGet:
+    path: /
+    port: 80
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Autoscaling configuration
+# -----------------------------------------------------------------------------
+autoscaling:
+  # -- Enable horizontal pod autoscaler
+  enabled: false
+  # -- Minimum replicas
+  minReplicas: 1
+  # -- Maximum replicas
+  maxReplicas: 1
+  # -- Target CPU utilization percentage
+  targetCPUUtilizationPercentage: 90
+  # -- Target memory utilization percentage
+  targetMemoryUtilizationPercentage: 90
+  scaleDown:
+    stabilizationWindowSeconds: 300
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+  scaleUp:
+    stabilizationWindowSeconds: 120
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 1
+        periodSeconds: 15
+    selectPolicy: Max
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# -----------------------------------------------------------------------------
+# -- Node selector for pod assignment
+nodeSelector: {}
+# -- Tolerations for pod assignment
+tolerations: []
+# -- Affinity for pod assignment
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Environment variables
+# -----------------------------------------------------------------------------
+# -- Environment variables (map)
+env: {}
+# -- Extra environment variables (list of name/value pairs)
+extraEnv: []
+  # - name: FOO
+  #   value: bar
+
+# -----------------------------------------------------------------------------
+# Extra volumes and mounts
+# -----------------------------------------------------------------------------
+# -- Additional volumes
+extraVolumes: []
+# -- Additional volume mounts
+extraVolumeMounts: []

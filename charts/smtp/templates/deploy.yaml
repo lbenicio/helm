@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "smtp.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "smtp.labels" . | nindent 4 }}
+  {{- if .Values.keel.enabled }}
+  annotations:
+    keel.sh/policy: {{ .Values.keel.policy | quote }}
+    keel.sh/trigger: {{ .Values.keel.trigger | quote }}
+    keel.sh/pollSchedule: {{ .Values.keel.pollSchedule | quote }}
+    keel.sh/match-tag: {{ .Values.keel.matchTag | quote }}
+  {{- end }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "smtp.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "smtp.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if .Values.keel.enabled }}
+      annotations:
+        keel.sh/policy: {{ .Values.keel.policy | quote }}
+        keel.sh/trigger: {{ .Values.keel.trigger | quote }}
+        keel.sh/pollSchedule: {{ .Values.keel.pollSchedule | quote }}
+        keel.sh/match-tag: {{ .Values.keel.matchTag | quote }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "smtp.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: smtp
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+            - name: RELAY_NETWORKS
+              value: {{ .Values.smtp.relayNetworks | quote }}
+            - name: SMARTHOST_ALIASES
+              value: {{ .Values.smtp.smarthostAliases | quote }}
+            - name: SMARTHOST_ADDRESS
+              value: {{ .Values.smtp.smarthostAddress | quote }}
+            - name: SMARTHOST_PORT
+              value: {{ .Values.smtp.smarthostPort | quote }}
+            - name: SMARTHOST_USER
+              value: {{ .Values.smtp.smarthostUser | quote }}
+            - name: SMARTHOST_PASSWORD
+              value: {{ .Values.smtp.smarthostPassword | quote }}
+            - name: RELAY_DOMAINS
+              value: {{ .Values.smtp.relayDomains | quote }}
+          {{- with .Values.extraEnv }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.extraVolumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.extraVolumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

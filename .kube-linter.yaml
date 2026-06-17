@@ -1,0 +1,7 @@
+# kube-linter configuration for helm repo
+# Default values.yaml deliberately sets readOnlyRootFilesystem: false
+# as many apps require a writable root filesystem. Production deployments
+# that can run read-only should override this.
+checks:
+  exclude:
+    - "no-read-only-root-fs"

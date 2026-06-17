@@ -1,0 +1,42 @@
+name: Release Charts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "charts/**"
+      - ".github/workflows/release-charts.yaml"
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+
+      - name: Package charts
+        run: |
+          rm -f *.tgz index.yaml
+          for chart in charts/*/; do
+            helm package "$chart" -d .
+          done
+          helm repo index .
+
+      - name: Publish to gh-pages
+        run: |
+          git checkout --orphan gh-pages
+          git rm -rf .
+          git checkout main -- index.yaml *.tgz
+          git add index.yaml *.tgz
+          git commit -m "chore: update chart repo"
+          git push -f origin gh-pages

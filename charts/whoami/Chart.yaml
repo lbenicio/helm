@@ -1,0 +1,5 @@
+apiVersion: v2
+name: whoami
+description: A Helm chart for whoami
+type: application
+version: 0.1.0

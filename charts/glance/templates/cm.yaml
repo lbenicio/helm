@@ -1,0 +1,15 @@
+{{- if .Values.config.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "glance.fullname" . }}-config
+  labels:
+    {{- include "glance.labels" . | nindent 4 }}
+data:
+  {{- if .Values.config.userCSS }}
+  user.css: {{ .Values.config.userCSS | quote }}
+  {{- end }}
+  {{- if .Values.config.glanceYaml }}
+  glance.yml: {{ .Values.config.glanceYaml | quote }}
+  {{- end }}
+{{- end }}

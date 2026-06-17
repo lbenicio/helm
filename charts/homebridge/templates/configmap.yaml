@@ -1,0 +1,12 @@
+{{- if .Values.config.create }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "homebridge.fullname" . }}-config
+  labels:
+    {{- include "homebridge.labels" . | nindent 4 }}
+data:
+  {{- with .Values.config.data }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}
+{{- end }}
