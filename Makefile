@@ -8,6 +8,7 @@ package:
 		helm package $$chart -d public ; \
 	done
 	@helm repo index public
+	@cp index.html public/
 	@echo "Charts packaged and index rebuilt"
 
 lint:

@@ -36,6 +36,7 @@ jobs:
             helm package "$chart" -d public
           done
           helm repo index public
+          cp index.html public/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
