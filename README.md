@@ -70,11 +70,18 @@ All charts ship with:
 ```bash
 # Clone the repo
 git clone https://github.com/lbenicio/helm.git
-cd helm
+```
 
+```bash
+cd helm
+```
+
+```bash
 # Package all charts and rebuild the Helm index
 make package
+```
 
+```bash
 # Lint charts (Helm syntax + kube-linter security checks)
 make lint
 ```
