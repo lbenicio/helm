@@ -1,5 +1,13 @@
 SHELL := /bin/bash
-.PHONY: package lint
+.PHONY: package lint changelog
+
+changelog:
+	@V=$$(echo $(filter-out $@,$(MAKECMDGOALS)) | sed 's/--dry-run//g' | tr -d '-'); \
+	DRY=$$(echo $(filter-out $@,$(MAKECMDGOALS)) | grep -q '--dry-run' && echo '--dry-run' || echo ''); \
+	if [ -z "$$V" ]; then echo "Usage: make changelog [--dry-run] 0.2.0"; exit 1; fi; \
+	./scripts/changelog.sh $$DRY "$$V"
+%:
+	@:
 
 package:
 	@rm -rf public && mkdir -p public
