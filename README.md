@@ -1,4 +1,4 @@
-# k8s-v2 Helm Charts
+# lbenicio-community Helm Charts
 
 ![GitHub Release](https://img.shields.io/github/v/release/lbenicio/helm?label=version&color=blue)
 [![Release Charts](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml)
@@ -9,9 +9,15 @@ A collection of production-ready Helm charts for self-hosted applications, desig
 ## Usage
 
 ```bash
-helm repo add k8s-v2 https://helm.lbenicio.dev/
+helm repo add lbenicio-community https://helm.lbenicio.dev/
+```
+
+```bash
 helm repo update
-helm search repo k8s-v2
+```
+
+```bash
+helm search repo lbenicio-community
 ```
 
 ## Available Charts
@@ -26,7 +32,7 @@ helm search repo k8s-v2
 ## Installing a Chart
 
 ```bash
-helm install my-release k8s-v2/whoami \
+helm install my-release lbenicio-community/whoami \
   --namespace default \
   --set ingress.enabled=true \
   --set ingress.hosts[0].host=whoami.example.com
@@ -35,7 +41,7 @@ helm install my-release k8s-v2/whoami \
 Each chart's `values.yaml` documents every available parameter. Render the full list:
 
 ```bash
-helm show values k8s-v2/whoami
+helm show values lbenicio-community/whoami
 ```
 
 ## Chart Features
