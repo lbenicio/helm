@@ -1,10 +1,5 @@
-# ---> VisualStudioCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
+# VisualStudioCode
+.vscode/
 
 # Local History for Visual Studio Code
 .history/
@@ -12,7 +7,6 @@
 # Built Visual Studio Code Extensions
 *.vsix
 
-# ---> macOS
 # General
 .DS_Store
 .AppleDouble
@@ -46,9 +40,6 @@ Temporary Items
 *.tgz
 index.yaml
 public/
-
-# Claude Code
-project-plans
 
 # Trivy pre-commit hook cache
 .pre-commit-trivy-cache

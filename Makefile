@@ -16,7 +16,9 @@ package: ## Package charts and rebuild Helm index
 		helm package $$chart -d public ; \
 	done
 	@helm repo index public
-	@cp index.html public/
+	@cp landingpage/index.html public/
+	@cp landingpage/style.css public/
+	@cp landingpage/app.js public/
 	@echo "Charts packaged and index rebuilt"
 
 lint: ## Lint charts (helm lint + kube-linter)
