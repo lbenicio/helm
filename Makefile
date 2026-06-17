@@ -1,15 +1,15 @@
 SHELL := /bin/bash
-.PHONY: package lint changelog
+.PHONY: all help package lint changelog
 
-changelog:
-	@V=$$(echo $(filter-out $@,$(MAKECMDGOALS)) | sed 's/--dry-run//g' | tr -d '-'); \
-	DRY=$$(echo $(filter-out $@,$(MAKECMDGOALS)) | grep -q '--dry-run' && echo '--dry-run' || echo ''); \
-	if [ -z "$$V" ]; then echo "Usage: make changelog [--dry-run] 0.2.0"; exit 1; fi; \
-	./scripts/changelog.sh $$DRY "$$V"
-%:
-	@:
+.DEFAULT_GOAL := help
 
-package:
+help: ## Show this help
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
+
+all: lint package ## Lint and package all charts
+
+package: ## Package charts and rebuild Helm index
 	@rm -rf public && mkdir -p public
 	@for chart in $$(ls -d charts/*/); do \
 		echo "Packaging $$chart"; \
@@ -19,7 +19,7 @@ package:
 	@cp index.html public/
 	@echo "Charts packaged and index rebuilt"
 
-lint:
+lint: ## Lint charts (helm lint + kube-linter)
 	@echo "Linting Helm charts..."
 	@for chart in $$(ls -d charts/*/); do \
 		echo "  $$chart"; \
@@ -30,3 +30,12 @@ lint:
 		echo "  $$chart"; \
 		helm template $$chart | kube-linter lint - 2>&1 || true; \
 	done
+
+changelog: ## Generate changelog (make changelog [--dry-run] <version>)
+	@V=$$(echo $(filter-out $@,$(MAKECMDGOALS)) | sed 's/--dry-run//g' | tr -d '-'); \
+	DRY=$$(echo $(filter-out $@,$(MAKECMDGOALS)) | grep -q '--dry-run' && echo '--dry-run' || echo ''); \
+	if [ -z "$$V" ]; then echo "Usage: make changelog [--dry-run] 0.2.0"; exit 1; fi; \
+	./scripts/changelog.sh $$DRY "$$V"
+
+%:
+	@:

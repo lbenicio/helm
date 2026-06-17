@@ -1,5 +1,6 @@
 # k8s-v2 Helm Charts
 
+![GitHub Release](https://img.shields.io/github/v/release/lbenicio/helm?label=version&color=blue)
 [![Release Charts](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE.txt)
 
