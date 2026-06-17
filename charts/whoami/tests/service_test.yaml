@@ -1,0 +1,20 @@
+suite: whoami service
+templates:
+  - svc.yaml
+tests:
+  - it: should be a ClusterIP Service
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+  - it: should have correct port
+    asserts:
+      - contains:
+          path: spec.ports
+          content:
+            name: http
+            port: 80
+            targetPort: 80
+            protocol: TCP

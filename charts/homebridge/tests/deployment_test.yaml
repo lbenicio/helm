@@ -1,0 +1,87 @@
+suite: homebridge deployment
+templates:
+  - deploy.yaml
+  - hpa.yaml
+  - pvc.yaml
+tests:
+  - it: should be a StatefulSet
+    asserts:
+      - isKind:
+          of: StatefulSet
+        template: deploy.yaml
+      - equal:
+          path: spec.replicas
+          value: 1
+        template: deploy.yaml
+  - it: should set image
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "^homebridge/homebridge:"
+        template: deploy.yaml
+  - it: should have resources configured
+    asserts:
+      - exists:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+        template: deploy.yaml
+      - exists:
+          path: spec.template.spec.containers[0].resources.limits.memory
+        template: deploy.yaml
+  - it: should not render HPA when autoscaling disabled
+    set:
+      autoscaling:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: hpa.yaml
+  - it: should render HPA when autoscaling enabled
+    set:
+      autoscaling:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: hpa.yaml
+      - isKind:
+          of: HorizontalPodAutoscaler
+        template: hpa.yaml
+      - equal:
+          path: spec.scaleTargetRef.kind
+          value: StatefulSet
+        template: hpa.yaml
+  - it: should have data volume mount
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: data
+            mountPath: /homebridge
+        template: deploy.yaml
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: data
+        template: deploy.yaml
+      - exists:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim
+        template: deploy.yaml
+  - it: should create PVC when persistence enabled and no existingClaim
+    set:
+      persistence:
+        enabled: true
+        existingClaim: ""
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: pvc.yaml
+      - isKind:
+          of: PersistentVolumeClaim
+        template: pvc.yaml
+  - it: should not create PVC when persistence disabled
+    set:
+      persistence:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: pvc.yaml

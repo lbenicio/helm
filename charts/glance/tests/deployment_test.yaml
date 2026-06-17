@@ -1,0 +1,84 @@
+suite: glance deployment
+templates:
+  - deploy.yaml
+  - hpa.yaml
+  - cm.yaml
+tests:
+  - it: should be a Deployment
+    asserts:
+      - isKind:
+          of: Deployment
+        template: deploy.yaml
+      - equal:
+          path: spec.replicas
+          value: 1
+        template: deploy.yaml
+  - it: should set image
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "^glanceapp/glance:"
+        template: deploy.yaml
+  - it: should have resources configured
+    asserts:
+      - exists:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+        template: deploy.yaml
+      - exists:
+          path: spec.template.spec.containers[0].resources.limits.memory
+        template: deploy.yaml
+  - it: should not render HPA when autoscaling disabled
+    set:
+      autoscaling:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: hpa.yaml
+  - it: should render HPA when autoscaling enabled
+    set:
+      autoscaling:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: hpa.yaml
+      - isKind:
+          of: HorizontalPodAutoscaler
+        template: hpa.yaml
+  - it: should have configmap volume mounts
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: config
+            mountPath: /app/config
+        template: deploy.yaml
+      - equal:
+          path: spec.template.spec.volumes[0].name
+          value: config
+        template: deploy.yaml
+      - equal:
+          path: spec.template.spec.volumes[0].configMap.name
+          value: RELEASE-NAME-glance-config
+        template: deploy.yaml
+  - it: should create ConfigMap when config.create is true
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: cm.yaml
+      - isKind:
+          of: ConfigMap
+        template: cm.yaml
+      - matchRegex:
+          path: metadata.name
+          pattern: ".*-glance-config$"
+        template: cm.yaml
+  - it: should not create ConfigMap when config.create is false
+    set:
+      config:
+        create: false
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: cm.yaml

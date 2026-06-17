@@ -1,0 +1,21 @@
+suite: whoami ingress
+templates:
+  - ingress.yaml
+tests:
+  - it: should not create ingress when disabled
+    set:
+      ingress:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+  - it: should create ingress when enabled
+    set:
+      ingress:
+        enabled: true
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.rules[0].host
+          value: whoami.local

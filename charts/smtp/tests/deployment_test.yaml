@@ -1,0 +1,105 @@
+suite: smtp deployment
+templates:
+  - deploy.yaml
+  - hpa.yaml
+tests:
+  - it: should be a Deployment
+    asserts:
+      - isKind:
+          of: Deployment
+        template: deploy.yaml
+      - equal:
+          path: spec.replicas
+          value: 1
+        template: deploy.yaml
+  - it: should set image
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "^registry.gitlab.com/egos-tech/smtp:"
+        template: deploy.yaml
+  - it: should have resources configured
+    asserts:
+      - exists:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+        template: deploy.yaml
+      - exists:
+          path: spec.template.spec.containers[0].resources.limits.memory
+        template: deploy.yaml
+  - it: should not render HPA when autoscaling disabled
+    set:
+      autoscaling:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: hpa.yaml
+  - it: should render HPA when autoscaling enabled
+    set:
+      autoscaling:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: hpa.yaml
+      - isKind:
+          of: HorizontalPodAutoscaler
+        template: hpa.yaml
+  - it: should have SMTP env vars
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: RELAY_NETWORKS
+            value: ""
+        template: deploy.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SMARTHOST_ADDRESS
+            value: ""
+        template: deploy.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SMARTHOST_PORT
+            value: ""
+        template: deploy.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: RELAY_DOMAINS
+            value: ""
+        template: deploy.yaml
+  - it: should set SMTP env var values when configured
+    set:
+      smtp:
+        relayNetworks: ":10.0.0.0/8"
+        smarthostAddress: "smtp.example.com"
+        smarthostPort: "587"
+        relayDomains: "example.com"
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: RELAY_NETWORKS
+            value: ":10.0.0.0/8"
+        template: deploy.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SMARTHOST_ADDRESS
+            value: "smtp.example.com"
+        template: deploy.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: SMARTHOST_PORT
+            value: "587"
+        template: deploy.yaml
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: RELAY_DOMAINS
+            value: "example.com"
+        template: deploy.yaml

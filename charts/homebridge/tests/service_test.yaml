@@ -1,0 +1,43 @@
+suite: homebridge service
+templates:
+  - svc.yaml
+tests:
+  - it: should be a ClusterIP Service
+    asserts:
+      - isKind:
+          of: Service
+      - equal:
+          path: spec.type
+          value: ClusterIP
+  - it: should have http port
+    asserts:
+      - contains:
+          path: spec.ports
+          content:
+            name: http
+            port: 8581
+            targetPort: 8581
+            protocol: TCP
+  - it: should have all expected ports
+    asserts:
+      - contains:
+          path: spec.ports
+          content:
+            name: bonjour
+            port: 51650
+            targetPort: 51650
+            protocol: UDP
+      - contains:
+          path: spec.ports
+          content:
+            name: alexa
+            port: 40120
+            targetPort: 40120
+            protocol: TCP
+      - contains:
+          path: spec.ports
+          content:
+            name: controller
+            port: 53044
+            targetPort: 53044
+            protocol: TCP

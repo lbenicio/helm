@@ -1,0 +1,47 @@
+suite: whoami deployment
+templates:
+  - deploy.yaml
+  - hpa.yaml
+tests:
+  - it: should be a Deployment
+    asserts:
+      - isKind:
+          of: Deployment
+        template: deploy.yaml
+      - equal:
+          path: spec.replicas
+          value: 1
+        template: deploy.yaml
+  - it: should set image
+    asserts:
+      - matchRegex:
+          path: spec.template.spec.containers[0].image
+          pattern: "^traefik/whoami:"
+        template: deploy.yaml
+  - it: should have resources configured
+    asserts:
+      - exists:
+          path: spec.template.spec.containers[0].resources.requests.cpu
+        template: deploy.yaml
+      - exists:
+          path: spec.template.spec.containers[0].resources.limits.memory
+        template: deploy.yaml
+  - it: should not render HPA when autoscaling disabled
+    set:
+      autoscaling:
+        enabled: false
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: hpa.yaml
+  - it: should render HPA when autoscaling enabled
+    set:
+      autoscaling:
+        enabled: true
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: hpa.yaml
+      - isKind:
+          of: HorizontalPodAutoscaler
+        template: hpa.yaml

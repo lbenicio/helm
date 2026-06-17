@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY: all help package lint changelog
+.PHONY: all help package lint test changelog
 
 .DEFAULT_GOAL := help
 
@@ -7,7 +7,7 @@ help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-14s\033[0m %s\n", $$1, $$2}'
 
-all: lint package ## Lint and package all charts
+all: lint test package ## Lint, test, and package all charts
 
 package: ## Package charts and rebuild Helm index
 	@rm -rf public && mkdir -p public
@@ -29,6 +29,13 @@ lint: ## Lint charts (helm lint + kube-linter)
 	@for chart in $$(ls -d charts/*/); do \
 		echo "  $$chart"; \
 		helm template $$chart | kube-linter lint - 2>&1 || true; \
+	done
+
+test: ## Run helm-unittest on all charts
+	@echo "Running unit tests..."
+	@for chart in $$(ls -d charts/*/); do \
+		echo "  $$chart"; \
+		helm unittest $$chart 2>&1; \
 	done
 
 changelog: ## Generate changelog (make changelog [--dry-run] <version>)
