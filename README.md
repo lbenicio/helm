@@ -1,8 +1,9 @@
 # lbenicio-community Helm Charts
 
-![Version](https://img.shields.io/github/v/release/lbenicio/helm?label=version&color=blue)
+![Version](https://img.shields.io/github/v/release/lbenicio/helm?label=Version&color=blue)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE.txt)
 [![Release](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml)
+[![Publish to GHCR](https://github.com/lbenicio/helm/actions/workflows/publish-ghcr.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/publish-ghcr.yaml)
 
 A collection of production-ready Helm charts for self-hosted applications, designed for ARM64 Kubernetes clusters running on Raspberry Pi but compatible with any `linux/amd64` or `linux/arm64` node.
 
