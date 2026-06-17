@@ -9,7 +9,7 @@ A collection of production-ready Helm charts for self-hosted applications, desig
 ## Usage
 
 ```bash
-helm repo add k8s-v2 https://lbenicio.github.io/helm
+helm repo add k8s-v2 https://helm.lbenicio.dev/
 helm repo update
 helm search repo k8s-v2
 ```
