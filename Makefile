@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY: package lint lint-charts
+.PHONY: package lint
 
 package:
 	@rm -f *.tgz index.yaml
@@ -10,9 +10,7 @@ package:
 	@helm repo index .
 	@echo "Charts packaged and index rebuilt"
 
-lint: lint-charts
-
-lint-charts:
+lint:
 	@echo "Linting Helm charts..."
 	@for chart in $$(ls -d charts/*/); do \
 		echo "  $$chart"; \
