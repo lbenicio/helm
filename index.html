@@ -1,133 +1,187 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>k8s-v2 · Helm Charts</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0d1117;
-            color: #c9d1d9;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 60px 20px;
+      :root {
+        --bg: #0d1117;
+        --bg-card: #161b22;
+        --bg-code: #0d1117;
+        --border: #30363d;
+        --text: #c9d1d9;
+        --text-dim: #8b949e;
+        --text-bright: #f0f6fc;
+        --accent: #58a6ff;
+        --code: #7ee787;
+        --footer: #484f58;
+      }
+      @media (prefers-color-scheme: light) {
+        :root {
+          --bg: #ffffff;
+          --bg-card: #f6f8fa;
+          --bg-code: #f0f0f0;
+          --border: #d0d7de;
+          --text: #24292f;
+          --text-dim: #656d76;
+          --text-bright: #1f2328;
+          --accent: #0969da;
+          --code: #1a7f37;
+          --footer: #656d76;
         }
-        .container { max-width: 680px; width: 100%; }
-        h1 {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #f0f6fc;
-        }
-        h1 span { color: #58a6ff; }
-        .subtitle {
-            color: #8b949e;
-            font-size: 15px;
-            margin-bottom: 40px;
-        }
-        .install {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 36px;
-        }
-        .install p { margin-bottom: 10px; color: #8b949e; font-size: 13px; }
-        .install code {
-            display: block;
-            background: #0d1117;
-            padding: 12px 16px;
-            border-radius: 6px;
-            font-size: 14px;
-            color: #7ee787;
-            margin-bottom: 8px;
-            word-break: break-all;
-        }
-        .install code:last-child { margin-bottom: 0; }
-        h2 {
-            font-size: 18px;
-            color: #f0f6fc;
-            margin-bottom: 16px;
-        }
-        .chart {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .chart-name { font-weight: 600; color: #58a6ff; font-size: 16px; }
-        .chart-desc { color: #8b949e; font-size: 13px; margin-top: 4px; }
-        .chart-ver {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 20px;
-            padding: 4px 14px;
-            font-size: 12px;
-            color: #8b949e;
-            white-space: nowrap;
-        }
-        .footer {
-            margin-top: 40px;
-            color: #484f58;
-            font-size: 12px;
-        }
-        .footer a { color: #58a6ff; text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 60px 20px;
+      }
+      .container {
+        max-width: 680px;
+        width: 100%;
+      }
+      h1 {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: var(--text-bright);
+      }
+      h1 span {
+        color: var(--accent);
+      }
+      .subtitle {
+        color: var(--text-dim);
+        font-size: 15px;
+        margin-bottom: 40px;
+      }
+      .install {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 36px;
+      }
+      .install p {
+        margin-bottom: 10px;
+        color: var(--text-dim);
+        font-size: 13px;
+      }
+      .install code {
+        display: block;
+        background: var(--bg-code);
+        padding: 12px 16px;
+        border-radius: 6px;
+        font-size: 14px;
+        color: var(--code);
+        margin-bottom: 8px;
+        word-break: break-all;
+      }
+      .install code:last-child {
+        margin-bottom: 0;
+      }
+      h2 {
+        font-size: 18px;
+        color: var(--text-bright);
+        margin-bottom: 16px;
+      }
+      .chart {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .chart-name {
+        font-weight: 600;
+        color: var(--accent);
+        font-size: 16px;
+      }
+      .chart-desc {
+        color: var(--text-dim);
+        font-size: 13px;
+        margin-top: 4px;
+      }
+      .chart-ver {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 4px 14px;
+        font-size: 12px;
+        color: var(--text-dim);
+        white-space: nowrap;
+      }
+      .footer {
+        margin-top: 40px;
+        color: var(--footer);
+        font-size: 12px;
+      }
+      .footer a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      .footer a:hover {
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1><span>k8s-v2</span> · Helm Charts</h1>
-        <p class="subtitle">Production-ready Helm charts for self-hosted applications on ARM64 Kubernetes.</p>
+      <h1><span>k8s-v2</span> · Helm Charts</h1>
+      <p class="subtitle">Production-ready Helm charts for self-hosted applications on ARM64 Kubernetes.</p>
 
-        <div class="install">
-            <p>Add the repository:</p>
-            <code>helm repo add k8s-v2 https://lbenicio.github.io/helm</code>
-            <code>helm repo update</code>
-        </div>
+      <div class="install">
+        <p>Add the repository:</p>
+        <code>helm repo add k8s-v2 https://lbenicio.github.io/helm</code>
+        <code>helm repo update</code>
+      </div>
 
-        <h2>Available Charts</h2>
+      <h2>Available Charts</h2>
 
-        <div class="chart">
-            <div>
-                <div class="chart-name">whoami</div>
-                <div class="chart-desc">Lightweight HTTP server for ingress and network debugging</div>
-            </div>
-            <span class="chart-ver">v0.1.0</span>
+      <div class="chart">
+        <div>
+          <div class="chart-name">whoami</div>
+          <div class="chart-desc">Lightweight HTTP server for ingress and network debugging</div>
         </div>
-        <div class="chart">
-            <div>
-                <div class="chart-name">smtp</div>
-                <div class="chart-desc">SMTP relay service with smart-host and relay domain support</div>
-            </div>
-            <span class="chart-ver">v0.1.0</span>
+        <span class="chart-ver">v0.1.0</span>
+      </div>
+      <div class="chart">
+        <div>
+          <div class="chart-name">smtp</div>
+          <div class="chart-desc">SMTP relay service with smart-host and relay domain support</div>
         </div>
-        <div class="chart">
-            <div>
-                <div class="chart-name">glance</div>
-                <div class="chart-desc">Self-hosted dashboard for RSS feeds, bookmarks, and widgets</div>
-            </div>
-            <span class="chart-ver">v0.1.0</span>
+        <span class="chart-ver">v0.1.0</span>
+      </div>
+      <div class="chart">
+        <div>
+          <div class="chart-name">glance</div>
+          <div class="chart-desc">Self-hosted dashboard for RSS feeds, bookmarks, and widgets</div>
         </div>
-        <div class="chart">
-            <div>
-                <div class="chart-name">homebridge</div>
-                <div class="chart-desc">HomeKit bridge for non-HomeKit devices with Bluetooth support</div>
-            </div>
-            <span class="chart-ver">v0.1.0</span>
+        <span class="chart-ver">v0.1.0</span>
+      </div>
+      <div class="chart">
+        <div>
+          <div class="chart-name">homebridge</div>
+          <div class="chart-desc">HomeKit bridge for non-HomeKit devices with Bluetooth support</div>
         </div>
+        <span class="chart-ver">v0.1.0</span>
+      </div>
 
-        <p class="footer">
-            <a href="https://github.com/lbenicio/helm">View on GitHub</a>
-        </p>
+      <p class="footer">
+        <a href="https://github.com/lbenicio/helm">View on GitHub</a>
+      </p>
     </div>
-</body>
+  </body>
 </html>
