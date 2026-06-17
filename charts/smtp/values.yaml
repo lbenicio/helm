@@ -58,12 +58,12 @@ podLabels: {}
 # -----------------------------------------------------------------------------
 # -- Pod-level security context
 podSecurityContext:
-  fsGroup: 1000
+  fsGroup: 0
 # -- Container-level security context
 containerSecurityContext:
   readOnlyRootFilesystem: false
   runAsNonRoot: false
-  runAsUser: 1000
+  runAsUser: 0
 
 # -----------------------------------------------------------------------------
 # Service configuration
