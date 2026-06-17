@@ -1,0 +1,37 @@
+name: Publish to GHCR
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "charts/**"
+      - ".github/workflows/publish-ghcr.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Helm
+        uses: azure/setup-helm@v5
+
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Package and push charts
+        run: |
+          for chart in charts/*/; do
+            name=$(basename "$chart")
+            echo "Publishing $name..."
+            helm package "$chart" -d /tmp/charts
+          done
+          for pkg in /tmp/charts/*.tgz; do
+            echo "Pushing $pkg..."
+            helm push "$pkg" "oci://ghcr.io/${{ github.repository_owner }}/helm"
+          done

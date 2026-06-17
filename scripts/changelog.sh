@@ -55,11 +55,11 @@ done < <(git --no-pager log "$LAST_TAG..HEAD" --pretty=format:"%s" --no-merges)
 ENTRY=""
 ENTRY+=$'\n'"## [v$VERSION] — $DATE"$'\n'
 
-[ -n "$FEAT" ]  && ENTRY+=$'\n'"### ✨ Features"$'\n\n'"$FEAT"
-[ -n "$FIX" ]   && ENTRY+=$'\n'"### 🐛 Bug Fixes"$'\n\n'"$FIX"
-[ -n "$DOCS" ]  && ENTRY+=$'\n'"### 📝 Documentation"$'\n\n'"$DOCS"
-[ -n "$CHORE" ] && ENTRY+=$'\n'"### 🔧 Chores"$'\n\n'"$CHORE"
-[ -n "$OTHER" ] && ENTRY+=$'\n'"### 📦 Other"$'\n\n'"$OTHER"
+[ -n "$FEAT" ]  && ENTRY+=$'\n'"### Added"$'\n\n'"$FEAT"
+[ -n "$FIX" ]   && ENTRY+=$'\n'"### Fixed"$'\n\n'"$FIX"
+[ -n "$DOCS" ]  && ENTRY+=$'\n'"### Changed"$'\n\n'"$DOCS"
+[ -n "$CHORE" ] && ENTRY+=$'\n'"### Changed"$'\n\n'"$CHORE"
+[ -n "$OTHER" ] && ENTRY+=$'\n'"### Changed"$'\n\n'"$OTHER"
 
 # Prepend to CHANGELOG (newest version first)
 if [ "$DRY_RUN" = true ]; then
@@ -68,12 +68,24 @@ if [ "$DRY_RUN" = true ]; then
   exit 0
 fi
 
-if [ -f "$CHANGELOG" ] && head -1 "$CHANGELOG" 2>/dev/null | grep -q "^# "; then
-  HEADER=$(head -1 "$CHANGELOG")
-  BODY=$(tail -n +2 "$CHANGELOG" | sed '/^$/d')
-  printf '%s\n%b\n%s\n' "$HEADER" "$ENTRY" "$BODY" > "$CHANGELOG"
+if [ -f "$CHANGELOG" ] && grep -q "^# " "$CHANGELOG"; then
+  # Find the first version header — insert before it
+  HEADER_LINES=$(grep -n "^## \[" "$CHANGELOG" | head -1 | cut -d: -f1 || echo "")
+  if [ -n "$HEADER_LINES" ]; then
+    HEAD=$(head -n $((HEADER_LINES - 1)) "$CHANGELOG")
+    TAIL=$(tail -n +$HEADER_LINES "$CHANGELOG")
+    printf '%s\n%b\n%s\n' "$HEAD" "$ENTRY" "$TAIL" > "$CHANGELOG"
+  else
+    printf '%b\n' "$ENTRY" >> "$CHANGELOG"
+  fi
 else
-  printf '%s\n\n%b\n' "# Changelog" "$ENTRY" > "$CHANGELOG"
+  printf '%s\n\n%s\n\n%s\n\n%s\n' \
+    "# Changelog" \
+    "All notable changes to this project will be documented in this file." \
+    "The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)," \
+    "and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html)." \
+    > "$CHANGELOG"
+  printf '%b\n' "$ENTRY" >> "$CHANGELOG"
 fi
 
 echo "→ Entry prepended to $CHANGELOG"

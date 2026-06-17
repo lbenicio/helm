@@ -1,8 +1,8 @@
 # lbenicio-community Helm Charts
 
-![GitHub Release](https://img.shields.io/github/v/release/lbenicio/helm?label=version&color=blue)
-[![Release Charts](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml)
+![Version](https://img.shields.io/github/v/release/lbenicio/helm?label=version&color=blue)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE.txt)
+[![Release](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml)
 
 A collection of production-ready Helm charts for self-hosted applications, designed for ARM64 Kubernetes clusters running on Raspberry Pi but compatible with any `linux/amd64` or `linux/arm64` node.
 
@@ -18,6 +18,12 @@ helm repo update
 
 ```bash
 helm search repo lbenicio-community
+```
+
+Or via OCI:
+
+```bash
+helm pull oci://ghcr.io/lbenicio/helm/whoami --version 0.1.0
 ```
 
 ## Available Charts
