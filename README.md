@@ -1,7 +1,7 @@
 # k8s-v2 Helm Charts
 
 [![Release Charts](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.txt)
+[![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE.txt)
 
 A collection of production-ready Helm charts for self-hosted applications, designed for ARM64 Kubernetes clusters running on Raspberry Pi but compatible with any `linux/amd64` or `linux/arm64` node.
 
@@ -78,4 +78,4 @@ Pull requests are welcome. Please ensure:
 
 ## License
 
-MIT — see [LICENSE.txt](LICENSE.txt) for details.
+GPLv3 — see [LICENSE.txt](LICENSE.txt) for details.
