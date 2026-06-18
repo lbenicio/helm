@@ -39,6 +39,7 @@ jobs:
           cp landingpage/index.html public/
           cp landingpage/style.css public/
           cp landingpage/app.js public/
+@	cp landingpage/artifacthub-repo.yml public/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

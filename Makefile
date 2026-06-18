@@ -19,6 +19,7 @@ package: ## Package charts and rebuild Helm index
 	@cp landingpage/index.html public/
 	@cp landingpage/style.css public/
 	@cp landingpage/app.js public/
+@	cp landingpage/artifacthub-repo.yml public/
 	@echo "Charts packaged and index rebuilt"
 
 lint: ## Lint charts (helm lint + kube-linter)
