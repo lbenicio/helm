@@ -1,0 +1,23 @@
+version: 0.1.0
+name: smtp
+displayName: SMTP Relay
+createdAt: "2026-06-17T00:00:00Z"
+description: SMTP relay service with smart-host support, relay domain filtering, and optional authentication. Designed for ARM64 Kubernetes clusters.
+logoPath: ""
+license: GPL-3.0
+homeURL: https://github.com/lbenicio/helm
+containersImages:
+  - name: smtp
+    image: registry.gitlab.com/egos-tech/smtp:latest
+    platforms:
+      - linux/arm64
+keywords:
+  - networking
+  - email
+  - smtp
+links:
+  - name: Chart Source
+    url: https://github.com/lbenicio/helm/tree/main/charts/smtp
+maintainers:
+  - name: Leonardo Benicio
+    email: hi@lbenicio.dev

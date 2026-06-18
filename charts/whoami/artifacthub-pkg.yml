@@ -1,0 +1,28 @@
+version: 0.1.0
+name: whoami
+displayName: whoami
+createdAt: "2026-06-17T00:00:00Z"
+description: Lightweight HTTP server that prints OS and request information — ideal for ingress and network debugging on ARM64 Kubernetes clusters.
+logoPath: ""
+license: GPL-3.0
+homeURL: https://github.com/lbenicio/helm
+containersImages:
+  - name: whoami
+    image: traefik/whoami:latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    platforms:
+      - linux/arm64
+keywords:
+  - networking
+  - debugging
+  - ingress
+links:
+  - name: Chart Source
+    url: https://github.com/lbenicio/helm/tree/main/charts/whoami
+maintainers:
+  - name: Leonardo Benicio
+    email: hi@lbenicio.dev

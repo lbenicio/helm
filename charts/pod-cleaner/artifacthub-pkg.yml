@@ -1,0 +1,23 @@
+version: 0.1.0
+name: pod-cleaner
+displayName: Pod Cleaner
+createdAt: "2026-06-17T00:00:00Z"
+description: CronJob that periodically cleans up completed and succeeded pods from a Kubernetes namespace. Lightweight and configurable schedule.
+logoPath: ""
+license: GPL-3.0
+homeURL: https://github.com/lbenicio/helm
+containersImages:
+  - name: kubectl
+    image: bitnami/kubectl:latest
+    platforms:
+      - linux/arm64
+keywords:
+  - maintenance
+  - cleanup
+  - cronjob
+links:
+  - name: Chart Source
+    url: https://github.com/lbenicio/helm/tree/main/charts/pod-cleaner
+maintainers:
+  - name: Leonardo Benicio
+    email: hi@lbenicio.dev
