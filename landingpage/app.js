@@ -1,8 +1,22 @@
+function copyToClipboard(el, label) {
+  navigator.clipboard
+    .writeText(el.textContent.trim())
+    .then(() => {
+      if (typeof umami !== "undefined") {
+        umami.track("copy-command", { command: label });
+      }
+      el.style.color = "var(--accent)";
+      setTimeout(() => {
+        el.style.color = "";
+      }, 1500);
+    })
+    .catch(() => {});
+}
+
 async function fetchCharts() {
   try {
     const res = await fetch("index.yaml");
     const text = await res.text();
-    // Parse simple YAML: find chart names and versions
     const entries = {};
     let current = null;
     for (const line of text.split("\n")) {
@@ -33,6 +47,10 @@ async function fetchCharts() {
         <span class="chart-ver">v${data.version}</span>
       `;
       list.appendChild(div);
+    }
+
+    if (typeof umami !== "undefined") {
+      umami.track("charts-loaded", { count: Object.keys(entries).length });
     }
   } catch (e) {
     console.warn("Could not load chart list:", e);
