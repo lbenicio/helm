@@ -2,6 +2,7 @@
 
 ![Version](https://img.shields.io/github/v/release/lbenicio/helm?label=Version&color=blue)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE.txt)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/lbenicio-community)](https://artifacthub.io/packages/search?repo=lbenicio-community)
 [![Release](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/release-charts.yaml)
 [![Publish to GHCR](https://github.com/lbenicio/helm/actions/workflows/publish-ghcr.yaml/badge.svg)](https://github.com/lbenicio/helm/actions/workflows/publish-ghcr.yaml)
 
