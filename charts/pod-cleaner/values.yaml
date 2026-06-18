@@ -1,0 +1,68 @@
+# helm install pod-cleaner ./charts/pod-cleaner --namespace default
+
+# -----------------------------------------------------------------------------
+# Global Docker image settings
+# -----------------------------------------------------------------------------
+image:
+  # -- Image repository
+  repository: bitnami/kubectl
+  # -- Image tag (defaults to Chart.appVersion)
+  tag: latest
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+
+# -- Image pull secrets for private registries
+imagePullSecrets: []
+# -- Override the name of the chart
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+# -----------------------------------------------------------------------------
+# ServiceAccount configuration
+# -----------------------------------------------------------------------------
+serviceAccount:
+  # -- Create a ServiceAccount
+  create: true
+  # -- ServiceAccount name (defaults to fullname)
+  name: ""
+
+# -----------------------------------------------------------------------------
+# CronJob configuration
+# -----------------------------------------------------------------------------
+# -- Cron schedule for the cleanup job (cron syntax)
+schedule: "0 * * * *"
+# -- Namespace to clean up pods from
+namespace: "default"
+
+# -- Number of successful jobs to keep
+successfulJobsHistoryLimit: 1
+# -- Number of failed jobs to keep
+failedJobsHistoryLimit: 1
+
+# -----------------------------------------------------------------------------
+# Labels
+# -----------------------------------------------------------------------------
+# -- Common labels to add to all resources
+commonLabels: {}
+
+# -----------------------------------------------------------------------------
+# Resource requests and limits
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 10m
+    memory: 64Mi
+  limits:
+    cpu: 50m
+    memory: 128Mi
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# -----------------------------------------------------------------------------
+# -- Node selector for pod assignment
+nodeSelector: {}
+# -- Tolerations for pod assignment
+tolerations: []
+# -- Affinity for pod assignment
+affinity: {}

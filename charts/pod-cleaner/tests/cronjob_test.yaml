@@ -1,0 +1,87 @@
+suite: pod-cleaner
+templates:
+  - cronjob.yaml
+  - serviceaccount.yaml
+  - clusterrole.yaml
+  - clusterrolebinding.yaml
+tests:
+  - it: should create a CronJob
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: cronjob.yaml
+      - isKind:
+          of: CronJob
+        template: cronjob.yaml
+
+  - it: should have correct schedule
+    asserts:
+      - equal:
+          path: spec.schedule
+          value: "0 * * * *"
+        template: cronjob.yaml
+
+  - it: should have correct command
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].command[0]
+          value: kubectl
+        template: cronjob.yaml
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].command[1]
+          value: delete
+        template: cronjob.yaml
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.containers[0].command[3]
+          value: --field-selector=status.phase=Succeeded
+        template: cronjob.yaml
+
+  - it: should create a ServiceAccount
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: serviceaccount.yaml
+      - isKind:
+          of: ServiceAccount
+        template: serviceaccount.yaml
+
+  - it: should create a ClusterRole
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: clusterrole.yaml
+      - isKind:
+          of: ClusterRole
+        template: clusterrole.yaml
+
+  - it: should create a ClusterRoleBinding
+    asserts:
+      - hasDocuments:
+          count: 1
+        template: clusterrolebinding.yaml
+      - isKind:
+          of: ClusterRoleBinding
+        template: clusterrolebinding.yaml
+
+  - it: should use the correct image
+    asserts:
+      - matchRegex:
+          path: spec.jobTemplate.spec.template.spec.containers[0].image
+          pattern: "^bitnami/kubectl:"
+        template: cronjob.yaml
+
+  - it: should have resources configured
+    asserts:
+      - exists:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.requests.cpu
+        template: cronjob.yaml
+      - exists:
+          path: spec.jobTemplate.spec.template.spec.containers[0].resources.limits.memory
+        template: cronjob.yaml
+
+  - it: should set restartPolicy to OnFailure
+    asserts:
+      - equal:
+          path: spec.jobTemplate.spec.template.spec.restartPolicy
+          value: OnFailure
+        template: cronjob.yaml
