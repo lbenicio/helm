@@ -2,5 +2,5 @@ apiVersion: v2
 name: smtp
 description: A Helm chart for smtp
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: "latest"

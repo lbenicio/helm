@@ -52,6 +52,8 @@ keel:
 commonLabels: {}
 # -- Pod-specific labels
 podLabels: {}
+# -- Pod annotations (e.g., prometheus.io/scrape: "true")
+podAnnotations: {}
 
 # -----------------------------------------------------------------------------
 # Security Context

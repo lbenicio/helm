@@ -52,6 +52,8 @@ keel:
 commonLabels: {}
 # -- Pod-specific labels
 podLabels: {}
+# -- Pod annotations (e.g., prometheus.io/scrape: "true")
+podAnnotations: {}
 
 # -----------------------------------------------------------------------------
 # Security Context
@@ -206,3 +208,18 @@ config:
 extraVolumes: []
 # -- Additional volume mounts
 extraVolumeMounts: []
+
+# -----------------------------------------------------------------------------
+# Prometheus ServiceMonitor
+# -----------------------------------------------------------------------------
+serviceMonitor:
+  # -- Enable Prometheus Operator ServiceMonitor
+  enabled: false
+  # -- Scrape interval
+  interval: 30s
+  # -- Scrape timeout
+  scrapeTimeout: 10s
+  # -- Metrics path
+  path: /metrics
+  # -- Additional labels for the ServiceMonitor
+  labels: {}
