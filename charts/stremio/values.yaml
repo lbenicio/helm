@@ -167,9 +167,16 @@ podAnnotations:
 # Security Context
 # -----------------------------------------------------------------------------
 # -- Pod-level security context
-podSecurityContext: {}
+podSecurityContext:
+  fsGroup: 1000
 # -- Container-level security context
-containerSecurityContext: {}
+containerSecurityContext:
+  runAsUser: 1000
+  runAsNonRoot: true
+  readOnlyRootFilesystem: false
+  capabilities:
+    drop:
+      - ALL
 
 # -----------------------------------------------------------------------------
 # Server Service

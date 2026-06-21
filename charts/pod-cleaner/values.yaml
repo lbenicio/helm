@@ -47,6 +47,19 @@ failedJobsHistoryLimit: 1
 commonLabels: {}
 
 # -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+podSecurityContext:
+  fsGroup: 65534
+containerSecurityContext:
+  runAsUser: 65534
+  runAsNonRoot: true
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
+# -----------------------------------------------------------------------------
 # Resource requests and limits
 # -----------------------------------------------------------------------------
 resources:

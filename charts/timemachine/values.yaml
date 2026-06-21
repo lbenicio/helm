@@ -92,8 +92,8 @@ containerSecurityContext:
       - NET_RAW
       - SYS_ADMIN
   readOnlyRootFilesystem: false
-  runAsNonRoot: false
-  runAsUser: 0
+  runAsNonRoot: true
+  runAsUser: 1000
 
 # -----------------------------------------------------------------------------
 # Network

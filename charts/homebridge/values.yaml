@@ -64,9 +64,8 @@ podSecurityContext:
 # -- Container-level security context (Homebridge needs privileged for Bluetooth/HAP)
 containerSecurityContext:
   readOnlyRootFilesystem: false
-  runAsNonRoot: false
+  runAsNonRoot: true
   runAsUser: 1000
-  # privileged: true  # Uncomment if homebridge needs privileged mode
 
 # -----------------------------------------------------------------------------
 # Homebridge requires hostNetwork for mDNS/Bonjour discovery
