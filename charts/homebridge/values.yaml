@@ -200,18 +200,6 @@ autoscaling:
     selectPolicy: Max
 
 # -----------------------------------------------------------------------------
-# Init container to fix permissions on the data volume
-# -----------------------------------------------------------------------------
-initChownData:
-  # -- Enable init container to chown the data volume
-  enabled: true
-  # -- UID/GID to set on the data volume (should match containerSecurityContext.runAsUser)
-  uid: 1000
-  gid: 1000
-  # -- Image for the init container
-  image: busybox:1.36
-
-# -----------------------------------------------------------------------------
 # Scheduling
 # -----------------------------------------------------------------------------
 # -- Node selector for pod assignment
