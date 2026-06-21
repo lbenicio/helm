@@ -101,8 +101,6 @@ spec:
               mountPath: /homebridge
             - name: homebridge-lib
               mountPath: /var/lib/homebridge
-            - name: npm-cache
-              mountPath: /home/homebridge/.npm
             {{- if .Values.bluetooth.enabled }}
             - name: bluetooth
               mountPath: {{ .Values.bluetooth.hostPath }}
@@ -112,8 +110,6 @@ spec:
           {{- end }}
       volumes:
         - name: homebridge-lib
-          emptyDir: {}
-        - name: npm-cache
           emptyDir: {}
         - name: data
           persistentVolumeClaim:
