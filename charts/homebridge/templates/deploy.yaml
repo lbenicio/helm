@@ -50,6 +50,21 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       hostNetwork: {{ .Values.hostNetwork }}
+      {{- if .Values.initChownData.enabled }}
+      initContainers:
+        - name: chown-data
+          image: "{{ .Values.initChownData.image }}"
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - chown -R {{ .Values.initChownData.uid }}:{{ .Values.initChownData.gid }} /homebridge
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: data
+              mountPath: /homebridge
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
