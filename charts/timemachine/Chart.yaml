@@ -2,7 +2,7 @@ apiVersion: v2
 name: timemachine
 description: Helm chart for Time Machine Samba backup server
 type: application
-version: 0.1.1
+version: 0.1.2
 appVersion: "latest"
 keywords:
   - timemachine
