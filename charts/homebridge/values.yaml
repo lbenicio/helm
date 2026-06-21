@@ -214,6 +214,7 @@ affinity: {}
 # -- Environment variables (map)
 env:
   TZ: America/Sao_Paulo
+  npm_config_cache: "/var/lib/homebridge/.npm"
   # TZ: America/Sao_Paulo
   # ENABLE_AVAHI: "0"
 # -- Extra environment variables (list of name/value pairs)
