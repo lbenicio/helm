@@ -1,0 +1,26 @@
+version: 0.1.0
+name: timemachine
+displayName: Time Machine
+createdAt: "2026-06-20T00:00:00Z"
+description: Samba-based Time Machine backup server for macOS. StatefulSet with persistent volumes per replica, Traefik IngressRouteTCP support, and credential management.
+logoPath: ""
+license: GPL-3.0
+homeURL: https://github.com/lbenicio/helm
+containersImages:
+  - name: timemachine
+    image: mbentley/timemachine:latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+keywords:
+  - timemachine
+  - backup
+  - samba
+  - macos
+  - storage
+links:
+  - name: Chart Source
+    url: https://github.com/lbenicio/helm/tree/main/charts/timemachine
+maintainers:
+  - name: Leonardo Benicio
+    email: hi@lbenicio.dev

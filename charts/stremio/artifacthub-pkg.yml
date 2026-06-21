@@ -1,0 +1,30 @@
+version: 0.1.0
+name: stremio
+displayName: Stremio
+createdAt: "2026-06-20T00:00:00Z"
+description: Complete Stremio media server and web client — deploy both with a single chart. Includes Keel auto-updates, Prometheus metrics annotations, HPA, and Traefik ingress.
+logoPath: ""
+license: GPL-3.0
+homeURL: https://github.com/lbenicio/helm
+containersImages:
+  - name: stremio-server
+    image: stremio/server:latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+  - name: stremio-web
+    image: lbenicio/stremio-web:5.0.0-beta8
+    platforms:
+      - linux/amd64
+      - linux/arm64
+keywords:
+  - stremio
+  - streaming
+  - media
+  - torrent
+links:
+  - name: Chart Source
+    url: https://github.com/lbenicio/helm/tree/main/charts/stremio
+maintainers:
+  - name: Leonardo Benicio
+    email: hi@lbenicio.dev
