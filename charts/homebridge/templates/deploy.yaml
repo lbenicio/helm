@@ -83,13 +83,11 @@ spec:
           {{- end }}
           volumeMounts:
             - name: data
-              mountPath: /var/lib/homebridge
+              mountPath: /homebridge
             {{- if .Values.bluetooth.enabled }}
             - name: bluetooth
               mountPath: {{ .Values.bluetooth.hostPath }}
             {{- end }}
-            - name: homebridge-logdir
-              mountPath: /homebridge
           {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
@@ -103,8 +101,6 @@ spec:
             path: {{ .Values.bluetooth.hostPath }}
             type: DirectoryOrCreate
         {{- end }}
-        - name: homebridge-logdir
-          emptyDir: {}
       {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
