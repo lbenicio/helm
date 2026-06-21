@@ -83,7 +83,7 @@ spec:
           {{- end }}
           volumeMounts:
             - name: data
-              mountPath: /homebridge
+              mountPath: /var/lib/homebridge
             {{- if .Values.bluetooth.enabled }}
             - name: bluetooth
               mountPath: {{ .Values.bluetooth.hostPath }}
