@@ -83,6 +83,8 @@ spec:
           {{- end }}
           volumeMounts:
             - name: data
+              mountPath: /homebridge
+            - name: homebridge-lib
               mountPath: /var/lib/homebridge
             {{- if .Values.bluetooth.enabled }}
             - name: bluetooth
@@ -92,6 +94,8 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
+        - name: homebridge-lib
+          emptyDir: {}
         - name: data
           persistentVolumeClaim:
             claimName: {{ .Values.persistence.existingClaim | default (printf "%s-data" (include "homebridge.fullname" .)) }}
