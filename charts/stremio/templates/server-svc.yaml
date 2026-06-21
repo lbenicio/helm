@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "stremio.server.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "stremio.labels" . | nindent 4 }}
+    app.kubernetes.io/component: server
+  {{- with .Values.serverService.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.serverService.type }}
+  ports:
+    - name: http
+      port: {{ .Values.server.httpPort }}
+      targetPort: http
+      protocol: TCP
+    - name: stream
+      port: {{ .Values.server.streamPort }}
+      targetPort: stream
+      protocol: TCP
+  selector:
+    {{- include "stremio.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: server

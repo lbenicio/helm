@@ -1,0 +1,211 @@
+# helm install timemachine ./charts/timemachine --namespace default
+
+# -----------------------------------------------------------------------------
+# Image settings
+# -----------------------------------------------------------------------------
+image:
+  # -- Image repository
+  repository: mbentley/timemachine
+  # -- Image tag (defaults to Chart.appVersion)
+  tag: ""
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+
+# -- Image pull secrets for private registries
+imagePullSecrets: []
+# -- Override the name of the chart
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+# -- Number of replicas (one PVC per replica)
+replicaCount: 1
+
+# -----------------------------------------------------------------------------
+# Time Machine settings
+# -----------------------------------------------------------------------------
+timemachine:
+  # -- Samba share name (defaults to pod name if empty)
+  shareName: ""
+  # -- Time Machine volume size limit in MB (0 = unlimited)
+  volumeSizeLimit: 0
+  # -- Set permissions on startup
+  setPermissions: true
+
+# -----------------------------------------------------------------------------
+# Credentials
+# -----------------------------------------------------------------------------
+credentials:
+  # -- Create a Secret with credentials
+  createSecret: false
+  # -- Name of an existing Secret with PASSWORD and TM_USERNAME keys
+  existingSecret: credentials
+  # -- Secret keys
+  usernameKey: TM_USERNAME
+  passwordKey: PASSWORD
+
+# -----------------------------------------------------------------------------
+# ServiceAccount
+# -----------------------------------------------------------------------------
+serviceAccount:
+  # -- Create a ServiceAccount
+  create: true
+  # -- ServiceAccount name (defaults to fullname)
+  name: ""
+
+# -----------------------------------------------------------------------------
+# Labels and annotations
+# -----------------------------------------------------------------------------
+# -- Common labels to add to all resources
+commonLabels: {}
+# -- Pod-specific labels
+podLabels: {}
+# -- Pod annotations (e.g., prometheus.io/scrape: "true")
+podAnnotations: {}
+
+# -----------------------------------------------------------------------------
+# Keel auto-update annotations
+# -----------------------------------------------------------------------------
+keel:
+  # -- Enable Keel auto-update
+  enabled: true
+  # -- Keel update policy
+  policy: force
+  # -- Keel trigger type
+  trigger: poll
+  # -- Keel poll schedule
+  pollSchedule: "@every 24h"
+  # -- Match tag pattern (set to "true" for rolling tags)
+  matchTag: "true"
+
+# -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+# -- Pod-level security context
+podSecurityContext:
+  fsGroup: 1000
+# -- Container-level security context
+containerSecurityContext:
+  capabilities:
+    add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+  readOnlyRootFilesystem: false
+  runAsNonRoot: false
+  runAsUser: 0
+
+# -----------------------------------------------------------------------------
+# Network
+# -----------------------------------------------------------------------------
+service:
+  # -- Service type (ClusterIP or LoadBalancer)
+  type: ClusterIP
+  # -- Service annotations
+  annotations: {}
+  # -- Samba port (TCP 445)
+  smbPort: 445
+  # -- NetBIOS ports
+  netbiosNsPort: 137
+  netbiosDgmPort: 138
+  netbiosSsnPort: 139
+
+# -----------------------------------------------------------------------------
+# Persistence
+# -----------------------------------------------------------------------------
+persistence:
+  # -- Enable persistent storage
+  enabled: true
+  # -- Use an existing PVC (overrides volumeClaimTemplates)
+  existingClaim: ""
+  # -- StorageClass for the PVC
+  storageClass: local-path
+  # -- Access mode
+  accessMode: ReadWriteOnce
+  # -- PVC size per replica
+  size: 100Gi
+  # -- Mount path inside container
+  mountPath: /opt/timemachine
+  # -- Retain PVC when deleting the StatefulSet
+  retainOnDelete: true
+
+# -----------------------------------------------------------------------------
+# Resources
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 500m
+    memory: 2048Mi
+  limits:
+    cpu: 1000m
+    memory: 4096Mi
+
+# -----------------------------------------------------------------------------
+# Probes
+# -----------------------------------------------------------------------------
+startupProbe:
+  tcpSocket:
+    port: 445
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 30
+
+readinessProbe:
+  tcpSocket:
+    port: 445
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+
+livenessProbe:
+  tcpSocket:
+    port: 445
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# -----------------------------------------------------------------------------
+# -- Node selector for pod assignment
+nodeSelector: {}
+# -- Tolerations for pod assignment
+tolerations: []
+# -- Affinity for pod assignment
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Prometheus ServiceMonitor
+# -----------------------------------------------------------------------------
+serviceMonitor:
+  # -- Enable Prometheus Operator ServiceMonitor
+  enabled: false
+  # -- Scrape interval
+  interval: 30s
+  # -- Scrape timeout
+  scrapeTimeout: 10s
+  # -- Metrics path
+  path: /metrics
+  # -- Additional labels for the ServiceMonitor
+  labels: {}
+
+# -----------------------------------------------------------------------------
+# Traefik IngressRouteTCP
+# -----------------------------------------------------------------------------
+ingressRouteTCP:
+  # -- Enable Traefik IngressRouteTCP for Samba ports
+  enabled: false
+  # -- IngressRouteTCP annotations
+  annotations: {}
+  # -- Traefik entrypoints
+  entryPoints:
+    - smb
+  # -- TCP routes
+  routes:
+    - match: HostSNI(`*`)
+      services:
+        - name: ""  # defaults to chart fullname
+          port: 445
+  # -- TLS configuration
+  tls: {}

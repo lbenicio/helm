@@ -1,0 +1,12 @@
+apiVersion: v2
+name: stremio
+description: Helm chart for Stremio server + web client
+type: application
+version: 0.1.0
+appVersion: "latest"
+keywords:
+  - stremio
+  - streaming
+  - media
+maintainers:
+  - name: lbenicio

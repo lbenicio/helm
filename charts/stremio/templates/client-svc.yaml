@@ -1,0 +1,24 @@
+{{- if .Values.client.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "stremio.client.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "stremio.labels" . | nindent 4 }}
+    app.kubernetes.io/component: client
+  {{- with .Values.clientService.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.clientService.type }}
+  ports:
+    - name: http
+      port: {{ .Values.client.port }}
+      targetPort: http
+      protocol: TCP
+  selector:
+    {{- include "stremio.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: client
+{{- end }}

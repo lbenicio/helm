@@ -1,0 +1,159 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "timemachine.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "timemachine.labels" . | nindent 4 }}
+  {{- if .Values.keel.enabled }}
+  annotations:
+    keel.sh/policy: {{ .Values.keel.policy | quote }}
+    keel.sh/trigger: {{ .Values.keel.trigger | quote }}
+    keel.sh/pollSchedule: {{ .Values.keel.pollSchedule | quote }}
+    {{- if .Values.keel.matchTag }}
+    keel.sh/match-tag: {{ .Values.keel.matchTag | quote }}
+    {{- end }}
+  {{- end }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  serviceName: {{ include "timemachine.fullname" . }}
+  selector:
+    matchLabels:
+      {{- include "timemachine.selectorLabels" . | nindent 6 }}
+  {{- if .Values.persistence.retainOnDelete }}
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+  {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "timemachine.selectorLabels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- if or .Values.keel.enabled .Values.podAnnotations }}
+      annotations:
+        {{- if .Values.keel.enabled }}
+        keel.sh/policy: {{ .Values.keel.policy | quote }}
+        keel.sh/trigger: {{ .Values.keel.trigger | quote }}
+        keel.sh/pollSchedule: {{ .Values.keel.pollSchedule | quote }}
+        {{- if .Values.keel.matchTag }}
+        keel.sh/match-tag: {{ .Values.keel.matchTag | quote }}
+        {{- end }}
+        {{- end }}
+        {{- with .Values.podAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "timemachine.serviceAccountName" . }}
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.containerSecurityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          ports:
+            - name: smb
+              containerPort: {{ .Values.service.smbPort }}
+              protocol: TCP
+            - name: netbios-ns
+              containerPort: {{ .Values.service.netbiosNsPort }}
+              protocol: UDP
+            - name: netbios-dgm
+              containerPort: {{ .Values.service.netbiosDgmPort }}
+              protocol: UDP
+            - name: netbios-ssn
+              containerPort: {{ .Values.service.netbiosSsnPort }}
+              protocol: TCP
+          env:
+            - name: SHARE_NAME
+            {{- if .Values.timemachine.shareName }}
+              value: {{ .Values.timemachine.shareName | quote }}
+            {{- else }}
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            {{- end }}
+            {{- if .Values.timemachine.volumeSizeLimit }}
+            - name: VOLUME_SIZE_LIMIT
+              value: {{ .Values.timemachine.volumeSizeLimit | quote }}
+            {{- end }}
+            - name: SET_PERMISSIONS
+              value: {{ .Values.timemachine.setPermissions | quote }}
+            - name: TM_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "timemachine.secretName" . }}
+                  key: {{ .Values.credentials.usernameKey }}
+            - name: PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "timemachine.secretName" . }}
+                  key: {{ .Values.credentials.passwordKey }}
+          {{- with .Values.startupProbe }}
+          startupProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: data
+              mountPath: {{ .Values.persistence.mountPath }}
+      volumes:
+        {{- if .Values.persistence.existingClaim }}
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ .Values.persistence.existingClaim }}
+        {{- end }}
+  {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        {{- with .Values.commonLabels }}
+        labels:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+      spec:
+        accessModes:
+          - {{ .Values.persistence.accessMode }}
+        {{- with .Values.persistence.storageClass }}
+        storageClassName: {{ . }}
+        {{- end }}
+        resources:
+          requests:
+            storage: {{ .Values.persistence.size }}
+  {{- end }}

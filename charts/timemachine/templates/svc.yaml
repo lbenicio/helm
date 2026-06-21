@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "timemachine.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "timemachine.labels" . | nindent 4 }}
+  {{- with .Values.service.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - name: smb
+      port: {{ .Values.service.smbPort }}
+      targetPort: smb
+      protocol: TCP
+    - name: netbios-ns
+      port: {{ .Values.service.netbiosNsPort }}
+      targetPort: netbios-ns
+      protocol: UDP
+    - name: netbios-dgm
+      port: {{ .Values.service.netbiosDgmPort }}
+      targetPort: netbios-dgm
+      protocol: UDP
+    - name: netbios-ssn
+      port: {{ .Values.service.netbiosSsnPort }}
+      targetPort: netbios-ssn
+      protocol: TCP
+  selector:
+    {{- include "timemachine.selectorLabels" . | nindent 4 }}

@@ -1,0 +1,263 @@
+# helm install stremio ./charts/stremio --namespace default
+
+# -----------------------------------------------------------------------------
+# Global Docker image settings
+# -----------------------------------------------------------------------------
+server:
+  image:
+    # -- Server image repository
+    repository: stremio/server
+    # -- Server image tag (defaults to Chart.appVersion)
+    tag: ""
+    # -- Server image pull policy
+    pullPolicy: IfNotPresent
+
+  # -- Number of server replicas (ignored if autoscaling.enabled is true)
+  replicaCount: 1
+
+  # -- Container port (HTTP API)
+  httpPort: 11470
+  # -- Container port (streaming)
+  streamPort: 12470
+
+  # -- Environment variables
+  env:
+    NO_CORS: "1"
+    # STREMIO_SERVER_PORT: "11470"
+
+  # -- Additional environment variables
+  extraEnv: []
+  # - name: FOO
+  #   value: bar
+
+  # -- Resource requests and limits
+  resources:
+    requests:
+      cpu: 250m
+      memory: 128Mi
+    limits:
+      cpu: 1000m
+      memory: 4096Mi
+
+  # -- Probes
+  startupProbe: {}
+  readinessProbe:
+    tcpSocket:
+      port: 11470
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+  livenessProbe:
+    tcpSocket:
+      port: 11470
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+
+  # -- Extra volumes
+  extraVolumes: []
+  # -- Extra volume mounts
+  extraVolumeMounts: []
+
+  # -- Keel auto-update annotations
+  keel:
+    enabled: true
+    policy: force
+    trigger: poll
+    pollSchedule: "@every 24h"
+    matchTag: "true"
+
+client:
+  # -- Enable Stremio Web client
+  enabled: true
+
+  image:
+    # -- Client image repository
+    repository: lbenicio/stremio-web
+    # -- Client image tag (defaults to Chart.appVersion)
+    tag: ""
+    # -- Client image pull policy
+    pullPolicy: IfNotPresent
+
+  # -- Number of client replicas (ignored if autoscaling.enabled is true)
+  replicaCount: 1
+
+  # -- Container port
+  port: 8080
+
+  # -- Environment variables
+  env: {}
+    # STREMIO_SERVER_URL: http://server.stremio.lan
+
+  # -- Additional environment variables
+  extraEnv: []
+  # - name: FOO
+  #   value: bar
+
+  # -- Resource requests and limits
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 512Mi
+
+  # -- Probes
+  startupProbe: {}
+  readinessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 5
+  livenessProbe:
+    httpGet:
+      path: /
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 30
+    timeoutSeconds: 5
+
+  # -- Extra volumes
+  extraVolumes: []
+  # -- Extra volume mounts
+  extraVolumeMounts: []
+
+  # -- Keel auto-update annotations
+  keel:
+    enabled: true
+    policy: minor
+    trigger: poll
+    pollSchedule: "@every 24h"
+
+# -----------------------------------------------------------------------------
+# Shared settings
+# -----------------------------------------------------------------------------
+# -- Override the name of the chart
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+# -- Image pull secrets for private registries
+imagePullSecrets: []
+
+# -----------------------------------------------------------------------------
+# ServiceAccount configuration
+# -----------------------------------------------------------------------------
+serviceAccount:
+  # -- Create a ServiceAccount
+  create: true
+  # -- ServiceAccount name (defaults to fullname)
+  name: ""
+
+# -----------------------------------------------------------------------------
+# Labels and annotations
+# -----------------------------------------------------------------------------
+# -- Common labels to add to all resources
+commonLabels: {}
+# -- Pod-specific labels
+podLabels: {}
+# -- Pod annotations (e.g., prometheus.io/scrape: "true")
+podAnnotations:
+  prometheus.io/scrape: "true"
+
+# -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+# -- Pod-level security context
+podSecurityContext: {}
+# -- Container-level security context
+containerSecurityContext: {}
+
+# -----------------------------------------------------------------------------
+# Server Service
+# -----------------------------------------------------------------------------
+serverService:
+  # -- Service type
+  type: ClusterIP
+  # -- Service annotations
+  annotations: {}
+
+# -----------------------------------------------------------------------------
+# Client Service
+# -----------------------------------------------------------------------------
+clientService:
+  # -- Service type
+  type: ClusterIP
+  # -- Service annotations
+  annotations: {}
+
+# -----------------------------------------------------------------------------
+# Ingress configuration
+# -----------------------------------------------------------------------------
+ingress:
+  # -- Enable ingress
+  enabled: false
+  # -- Ingress class name
+  className: ""
+  # -- Ingress annotations
+  annotations: {}
+  # -- Ingress host rules
+  hosts:
+    - host: stremio.local
+      paths:
+        - path: /
+          pathType: Prefix
+  # -- Ingress TLS configuration
+  tls: []
+
+# -----------------------------------------------------------------------------
+# Host aliases
+# -----------------------------------------------------------------------------
+# -- Host aliases for /etc/hosts entries
+hostAliases:
+  - hostnames:
+      - server.stremio.lan
+    ip: "127.0.0.1"
+
+# -----------------------------------------------------------------------------
+# Resource requests and limits (default for both server and client)
+# -----------------------------------------------------------------------------
+resources: {}
+
+# -----------------------------------------------------------------------------
+# Autoscaling
+# -----------------------------------------------------------------------------
+autoscaling:
+  # -- Enable autoscaling for server and client
+  enabled: false
+  # -- Minimum replicas
+  minReplicas: 1
+  # -- Maximum replicas
+  maxReplicas: 1
+  # -- Target CPU utilization percentage
+  targetCPUUtilizationPercentage: 80
+  # -- Target memory utilization percentage
+  targetMemoryUtilizationPercentage: 80
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# -----------------------------------------------------------------------------
+# -- Node selector for pod assignment
+nodeSelector: {}
+# -- Tolerations for pod assignment
+tolerations: []
+# -- Affinity for pod assignment
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Prometheus ServiceMonitor
+# -----------------------------------------------------------------------------
+serviceMonitor:
+  # -- Enable Prometheus Operator ServiceMonitor
+  enabled: false
+  # -- Scrape interval
+  interval: 30s
+  # -- Scrape timeout
+  scrapeTimeout: 10s
+  # -- Metrics path
+  path: /metrics
+  # -- Additional labels for the ServiceMonitor
+  labels: {}
