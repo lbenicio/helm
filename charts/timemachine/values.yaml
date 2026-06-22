@@ -101,6 +101,8 @@ containerSecurityContext:
 service:
   # -- Service type (ClusterIP or LoadBalancer)
   type: ClusterIP
+  # -- LoadBalancer IP (only if type is LoadBalancer)
+  loadBalancerIP: ""
   # -- Service annotations
   annotations: {}
   # -- Samba port (TCP 445)
