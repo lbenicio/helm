@@ -68,6 +68,15 @@ containerSecurityContext:
   runAsUser: 0
 
 # -----------------------------------------------------------------------------
+# Host aliases for /etc/hosts entries
+# -----------------------------------------------------------------------------
+# -- Host aliases to add to /etc/hosts
+hostAliases: []
+  # - ip: "10.43.122.90"
+  #   hostnames:
+  #     - "id.lan"
+
+# -----------------------------------------------------------------------------
 # Homebridge requires hostNetwork for mDNS/Bonjour discovery
 # -----------------------------------------------------------------------------
 hostNetwork: false
