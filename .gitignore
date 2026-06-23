@@ -37,9 +37,6 @@ Temporary Items
 # Backup Files
 *.bak
 **/*.bak
-*.tgz
-index.yaml
-public/
 
 # Trivy pre-commit hook cache
 .pre-commit-trivy-cache
