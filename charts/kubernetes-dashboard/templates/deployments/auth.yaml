@@ -79,6 +79,24 @@ spec:
             {{- if .Values.auth.oidc.insecureSkipVerify }}
             - --oidc-skip-tls-verify
             {{- end }}
+            {{- if .Values.auth.oidc.usernameClaim }}
+            - --oidc-username-claim={{ .Values.auth.oidc.usernameClaim }}
+            {{- end }}
+            {{- if .Values.auth.oidc.groupsClaim }}
+            - --oidc-groups-claim={{ .Values.auth.oidc.groupsClaim }}
+            {{- end }}
+            {{- if .Values.auth.oidc.avatarClaim }}
+            - --oidc-avatar-claim={{ .Values.auth.oidc.avatarClaim }}
+            {{- end }}
+            {{- if .Values.auth.oidc.nameClaim }}
+            - --oidc-name-claim={{ .Values.auth.oidc.nameClaim }}
+            {{- end }}
+            {{- if .Values.auth.oidc.emailClaim }}
+            - --oidc-email-claim={{ .Values.auth.oidc.emailClaim }}
+            {{- end }}
+            {{- if .Values.auth.oidc.allowedGroup }}
+            - --oidc-allowed-group={{ .Values.auth.oidc.allowedGroup }}
+            {{- end }}
           {{- end }}
 
           env:
