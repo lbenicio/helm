@@ -147,7 +147,7 @@ auth:
   role: auth
   image:
     repository: docker.io/kubernetesui/dashboard-auth
-    tag: 1.4.0
+    tag: 1.4.12
   hostAliases: []
   scaling:
     replicas: 1
