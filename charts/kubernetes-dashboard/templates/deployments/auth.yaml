@@ -55,6 +55,10 @@ spec:
         {{ toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.auth.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ template "kubernetes-dashboard.name" . }}-{{ .Values.auth.role }}
           image: "{{ .Values.auth.image.repository }}:{{ .Values.auth.image.tag }}"
