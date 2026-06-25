@@ -87,13 +87,6 @@ spec:
             - name: APP_URL
               value: {{ .Values.config.appUrl | quote }}
             {{- end }}
-            {{- if .Values.config.geminiApiKey }}
-            - name: GEMINI_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "helm-pilot.fullname" . }}-gemini
-                  key: apiKey
-            {{- end }}
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}

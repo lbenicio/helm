@@ -112,8 +112,6 @@ config:
     caCertSecret: "root-secret"
   # -- Public URL of the application (for OIDC redirect)
   appUrl: ""
-  # -- Gemini API key for AI features (optional)
-  geminiApiKey: ""
 
 # -----------------------------------------------------------------------------
 # Resource requests and limits
