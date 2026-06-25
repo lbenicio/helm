@@ -1,0 +1,185 @@
+# helm install ping ./charts/ping --namespace default
+
+# -----------------------------------------------------------------------------
+# Global Docker image settings
+# -----------------------------------------------------------------------------
+image:
+  # -- Image repository
+  repository: prom/blackbox-exporter
+  # -- Image tag (defaults to Chart.appVersion)
+  tag: ""
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+
+# -- Image pull secrets for private registries
+imagePullSecrets: []
+# -- Override the name of the chart
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+# -- Number of replicas (ignored if autoscaling.enabled is true)
+replicaCount: 1
+
+# -----------------------------------------------------------------------------
+# Container arguments
+# -----------------------------------------------------------------------------
+# -- Arguments passed to the blackbox-exporter container
+args:
+  - --config.file=/config/blackbox.yml
+
+# -----------------------------------------------------------------------------
+# ServiceAccount configuration
+# -----------------------------------------------------------------------------
+serviceAccount:
+  # -- Create a ServiceAccount
+  create: true
+  # -- ServiceAccount name (defaults to fullname)
+  name: ""
+
+# -----------------------------------------------------------------------------
+# Keel auto-update annotations
+# -----------------------------------------------------------------------------
+keel:
+  # -- Enable Keel auto-update annotations
+  enabled: true
+  # -- Keel update policy (e.g., force, major, minor, patch)
+  policy: minor
+  # -- Keel trigger type (e.g., poll, webhook)
+  trigger: poll
+  # -- Keel poll schedule (cron syntax or @every duration)
+  pollSchedule: "@every 24h"
+  # -- Match tag pattern
+  matchTag: "true"
+
+# -----------------------------------------------------------------------------
+# Labels
+# -----------------------------------------------------------------------------
+# -- Common labels to add to all resources
+commonLabels: {}
+# -- Pod-specific labels
+podLabels: {}
+# -- Pod annotations (e.g., prometheus.io/scrape: "true")
+podAnnotations: {}
+
+# -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+# -- Pod-level security context
+podSecurityContext: {}
+# -- Container-level security context
+containerSecurityContext:
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65534
+
+# -----------------------------------------------------------------------------
+# Service configuration
+# -----------------------------------------------------------------------------
+service:
+  # -- Service type
+  type: ClusterIP
+  # -- Service port
+  port: 9115
+  # -- Service annotations
+  annotations: {}
+
+# -----------------------------------------------------------------------------
+# Blackbox exporter configuration
+# -----------------------------------------------------------------------------
+config:
+  # -- Create the ConfigMap
+  create: true
+  # -- blackbox.yml configuration (see https://github.com/prometheus/blackbox_exporter)
+  blackboxYml: |-
+    modules:
+      http_2xx:
+        prober: http
+        http:
+          preferred_ip_protocol: "ip4"
+      http_post_2xx:
+        prober: http
+        http:
+          method: POST
+      tcp_connect:
+        prober: tcp
+      pop3s_banner:
+        prober: tcp
+        tcp:
+          query_response:
+          - expect: "^+OK"
+          tls: true
+          tls_config:
+            insecure_skip_verify: false
+      ssh_banner:
+        prober: tcp
+        tcp:
+          query_response:
+          - expect: "^SSH-2.0-"
+      irc_banner:
+        prober: tcp
+        tcp:
+          query_response:
+          - send: "NICK prober"
+          - send: "USER prober prober prober :prober"
+          - expect: "PING :([^ ]+)"
+            send: "PONG ${1}"
+          - expect: "^:[^ ]+ 001"
+      icmp:
+        prober: icmp
+
+# -----------------------------------------------------------------------------
+# Resource requests and limits
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 250m
+    memory: 256Mi
+
+# -----------------------------------------------------------------------------
+# Probes
+# -----------------------------------------------------------------------------
+livenessProbe:
+  httpGet:
+    path: /metrics
+    port: 9115
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+
+readinessProbe:
+  httpGet:
+    path: /metrics
+    port: 9115
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# -----------------------------------------------------------------------------
+# -- Node selector for pod assignment
+nodeSelector: {}
+# -- Tolerations for pod assignment
+tolerations: []
+# -- Affinity for pod assignment
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Environment variables
+# -----------------------------------------------------------------------------
+# -- Environment variables (map)
+env: {}
+# -- Extra environment variables (list of name/value pairs)
+extraEnv: []
+
+# -----------------------------------------------------------------------------
+# Extra volumes and mounts
+# -----------------------------------------------------------------------------
+# -- Additional volumes
+extraVolumes: []
+# -- Additional volume mounts
+extraVolumeMounts: []

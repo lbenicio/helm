@@ -3,7 +3,7 @@ entries:
   glance:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.873594-03:00"
+    created: "2026-06-25T18:13:44.173871-03:00"
     description: A Helm chart for glance
     digest: e822556263da75c117fcc76e48139d89515ba911b982e32cef447536e982dd46
     name: glance
@@ -13,7 +13,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.873121-03:00"
+    created: "2026-06-25T18:13:44.17335-03:00"
     description: A Helm chart for glance
     digest: 8f0835fd0bf8c7a3ef8db4013f0bdafb41254f55568a5b80bd498940e67a0c47
     name: glance
@@ -24,7 +24,7 @@ entries:
   homebridge:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.875878-03:00"
+    created: "2026-06-25T18:13:44.176081-03:00"
     description: A Helm chart for homebridge
     digest: 4dbca97b39de6e7b5a4bc9d88b54f3b05fbb306f854cda6bdeacae061bfea213
     name: homebridge
@@ -34,7 +34,7 @@ entries:
     version: 0.1.15
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.875279-03:00"
+    created: "2026-06-25T18:13:44.175112-03:00"
     description: A Helm chart for homebridge
     digest: 2be012326925984001c05644953198e85477d81a9c5b1d1c893a99fe27f47734
     name: homebridge
@@ -44,7 +44,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.874223-03:00"
+    created: "2026-06-25T18:13:44.174364-03:00"
     description: A Helm chart for homebridge
     digest: 8a5f0f39eeff8eac4c6e1c9728733be1d865f09f84d562c73633dfa6f9dd0676
     name: homebridge
@@ -54,7 +54,7 @@ entries:
     version: 0.1.0
   kubernetes-dashboard:
   - apiVersion: v2
-    created: "2026-06-23T22:16:21.887154-03:00"
+    created: "2026-06-25T18:13:44.187544-03:00"
     dependencies:
     - alias: nginx
       condition: nginx.enabled
@@ -93,10 +93,21 @@ entries:
     urls:
     - https://helm.lbenicio.dev/kubernetes-dashboard-7.14.5.tgz
     version: 7.14.5
+  ping:
+  - apiVersion: v2
+    appVersion: v0.28.0
+    created: "2026-06-25T18:13:44.1878-03:00"
+    description: Blackbox exporter for probing endpoints
+    digest: 21b08b8fa9f87a7f8ba50f42d6ed9c43a0a1083541dfe16b018779fc9fb66786
+    name: ping
+    type: application
+    urls:
+    - https://helm.lbenicio.dev/ping-0.1.0.tgz
+    version: 0.1.0
   pod-cleaner:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.887497-03:00"
+    created: "2026-06-25T18:13:44.188278-03:00"
     description: CronJob that periodically cleans up completed pods
     digest: 05bd3621df81fbeba231e955a249c6837a6c6b112671bb9087e999b13f28c4ff
     name: pod-cleaner
@@ -107,7 +118,7 @@ entries:
   smtp:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.888446-03:00"
+    created: "2026-06-25T18:13:44.189313-03:00"
     description: A Helm chart for smtp
     digest: 053c290c832e7e69d225491295ac7969f49cf1e0bfd08ddb09f134239bdb9ee0
     name: smtp
@@ -117,7 +128,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.887925-03:00"
+    created: "2026-06-25T18:13:44.188884-03:00"
     description: A Helm chart for smtp
     digest: 84bd67dbd9ce157c4f7ba7b0170e7b42d1592bfeb04af57bc56e9d8876507ab5
     name: smtp
@@ -125,10 +136,21 @@ entries:
     urls:
     - https://helm.lbenicio.dev/smtp-0.1.0.tgz
     version: 0.1.0
+  speedtest:
+  - apiVersion: v2
+    appVersion: v0.2.91
+    created: "2026-06-25T18:13:44.189604-03:00"
+    description: Internet performance exporter (speedtest, fast.com)
+    digest: 43ad17daae58f455c44e11bb7b9c17b97c67d3ba655d034f024e0b385db49738
+    name: speedtest
+    type: application
+    urls:
+    - https://helm.lbenicio.dev/speedtest-0.1.0.tgz
+    version: 0.1.0
   stremio:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.888963-03:00"
+    created: "2026-06-25T18:13:44.190155-03:00"
     description: Helm chart for Stremio server + web client
     digest: 4841de7b9e91e962b4b95f8f36dc61920b0f9825d8b59b33a84ee42a68ee8946
     keywords:
@@ -145,7 +167,7 @@ entries:
   timemachine:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.889474-03:00"
+    created: "2026-06-25T18:13:44.190974-03:00"
     description: Helm chart for Time Machine Samba backup server
     digest: 4658212da38feea992493a496821ecfe66bea7b82cc242af0d4af3e739a25ded
     keywords:
@@ -163,7 +185,7 @@ entries:
   whoami:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.890319-03:00"
+    created: "2026-06-25T18:13:44.191876-03:00"
     description: A Helm chart for whoami
     digest: 7624eb51b6f1d90cee47c9ff4f30be5b53f1efb13dfb3bca614d6b1f3cee3714
     name: whoami
@@ -173,7 +195,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-23T22:16:21.889803-03:00"
+    created: "2026-06-25T18:13:44.19135-03:00"
     description: A Helm chart for whoami
     digest: 64b518f51c57148f3b73780f4ba4761b6a191e38b84814fa041db6fc86f63111
     name: whoami
@@ -181,4 +203,4 @@ entries:
     urls:
     - https://helm.lbenicio.dev/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-23T22:16:21.872253-03:00"
+generated: "2026-06-25T18:13:44.172475-03:00"
