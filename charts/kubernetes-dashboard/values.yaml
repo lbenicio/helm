@@ -18,6 +18,8 @@ app:
   # - dashboard - deploys all the containers
   # - api - deploys just the API
   mode: 'dashboard'
+  # -- Name of the OIDC group to bind to the 'view' ClusterRole for read-only access
+  oidcMonitoringGroup: ""
   image:
     pullPolicy: IfNotPresent
     pullSecrets: []

@@ -51,5 +51,8 @@ subjects:
   - kind: ServiceAccount
     name: {{ template "kubernetes-dashboard.fullname" . }}-{{ .Values.web.role }}
     namespace: {{ .Release.Namespace }}
+  - kind: ServiceAccount
+    name: default
+    namespace: {{ .Release.Namespace }}
 
 {{- end }}
