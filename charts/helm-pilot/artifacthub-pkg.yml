@@ -1,0 +1,5 @@
+artifacthub.io/changes: |
+  - kind: added
+    description: Initial release of Helm Pilot
+artifacthub.io/operator: "false"
+artifacthub.io/prerelease: "false"

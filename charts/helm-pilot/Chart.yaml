@@ -1,0 +1,19 @@
+apiVersion: v2
+name: helm-pilot
+description: AI-powered Helm management dashboard for Kubernetes clusters
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
+keywords:
+  - helm
+  - kubernetes
+  - dashboard
+  - management
+  - ai
+  - gemini
+home: https://github.com/lbenicio/helm-pilot
+sources:
+  - https://github.com/lbenicio/helm-pilot
+maintainers:
+  - name: lbenicio

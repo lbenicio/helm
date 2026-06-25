@@ -3,7 +3,7 @@ entries:
   glance:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.479046-03:00"
+    created: "2026-06-25T19:24:53.098323-03:00"
     description: A Helm chart for glance
     digest: de9db431fe4573b9865933b932ae35e0e7e8346eebd7585cea8c211d998a9fa7
     name: glance
@@ -13,7 +13,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.478637-03:00"
+    created: "2026-06-25T19:24:53.097816-03:00"
     description: A Helm chart for glance
     digest: 8f0835fd0bf8c7a3ef8db4013f0bdafb41254f55568a5b80bd498940e67a0c47
     name: glance
@@ -21,10 +21,34 @@ entries:
     urls:
     - public/glance-0.1.0.tgz
     version: 0.1.0
+  helm-pilot:
+  - apiVersion: v2
+    appVersion: 0.1.0
+    created: "2026-06-25T19:24:53.084579-03:00"
+    description: AI-powered Helm management dashboard for Kubernetes clusters
+    digest: 47136dee2e0ef771169a793059a25e4689dbddcbdbc01b75a6ba6c515e53d60a
+    home: https://github.com/lbenicio/helm-pilot
+    icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
+    keywords:
+    - helm
+    - kubernetes
+    - dashboard
+    - management
+    - ai
+    - gemini
+    maintainers:
+    - name: lbenicio
+    name: helm-pilot
+    sources:
+    - https://github.com/lbenicio/helm-pilot
+    type: application
+    urls:
+    - helm-pilot-0.1.0.tgz
+    version: 0.1.0
   homebridge:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.480735-03:00"
+    created: "2026-06-25T19:24:53.099921-03:00"
     description: A Helm chart for homebridge
     digest: 4dbca97b39de6e7b5a4bc9d88b54f3b05fbb306f854cda6bdeacae061bfea213
     name: homebridge
@@ -34,7 +58,7 @@ entries:
     version: 0.1.15
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.480137-03:00"
+    created: "2026-06-25T19:24:53.09938-03:00"
     description: A Helm chart for homebridge
     digest: 2be012326925984001c05644953198e85477d81a9c5b1d1c893a99fe27f47734
     name: homebridge
@@ -44,7 +68,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.47955-03:00"
+    created: "2026-06-25T19:24:53.098788-03:00"
     description: A Helm chart for homebridge
     digest: 8a5f0f39eeff8eac4c6e1c9728733be1d865f09f84d562c73633dfa6f9dd0676
     name: homebridge
@@ -54,7 +78,7 @@ entries:
     version: 0.1.0
   kubernetes-dashboard:
   - apiVersion: v2
-    created: "2026-06-25T19:21:23.478026-03:00"
+    created: "2026-06-25T19:24:53.097161-03:00"
     dependencies:
     - alias: nginx
       condition: nginx.enabled
@@ -94,7 +118,7 @@ entries:
     - kubernetes-dashboard-7.14.6.tgz
     version: 7.14.6
   - apiVersion: v2
-    created: "2026-06-25T19:21:23.491763-03:00"
+    created: "2026-06-25T19:24:53.112298-03:00"
     dependencies:
     - alias: nginx
       condition: nginx.enabled
@@ -136,7 +160,7 @@ entries:
   ping:
   - apiVersion: v2
     appVersion: v0.28.0
-    created: "2026-06-25T19:21:23.492305-03:00"
+    created: "2026-06-25T19:24:53.112788-03:00"
     description: Blackbox exporter for probing endpoints
     digest: 3e32da7e98346245d7acffec564ca9519746a4cb3493bf455aa2ec3ed6246680
     name: ping
@@ -147,7 +171,7 @@ entries:
   pod-cleaner:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.492903-03:00"
+    created: "2026-06-25T19:24:53.113151-03:00"
     description: CronJob that periodically cleans up completed pods
     digest: 05bd3621df81fbeba231e955a249c6837a6c6b112671bb9087e999b13f28c4ff
     name: pod-cleaner
@@ -158,7 +182,7 @@ entries:
   smtp:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.493692-03:00"
+    created: "2026-06-25T19:24:53.113994-03:00"
     description: A Helm chart for smtp
     digest: 053c290c832e7e69d225491295ac7969f49cf1e0bfd08ddb09f134239bdb9ee0
     name: smtp
@@ -168,7 +192,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.493211-03:00"
+    created: "2026-06-25T19:24:53.113505-03:00"
     description: A Helm chart for smtp
     digest: 84bd67dbd9ce157c4f7ba7b0170e7b42d1592bfeb04af57bc56e9d8876507ab5
     name: smtp
@@ -179,7 +203,7 @@ entries:
   speedtest:
   - apiVersion: v2
     appVersion: v0.2.91
-    created: "2026-06-25T19:21:23.494169-03:00"
+    created: "2026-06-25T19:24:53.114594-03:00"
     description: Internet performance exporter (speedtest, fast.com)
     digest: 43ad17daae58f455c44e11bb7b9c17b97c67d3ba655d034f024e0b385db49738
     name: speedtest
@@ -190,7 +214,7 @@ entries:
   stremio:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.494684-03:00"
+    created: "2026-06-25T19:24:53.115239-03:00"
     description: Helm chart for Stremio server + web client
     digest: 4841de7b9e91e962b4b95f8f36dc61920b0f9825d8b59b33a84ee42a68ee8946
     keywords:
@@ -207,7 +231,7 @@ entries:
   timemachine:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.495286-03:00"
+    created: "2026-06-25T19:24:53.115844-03:00"
     description: Helm chart for Time Machine Samba backup server
     digest: 4658212da38feea992493a496821ecfe66bea7b82cc242af0d4af3e739a25ded
     keywords:
@@ -225,7 +249,7 @@ entries:
   whoami:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.496391-03:00"
+    created: "2026-06-25T19:24:53.11684-03:00"
     description: A Helm chart for whoami
     digest: 7624eb51b6f1d90cee47c9ff4f30be5b53f1efb13dfb3bca614d6b1f3cee3714
     name: whoami
@@ -235,7 +259,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-25T19:21:23.495902-03:00"
+    created: "2026-06-25T19:24:53.116342-03:00"
     description: A Helm chart for whoami
     digest: 64b518f51c57148f3b73780f4ba4761b6a191e38b84814fa041db6fc86f63111
     name: whoami
@@ -243,4 +267,4 @@ entries:
     urls:
     - public/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-25T19:21:23.465805-03:00"
+generated: "2026-06-25T19:24:53.083914-03:00"

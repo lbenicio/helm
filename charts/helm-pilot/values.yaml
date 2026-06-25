@@ -1,0 +1,169 @@
+# helm install helm-pilot ./charts/helm-pilot --namespace default
+
+# -----------------------------------------------------------------------------
+# Global Docker image settings
+# -----------------------------------------------------------------------------
+image:
+  # -- Image repository
+  repository: lbenicio/helm-pilot
+  # -- Image tag (defaults to Chart.appVersion)
+  tag: ""
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+
+# -- Override the name of the chart
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+# -- Number of replicas
+replicaCount: 1
+
+# -----------------------------------------------------------------------------
+# ServiceAccount configuration
+# -----------------------------------------------------------------------------
+serviceAccount:
+  # -- Create a ServiceAccount with ClusterRole for K8s API access
+  create: true
+  # -- ServiceAccount name (defaults to fullname)
+  name: ""
+
+# -----------------------------------------------------------------------------
+# Keel auto-update annotations
+# -----------------------------------------------------------------------------
+keel:
+  # -- Enable Keel auto-update annotations
+  enabled: false
+  # -- Keel update policy
+  policy: minor
+  # -- Keel trigger type
+  trigger: poll
+  # -- Keel poll schedule
+  pollSchedule: "@every 24h"
+  # -- Match tag pattern
+  matchTag: "true"
+
+# -----------------------------------------------------------------------------
+# Labels and annotations
+# -----------------------------------------------------------------------------
+commonLabels: {}
+podLabels: {}
+podAnnotations: {}
+
+# -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+podSecurityContext:
+  fsGroup: 1000
+containerSecurityContext:
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  capabilities:
+    drop:
+      - ALL
+
+# -----------------------------------------------------------------------------
+# Host aliases for internal DNS resolution
+# -----------------------------------------------------------------------------
+hostAliases: []
+  # - ip: "10.43.0.1"
+  #   hostnames:
+  #     - "pocketid.lan"
+
+# -----------------------------------------------------------------------------
+# Service configuration
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 3000
+  annotations: {}
+
+# -----------------------------------------------------------------------------
+# Ingress configuration
+# -----------------------------------------------------------------------------
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: helm-pilot.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+  #  - secretName: helm-pilot-tls
+  #    hosts:
+  #      - helm-pilot.local
+
+# -----------------------------------------------------------------------------
+# Application configuration
+# -----------------------------------------------------------------------------
+config:
+  # -- OIDC authentication configuration
+  oidc:
+    enabled: false
+    clientId: ""
+    clientSecret: ""
+    issuerUrl: "https://pocketid.lan"
+    scopes: "openid profile email"
+    skipTlsVerify: true
+    # -- Name of a Secret containing ca.crt for custom CA trust
+    caCertSecret: "root-secret"
+  # -- Public URL of the application (for OIDC redirect)
+  appUrl: ""
+  # -- Gemini API key for AI features (optional)
+  geminiApiKey: ""
+
+# -----------------------------------------------------------------------------
+# Resource requests and limits
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+# -----------------------------------------------------------------------------
+# Probes
+# -----------------------------------------------------------------------------
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 3000
+  initialDelaySeconds: 10
+  periodSeconds: 30
+  timeoutSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /live
+    port: 3000
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  timeoutSeconds: 5
+
+startupProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  failureThreshold: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# -----------------------------------------------------------------------------
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Environment variables
+# -----------------------------------------------------------------------------
+env: {}
+extraEnv: []
+extraVolumes: []
+extraVolumeMounts: []
