@@ -118,7 +118,7 @@ config:
   # -- Public URL of the application (for OIDC redirect)
   appUrl: ""
   # -- Kubernetes API server URL (auto-detected if empty)
-  k8sApiUrl: ""
+  k8sApiUrl: "https://kubernetes.default.svc.cluster.local"
   # -- Friendly cluster name
   k8sClusterName: ""
 
