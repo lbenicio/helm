@@ -3,7 +3,7 @@ entries:
   glance:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.737252-03:00"
+    created: "2026-06-26T00:59:11.713292-03:00"
     description: A Helm chart for glance
     digest: de9db431fe4573b9865933b932ae35e0e7e8346eebd7585cea8c211d998a9fa7
     name: glance
@@ -13,7 +13,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.736757-03:00"
+    created: "2026-06-26T00:59:11.712447-03:00"
     description: A Helm chart for glance
     digest: 8f0835fd0bf8c7a3ef8db4013f0bdafb41254f55568a5b80bd498940e67a0c47
     name: glance
@@ -22,6 +22,29 @@ entries:
     - public/glance-0.1.0.tgz
     version: 0.1.0
   helm-pilot:
+  - apiVersion: v2
+    appVersion: 0.2.2
+    created: "2026-06-26T00:59:11.697659-03:00"
+    description: AI-powered Helm management dashboard for Kubernetes clusters
+    digest: f2175da2cc16cc037ea3256dc71629a6ee6c8307462498c33cc0743803ed5cfa
+    home: https://github.com/lbenicio/helm-pilot
+    icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
+    keywords:
+    - helm
+    - kubernetes
+    - dashboard
+    - management
+    - ai
+    - gemini
+    maintainers:
+    - name: lbenicio
+    name: helm-pilot
+    sources:
+    - https://github.com/lbenicio/helm-pilot
+    type: application
+    urls:
+    - helm-pilot-0.2.3.tgz
+    version: 0.2.3
   - apiVersion: v2
     appVersion: 0.2.2
     created: "2026-06-26T00:53:07.72383-03:00"
@@ -163,7 +186,7 @@ entries:
   homebridge:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.739032-03:00"
+    created: "2026-06-26T00:59:11.715123-03:00"
     description: A Helm chart for homebridge
     digest: 4dbca97b39de6e7b5a4bc9d88b54f3b05fbb306f854cda6bdeacae061bfea213
     name: homebridge
@@ -173,7 +196,7 @@ entries:
     version: 0.1.15
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.738418-03:00"
+    created: "2026-06-26T00:59:11.714478-03:00"
     description: A Helm chart for homebridge
     digest: 2be012326925984001c05644953198e85477d81a9c5b1d1c893a99fe27f47734
     name: homebridge
@@ -183,7 +206,7 @@ entries:
     version: 0.1.1
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.737727-03:00"
+    created: "2026-06-26T00:59:11.71385-03:00"
     description: A Helm chart for homebridge
     digest: 8a5f0f39eeff8eac4c6e1c9728733be1d865f09f84d562c73633dfa6f9dd0676
     name: homebridge
@@ -193,7 +216,7 @@ entries:
     version: 0.1.0
   kubernetes-dashboard:
   - apiVersion: v2
-    created: "2026-06-26T00:53:07.736134-03:00"
+    created: "2026-06-26T00:59:11.711785-03:00"
     dependencies:
     - alias: nginx
       condition: nginx.enabled
@@ -353,7 +376,7 @@ entries:
     - kubernetes-dashboard-7.14.6.tgz
     version: 7.14.6
   - apiVersion: v2
-    created: "2026-06-26T00:53:07.750594-03:00"
+    created: "2026-06-26T00:59:11.727173-03:00"
     dependencies:
     - alias: nginx
       condition: nginx.enabled
@@ -395,7 +418,7 @@ entries:
   ping:
   - apiVersion: v2
     appVersion: v0.28.0
-    created: "2026-06-26T00:53:07.751113-03:00"
+    created: "2026-06-26T00:59:11.727671-03:00"
     description: Blackbox exporter for probing endpoints
     digest: 3e32da7e98346245d7acffec564ca9519746a4cb3493bf455aa2ec3ed6246680
     name: ping
@@ -406,7 +429,7 @@ entries:
   pod-cleaner:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.75166-03:00"
+    created: "2026-06-26T00:59:11.72806-03:00"
     description: CronJob that periodically cleans up completed pods
     digest: 05bd3621df81fbeba231e955a249c6837a6c6b112671bb9087e999b13f28c4ff
     name: pod-cleaner
@@ -417,7 +440,7 @@ entries:
   smtp:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.752562-03:00"
+    created: "2026-06-26T00:59:11.729009-03:00"
     description: A Helm chart for smtp
     digest: 053c290c832e7e69d225491295ac7969f49cf1e0bfd08ddb09f134239bdb9ee0
     name: smtp
@@ -427,7 +450,7 @@ entries:
     version: 0.1.3
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.751985-03:00"
+    created: "2026-06-26T00:59:11.728548-03:00"
     description: A Helm chart for smtp
     digest: 84bd67dbd9ce157c4f7ba7b0170e7b42d1592bfeb04af57bc56e9d8876507ab5
     name: smtp
@@ -438,7 +461,7 @@ entries:
   speedtest:
   - apiVersion: v2
     appVersion: v0.2.91
-    created: "2026-06-26T00:53:07.753059-03:00"
+    created: "2026-06-26T00:59:11.729497-03:00"
     description: Internet performance exporter (speedtest, fast.com)
     digest: 43ad17daae58f455c44e11bb7b9c17b97c67d3ba655d034f024e0b385db49738
     name: speedtest
@@ -449,7 +472,7 @@ entries:
   stremio:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.753735-03:00"
+    created: "2026-06-26T00:59:11.730412-03:00"
     description: Helm chart for Stremio server + web client
     digest: 4841de7b9e91e962b4b95f8f36dc61920b0f9825d8b59b33a84ee42a68ee8946
     keywords:
@@ -466,7 +489,7 @@ entries:
   timemachine:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.754258-03:00"
+    created: "2026-06-26T00:59:11.731235-03:00"
     description: Helm chart for Time Machine Samba backup server
     digest: 4658212da38feea992493a496821ecfe66bea7b82cc242af0d4af3e739a25ded
     keywords:
@@ -484,7 +507,7 @@ entries:
   whoami:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.755157-03:00"
+    created: "2026-06-26T00:59:11.732457-03:00"
     description: A Helm chart for whoami
     digest: 7624eb51b6f1d90cee47c9ff4f30be5b53f1efb13dfb3bca614d6b1f3cee3714
     name: whoami
@@ -494,7 +517,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: latest
-    created: "2026-06-26T00:53:07.754602-03:00"
+    created: "2026-06-26T00:59:11.731574-03:00"
     description: A Helm chart for whoami
     digest: 64b518f51c57148f3b73780f4ba4761b6a191e38b84814fa041db6fc86f63111
     name: whoami
@@ -502,4 +525,4 @@ entries:
     urls:
     - public/whoami-0.1.0.tgz
     version: 0.1.0
-generated: "2026-06-26T00:53:07.72318-03:00"
+generated: "2026-06-26T00:59:11.696403-03:00"
