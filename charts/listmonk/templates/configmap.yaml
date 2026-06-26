@@ -35,7 +35,7 @@ data:
     user = "{{ .Values.config.db.user }}"
     password = "{{ .Values.config.db.password }}"
     database = "{{ .Values.config.db.database }}"
-    sslmode = "{{ .Values.config.db.sslmode }}"
+    ssl_mode = "{{ .Values.config.db.sslmode }}"
 
     {{- if .Values.config.customConfig }}
     {{ .Values.config.customConfig | nindent 4 }}
