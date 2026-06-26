@@ -94,6 +94,17 @@ config:
     database: "listmonk"
     sslmode: "disable"
 
+  # Media upload configuration (S3)
+  upload:
+    enabled: false
+    provider: "s3"
+    s3:
+      bucket: ""
+      endpoint: ""
+      region: "us-east-1"
+      accessKey: ""
+      secretKey: ""
+
   # Additional custom TOML config appended to config.toml
   customConfig: ""
 

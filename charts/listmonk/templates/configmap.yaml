@@ -35,6 +35,18 @@ data:
     database = "{{ .Values.config.db.database }}"
     ssl_mode = "{{ .Values.config.db.sslmode }}"
 
+    {{- if .Values.config.upload.enabled }}
+    [upload]
+    provider = "{{ .Values.config.upload.provider }}"
+
+    [upload.s3]
+    bucket = "{{ .Values.config.upload.s3.bucket }}"
+    endpoint = "{{ .Values.config.upload.s3.endpoint }}"
+    region = "{{ .Values.config.upload.s3.region }}"
+    access_key = "{{ .Values.config.upload.s3.accessKey }}"
+    secret_key = "{{ .Values.config.upload.s3.secretKey }}"
+    {{- end }}
+
     {{- if .Values.config.customConfig }}
     {{ .Values.config.customConfig | nindent 4 }}
     {{- end }}
