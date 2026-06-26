@@ -87,6 +87,13 @@ spec:
             - name: APP_URL
               value: {{ .Values.config.appUrl | quote }}
             {{- end }}
+            {{- if .Values.config.k8sToken }}
+            - name: K8S_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "helm-pilot.fullname" . }}-k8s
+                  key: token
+            {{- end }}
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}

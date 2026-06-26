@@ -114,6 +114,8 @@ config:
     caCertSecret: "root-secret"
   # -- Public URL of the application (for OIDC redirect)
   appUrl: ""
+  # -- Kubernetes SA token for impersonation (required for K8s API operations)
+  k8sToken: ""
 
 # -----------------------------------------------------------------------------
 # Resource requests and limits
