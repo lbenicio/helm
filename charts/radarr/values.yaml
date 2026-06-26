@@ -16,7 +16,7 @@ controller:
 # -----------------------------------------------------------------------------
 image:
   repository: lscr.io/linuxserver/radarr
-  tag: develop
+  tag: latest
   pullPolicy: Always
 
 # -----------------------------------------------------------------------------

@@ -16,7 +16,7 @@ controller:
 # -----------------------------------------------------------------------------
 image:
   repository: lscr.io/linuxserver/qbittorrent
-  tag: develop
+  tag: latest
   pullPolicy: Always
 
 # -----------------------------------------------------------------------------

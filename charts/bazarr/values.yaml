@@ -16,7 +16,7 @@ controller:
 # -----------------------------------------------------------------------------
 image:
   repository: lscr.io/linuxserver/bazarr
-  tag: develop
+  tag: latest
   pullPolicy: Always
 
 # -----------------------------------------------------------------------------

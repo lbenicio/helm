@@ -16,7 +16,7 @@ controller:
 # -----------------------------------------------------------------------------
 image:
   repository: fallenbagel/jellyseerr
-  tag: develop
+  tag: latest
   pullPolicy: Always
 
 # -----------------------------------------------------------------------------
