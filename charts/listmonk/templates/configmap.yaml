@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "listmonk.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "listmonk.labels" . | nindent 4 }}
+data:
+  config.toml: |
+    [app]
+    address = "0.0.0.0:{{ .Values.service.port }}"
+    admin_username = "{{ .Values.config.adminUsername }}"
+    admin_password = "{{ .Values.config.adminPassword }}"
+
+    [privacy]
+    allow_blocked = {{ .Values.config.privacy.allowBlocked }}
+    allow_export = {{ .Values.config.privacy.allowExport }}
+
+    {{- if .Values.config.smtp.enabled }}
+    [smtp]
+    enabled = true
+    {{- with .Values.config.smtp.hosts }}
+    hosts = [{{ range $i, $h := . }}{{ if $i }}, {{ end }}"{{ $h }}"{{ end }}]
+    {{- end }}
+    port = {{ .Values.config.smtp.port }}
+    username = "{{ .Values.config.smtp.username }}"
+    password = "{{ .Values.config.smtp.password }}"
+    tls_type = "{{ .Values.config.smtp.tlsType }}"
+    skip_tls_verify = {{ .Values.config.smtp.skipTlsVerify }}
+    {{- end }}
+
+    [db]
+    host = "{{ .Values.config.db.host }}"
+    port = {{ .Values.config.db.port }}
+    user = "{{ .Values.config.db.user }}"
+    password = "{{ .Values.config.db.password }}"
+    database = "{{ .Values.config.db.database }}"
+    sslmode = "{{ .Values.config.db.sslmode }}"
+
+    {{- if .Values.config.customConfig }}
+    {{ .Values.config.customConfig | nindent 4 }}
+    {{- end }}

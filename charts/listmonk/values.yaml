@@ -1,0 +1,153 @@
+# -----------------------------------------------------------------------------
+# Global settings
+# -----------------------------------------------------------------------------
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+# -----------------------------------------------------------------------------
+# Image
+# -----------------------------------------------------------------------------
+image:
+  repository: listmonk/listmonk
+  tag: latest
+  pullPolicy: IfNotPresent
+
+# -----------------------------------------------------------------------------
+# Keel auto-update
+# -----------------------------------------------------------------------------
+keel:
+  enabled: false
+  policy: force
+  trigger: poll
+  pollSchedule: "@every 24h"
+  matchTag: "true"
+
+# -----------------------------------------------------------------------------
+# Labels and annotations
+# -----------------------------------------------------------------------------
+commonLabels: {}
+podLabels: {}
+podAnnotations: {}
+
+# -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+podSecurityContext:
+  fsGroup: 1000
+containerSecurityContext:
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  capabilities:
+    drop:
+      - ALL
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 9000
+  annotations: {}
+
+# -----------------------------------------------------------------------------
+# Ingress
+# -----------------------------------------------------------------------------
+ingress:
+  enabled: false
+  className: traefik
+  annotations: {}
+  hosts:
+    - host: listmonk.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# -----------------------------------------------------------------------------
+# Application configuration
+# -----------------------------------------------------------------------------
+config:
+  # Admin credentials (used for initial setup)
+  adminUsername: "admin"
+  adminPassword: "admin"
+
+  # Privacy settings
+  privacy:
+    allowBlocked: false
+    allowExport: true
+
+  # SMTP configuration
+  smtp:
+    enabled: false
+    hosts: []
+    port: 587
+    username: ""
+    password: ""
+    tlsType: "STARTTLS"
+    skipTlsVerify: false
+
+  # Database configuration
+  db:
+    host: "postgresql.default.svc.cluster.local"
+    port: 5432
+    user: "listmonk"
+    password: "listmonk"
+    database: "listmonk"
+    sslmode: "disable"
+
+  # Additional custom TOML config appended to config.toml
+  customConfig: ""
+
+# -----------------------------------------------------------------------------
+# Resources
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+# -----------------------------------------------------------------------------
+# Probes
+# -----------------------------------------------------------------------------
+readinessProbe:
+  httpGet:
+    path: /
+    port: 9000
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 9000
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  timeoutSeconds: 5
+
+startupProbe:
+  httpGet:
+    path: /
+    port: 9000
+  failureThreshold: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# -----------------------------------------------------------------------------
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Extra
+# -----------------------------------------------------------------------------
+extraVolumes: []
+extraVolumeMounts: []

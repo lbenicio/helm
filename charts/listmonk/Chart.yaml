@@ -1,0 +1,17 @@
+apiVersion: v2
+name: listmonk
+description: Self-hosted newsletter and mailing list manager
+type: application
+version: 0.1.0
+appVersion: "4.1.0"
+icon: https://listmonk.app/static/images/listmonk.svg
+keywords:
+  - newsletter
+  - mailing-list
+  - email
+  - listmonk
+home: https://listmonk.app
+sources:
+  - https://github.com/listmonk/listmonk
+maintainers:
+  - name: lbenicio
