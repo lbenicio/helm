@@ -46,6 +46,10 @@ spec:
       securityContext:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- with .Values.hostAliases }}
+      hostAliases:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -88,7 +92,11 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-          {{- with .Values.extraVolumeMounts }}
+          - name: ca-cert
+              mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
+              subPath: ca.crt
+              readOnly: true
+            {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
@@ -96,7 +104,13 @@ spec:
           configMap:
             defaultMode: 420
             name: {{ include "ping.fullname" . }}
-      {{- with .Values.extraVolumes }}
+      - name: ca-cert
+          secret:
+            secretName: root-secret
+            items:
+              - key: ca.crt
+                path: ca.crt
+        {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always

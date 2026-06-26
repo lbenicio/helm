@@ -96,7 +96,11 @@ spec:
               mountPath: /app/config
             - name: assets
               mountPath: /app/assets
-          {{- with .Values.extraVolumeMounts }}
+          - name: ca-cert
+              mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
+              subPath: ca.crt
+              readOnly: true
+            {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
@@ -108,7 +112,13 @@ spec:
           configMap:
             defaultMode: 420
             name: {{ include "glance.fullname" . }}-config
-      {{- with .Values.extraVolumes }}
+      - name: ca-cert
+          secret:
+            secretName: root-secret
+            items:
+              - key: ca.crt
+                path: ca.crt
+        {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       restartPolicy: Always

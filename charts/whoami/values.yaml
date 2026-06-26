@@ -223,3 +223,6 @@ serviceMonitor:
   path: /metrics
   # -- Additional labels for the ServiceMonitor
   labels: {}
+
+# -- Host aliases for internal DNS resolution
+hostAliases: []

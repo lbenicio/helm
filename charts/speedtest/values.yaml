@@ -204,3 +204,6 @@ extraEnv: []
 extraVolumes: []
 # -- Additional volume mounts
 extraVolumeMounts: []
+
+# -- Host aliases for internal DNS resolution
+hostAliases: []

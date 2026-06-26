@@ -154,3 +154,6 @@ autoscaling:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# -- Host aliases for internal DNS resolution
+hostAliases: []
