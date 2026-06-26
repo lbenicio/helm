@@ -82,22 +82,24 @@ spec:
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-          - name: ca-cert
+          volumeMounts:
+            - name: ca-cert
               mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
               subPath: ca.crt
               readOnly: true
-            {{- with .Values.extraVolumeMounts }}
-          volumeMounts:
+          {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      - name: ca-cert
+      volumes:
+        - name: ca-cert
           secret:
             secretName: root-secret
             items:
               - key: ca.crt
                 path: ca.crt
-        {{- with .Values.extraVolumes }}
-      volumes:
+      {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
         {{- toYaml . | nindent 8 }}
       {{- end }}
       {{- with .Values.nodeSelector }}

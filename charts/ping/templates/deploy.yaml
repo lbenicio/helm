@@ -92,7 +92,7 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
-          - name: ca-cert
+            - name: ca-cert
               mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
               subPath: ca.crt
               readOnly: true
@@ -104,7 +104,7 @@ spec:
           configMap:
             defaultMode: 420
             name: {{ include "ping.fullname" . }}
-      - name: ca-cert
+        - name: ca-cert
           secret:
             secretName: root-secret
             items:

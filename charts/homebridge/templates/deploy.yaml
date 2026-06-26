@@ -92,7 +92,7 @@ spec:
             - name: bluetooth
               mountPath: {{ .Values.bluetooth.hostPath }}
             {{- end }}
-          - name: ca-cert
+            - name: ca-cert
               mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
               subPath: ca.crt
               readOnly: true
@@ -109,7 +109,7 @@ spec:
             path: {{ .Values.bluetooth.hostPath }}
             type: DirectoryOrCreate
         {{- end }}
-      - name: ca-cert
+        - name: ca-cert
           secret:
             secretName: root-secret
             items:

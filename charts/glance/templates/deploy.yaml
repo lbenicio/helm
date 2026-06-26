@@ -96,7 +96,7 @@ spec:
               mountPath: /app/config
             - name: assets
               mountPath: /app/assets
-          - name: ca-cert
+            - name: ca-cert
               mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
               subPath: ca.crt
               readOnly: true
@@ -112,7 +112,7 @@ spec:
           configMap:
             defaultMode: 420
             name: {{ include "glance.fullname" . }}-config
-      - name: ca-cert
+        - name: ca-cert
           secret:
             secretName: root-secret
             items:
