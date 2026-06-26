@@ -102,18 +102,25 @@ ingress:
 # Application configuration
 # -----------------------------------------------------------------------------
 config:
+  # -- Log level: error | warn | info | debug
+  logLevel: "info"
   # -- OIDC authentication configuration
   oidc:
     enabled: false
     clientId: ""
     clientSecret: ""
     issuerUrl: "https://pocketid.lan"
-    scopes: "openid profile email"
+    scopes: "openid profile email groups"
+    allowedGroups: ""
     skipTlsVerify: true
     # -- Name of a Secret containing ca.crt for custom CA trust
     caCertSecret: "root-secret"
   # -- Public URL of the application (for OIDC redirect)
   appUrl: ""
+  # -- Kubernetes API server URL (auto-detected if empty)
+  k8sApiUrl: ""
+  # -- Friendly cluster name
+  k8sClusterName: ""
 
 # -----------------------------------------------------------------------------
 # Resource requests and limits

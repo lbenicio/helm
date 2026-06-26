@@ -2,8 +2,8 @@ apiVersion: v2
 name: helm-pilot
 description: AI-powered Helm management dashboard for Kubernetes clusters
 type: application
-version: 0.1.4
-appVersion: "0.1.0"
+version: 0.2.2
+appVersion: "0.2.2"
 icon: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
 keywords:
   - helm
