@@ -1,0 +1,5 @@
+artifacthub.io/changes: |
+  - kind: added
+    description: Initial release of arr family chart
+artifacthub.io/operator: "false"
+artifacthub.io/prerelease: "false"

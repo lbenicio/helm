@@ -1,0 +1,17 @@
+{{- range .Values.persistence.config }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .claimName | default (printf "%s-%s" (include "qbittorrent.fullname" $) .name) }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "qbittorrent.labels" $ | nindent 4 }}
+spec:
+  storageClassName: {{ .storageClass | default "local-path" }}
+  accessModes:
+    - {{ .accessMode | default "ReadWriteOnce" }}
+  resources:
+    requests:
+      storage: {{ .size }}
+{{- end }}

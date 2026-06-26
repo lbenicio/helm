@@ -1,0 +1,19 @@
+apiVersion: v2
+name: jellyseerr
+description: Jellyseerr (Sonarr, Radarr, Prowlarr, Bazarr, etc.)
+type: application
+version: 0.1.0
+appVersion: "latest"
+icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/sonarr-icon.png
+keywords:
+  - sonarr
+  - radarr
+  - prowlarr
+  - bazarr
+  - arr
+  - media
+home: https://github.com/lbenicio/helm
+sources:
+  - https://github.com/linuxserver/docker-sonarr
+maintainers:
+  - name: lbenicio

@@ -1,0 +1,17 @@
+{{- range .Values.persistence.config }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .claimName | default (printf "%s-%s" (include "jellyfin.fullname" $) .name) }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    {{- include "jellyfin.labels" $ | nindent 4 }}
+spec:
+  storageClassName: {{ .storageClass | default "local-path" }}
+  accessModes:
+    - {{ .accessMode | default "ReadWriteOnce" }}
+  resources:
+    requests:
+      storage: {{ .size }}
+{{- end }}
