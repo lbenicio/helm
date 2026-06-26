@@ -157,6 +157,7 @@ startupProbe:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+hostAliases: []
 
 # -----------------------------------------------------------------------------
 # Extra

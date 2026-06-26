@@ -35,19 +35,6 @@ data:
     database = "{{ .Values.config.db.database }}"
     ssl_mode = "{{ .Values.config.db.sslmode }}"
 
-    {{- if .Values.config.upload.enabled }}
-    [upload]
-    provider = "{{ .Values.config.upload.provider }}"
-
-    [upload.s3]
-    bucket = "{{ .Values.config.upload.s3.bucket }}"
-    bucket_type = "private"
-    endpoint = "{{ .Values.config.upload.s3.endpoint }}"
-    region = "{{ .Values.config.upload.s3.region }}"
-    aws_access_key_id = "{{ .Values.config.upload.s3.accessKey }}"
-    aws_secret_access_key = "{{ .Values.config.upload.s3.secretKey }}"
-    {{- end }}
-
     {{- if .Values.config.customConfig }}
     {{ .Values.config.customConfig | nindent 4 }}
     {{- end }}
