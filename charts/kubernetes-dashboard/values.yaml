@@ -138,7 +138,7 @@ app:
     labels: {}
     annotations: {}
   # Use the following toleration if Dashboard can be deployed on a tainted control-plane nodes
-  # - key: node-role.kubernetes.io/control-plane
+  # - key: node-role.kubernetes.io/master
   #   effect: NoSchedule
   tolerations: []
   affinity: {}
