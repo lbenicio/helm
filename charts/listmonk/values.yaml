@@ -70,10 +70,6 @@ ingress:
 # Application configuration
 # -----------------------------------------------------------------------------
 config:
-  # Admin credentials (used for initial setup)
-  adminUsername: "admin"
-  adminPassword: "admin"
-
   # Privacy settings
   privacy:
     allowBlocked: false

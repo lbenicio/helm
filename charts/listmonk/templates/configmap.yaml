@@ -9,8 +9,6 @@ data:
   config.toml: |
     [app]
     address = "0.0.0.0:{{ .Values.service.port }}"
-    admin_username = "{{ .Values.config.adminUsername }}"
-    admin_password = "{{ .Values.config.adminPassword }}"
 
     [privacy]
     allow_blocked = {{ .Values.config.privacy.allowBlocked }}
