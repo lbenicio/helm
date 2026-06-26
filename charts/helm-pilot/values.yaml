@@ -27,6 +27,8 @@ serviceAccount:
   create: true
   # -- ServiceAccount name (defaults to fullname)
   name: ""
+  # -- OIDC group to bind to 'view' ClusterRole for read-only access
+  oidcMonitoringGroup: ""
 
 # -----------------------------------------------------------------------------
 # Keel auto-update annotations
