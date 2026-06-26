@@ -78,6 +78,10 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
+            - name: ca-cert
+              mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
+              subPath: ca.crt
+              readOnly: true
             - name: config
               mountPath: /listmonk/config.toml
               subPath: config.toml
@@ -85,6 +89,12 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
       volumes:
+        - name: ca-cert
+          secret:
+            secretName: root-secret
+            items:
+              - key: ca.crt
+                path: ca.crt
         - name: config
           configMap:
             name: {{ include "listmonk.fullname" . }}-config
