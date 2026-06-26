@@ -50,12 +50,6 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - sh
-            - -c
-            - |
-              export K8S_TOKEN="$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)"
-              exec node server.js
           {{- with .Values.containerSecurityContext }}
           securityContext:
             {{- toYaml . | nindent 12 }}
@@ -111,6 +105,13 @@ spec:
             - name: K8S_CLUSTER_NAME
               value: {{ .Values.config.k8sClusterName | quote }}
             {{- end }}
+            {{- if .Values.serviceAccount.create }}
+            - name: K8S_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "helm-pilot.fullname" . }}-sa-token
+                  key: token
+            {{- end }}
             {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
@@ -135,9 +136,6 @@ spec:
             {{- toYaml . | nindent 12 }}
           {{- end }}
           volumeMounts:
-            - name: sa-token
-              mountPath: /var/run/secrets/kubernetes.io/serviceaccount
-              readOnly: true
             {{- if .Values.config.oidc.caCertSecret }}
             - name: ca-cert
               mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
@@ -148,24 +146,6 @@ spec:
             {{- toYaml . | nindent 12 }}
             {{- end }}
       volumes:
-        - name: sa-token
-          projected:
-            defaultMode: 420
-            sources:
-              - serviceAccountToken:
-                  path: token
-                  expirationSeconds: 31536000
-                  audience: https://kubernetes.default.svc.cluster.local
-              - downwardAPI:
-                  items:
-                    - path: namespace
-                      fieldRef:
-                        fieldPath: metadata.namespace
-              - configMap:
-                  name: kube-root-ca.crt
-                  items:
-                    - key: ca.crt
-                      path: ca.crt
         {{- if .Values.config.oidc.caCertSecret }}
         - name: ca-cert
           secret:
