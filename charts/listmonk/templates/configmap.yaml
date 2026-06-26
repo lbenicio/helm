@@ -41,10 +41,11 @@ data:
 
     [upload.s3]
     bucket = "{{ .Values.config.upload.s3.bucket }}"
+    bucket_type = "private"
     endpoint = "{{ .Values.config.upload.s3.endpoint }}"
     region = "{{ .Values.config.upload.s3.region }}"
-    access_key = "{{ .Values.config.upload.s3.accessKey }}"
-    secret_key = "{{ .Values.config.upload.s3.secretKey }}"
+    aws_access_key_id = "{{ .Values.config.upload.s3.accessKey }}"
+    aws_secret_access_key = "{{ .Values.config.upload.s3.secretKey }}"
     {{- end }}
 
     {{- if .Values.config.customConfig }}
