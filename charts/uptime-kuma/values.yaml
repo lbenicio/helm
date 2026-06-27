@@ -1,0 +1,183 @@
+# helm install uptime-kuma ./charts/uptime-kuma --namespace default
+
+# -----------------------------------------------------------------------------
+# Global Docker image settings
+# -----------------------------------------------------------------------------
+image:
+  repository: louislam/uptime-kuma
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+replicaCount: 1
+
+# -----------------------------------------------------------------------------
+# ServiceAccount
+# -----------------------------------------------------------------------------
+serviceAccount:
+  create: true
+  name: ""
+
+# -----------------------------------------------------------------------------
+# Keel auto-update
+# -----------------------------------------------------------------------------
+keel:
+  enabled: true
+  policy: force
+  trigger: poll
+  pollSchedule: "@every 24h"
+  matchTag: "true"
+
+# -----------------------------------------------------------------------------
+# Labels
+# -----------------------------------------------------------------------------
+commonLabels: {}
+podLabels: {}
+podAnnotations: {}
+
+# -----------------------------------------------------------------------------
+# Security Context
+# -----------------------------------------------------------------------------
+podSecurityContext:
+  fsGroup: 1000
+containerSecurityContext:
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+
+# -----------------------------------------------------------------------------
+# Service
+# -----------------------------------------------------------------------------
+service:
+  type: ClusterIP
+  port: 3001
+  annotations: {}
+
+# -----------------------------------------------------------------------------
+# Ingress
+# -----------------------------------------------------------------------------
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: uptime.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# -----------------------------------------------------------------------------
+# Resources
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+# -----------------------------------------------------------------------------
+# Probes
+# -----------------------------------------------------------------------------
+readinessProbe:
+  httpGet:
+    path: /
+    port: 3001
+  initialDelaySeconds: 10
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: 3001
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 5
+
+startupProbe:
+  httpGet:
+    path: /
+    port: 3001
+  failureThreshold: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Persistence (only needed for SQLite — disable when using external DB)
+# -----------------------------------------------------------------------------
+persistence:
+  enabled: true
+  size: 4Gi
+  storageClass: local-path
+  mountPath: /app/data
+
+# -----------------------------------------------------------------------------
+# External Database (MariaDB)
+# -----------------------------------------------------------------------------
+externalDatabase:
+  enabled: false
+  type: mariadb
+  hostname: ""
+  port: 3306
+  username: ""
+  password: ""
+  dbName: uptime_kuma
+
+# -----------------------------------------------------------------------------
+# Environment
+# -----------------------------------------------------------------------------
+env:
+  TZ: UTC
+
+extraEnv: []
+
+# -----------------------------------------------------------------------------
+# Autoscaling
+# -----------------------------------------------------------------------------
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 1
+  targetCPUUtilizationPercentage: 90
+  targetMemoryUtilizationPercentage: 90
+  scaleDown:
+    stabilizationWindowSeconds: 300
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+  scaleUp:
+    stabilizationWindowSeconds: 120
+    policies:
+      - type: Percent
+        value: 100
+        periodSeconds: 15
+      - type: Pods
+        value: 1
+        periodSeconds: 15
+    selectPolicy: Max
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# -----------------------------------------------------------------------------
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Prometheus ServiceMonitor
+# -----------------------------------------------------------------------------
+serviceMonitor:
+  enabled: false
+  interval: 30s
+  scrapeTimeout: 10s
+  path: /metrics
+  labels: {}
+
+hostAliases: []

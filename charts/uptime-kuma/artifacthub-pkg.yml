@@ -1,0 +1,25 @@
+version: 0.1.0
+name: uptime-kuma
+displayName: Uptime Kuma
+createdAt: "2026-06-27T00:00:00Z"
+description: Self-hosted monitoring tool like Uptime Robot with a beautiful UI — track service uptime, response time, and SSL certificates.
+logoPath: ""
+license: GPL-3.0
+homeURL: https://github.com/lbenicio/helm
+containersImages:
+  - name: uptime-kuma
+    image: louislam/uptime-kuma:2.3.2
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm/v7
+keywords:
+  - monitoring
+  - uptime
+  - status
+links:
+  - name: Chart Source
+    url: https://github.com/lbenicio/helm/tree/main/charts/uptime-kuma
+maintainers:
+  - name: Leonardo Benicio
+    email: hi@lbenicio.dev

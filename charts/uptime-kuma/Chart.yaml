@@ -1,0 +1,6 @@
+apiVersion: v2
+name: uptime-kuma
+description: A self-hosted monitoring tool like Uptime Robot
+type: application
+version: 0.1.1
+appVersion: "2.3.2"
