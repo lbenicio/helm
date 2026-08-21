@@ -1,0 +1,25 @@
+version: 0.1.0
+name: searxng
+displayName: SearXNG
+createdAt: "2026-08-21T00:00:00Z"
+description: Privacy-respecting metasearch engine. StatefulSet with a single local-path volume holding both config and cache, and node scheduling support for node-local storage.
+logoPath: ""
+license: GPL-3.0
+homeURL: https://github.com/lbenicio/helm
+containersImages:
+  - name: searxng
+    image: searxng/searxng:latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+keywords:
+  - searxng
+  - search
+  - metasearch
+  - privacy
+links:
+  - name: Chart Source
+    url: https://github.com/lbenicio/helm/tree/main/charts/searxng
+maintainers:
+  - name: Leonardo Benicio
+    email: hi@lbenicio.dev

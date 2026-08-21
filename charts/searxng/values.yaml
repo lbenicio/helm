@@ -1,0 +1,233 @@
+# helm install searxng ./charts/searxng --namespace default
+
+# -----------------------------------------------------------------------------
+# Image settings
+# -----------------------------------------------------------------------------
+image:
+  # -- Image repository
+  repository: searxng/searxng
+  # -- Image tag (defaults to Chart.appVersion)
+  tag: ""
+  # -- Image pull policy
+  pullPolicy: IfNotPresent
+
+# -- Image pull secrets for private registries
+imagePullSecrets: []
+# -- Override the name of the chart
+nameOverride: ""
+# -- Override the full name of the release
+fullnameOverride: ""
+
+# -- Number of replicas (one PVC per replica)
+replicaCount: 1
+
+# -----------------------------------------------------------------------------
+# ServiceAccount
+# -----------------------------------------------------------------------------
+serviceAccount:
+  # -- Create a ServiceAccount
+  create: true
+  # -- ServiceAccount name (defaults to fullname)
+  name: ""
+
+# -----------------------------------------------------------------------------
+# Keel auto-update annotations
+# -----------------------------------------------------------------------------
+keel:
+  # -- Enable Keel auto-update
+  enabled: true
+  # -- Keel update policy
+  policy: force
+  # -- Keel trigger type
+  trigger: poll
+  # -- Keel poll schedule
+  pollSchedule: "@every 24h"
+  # -- Match tag pattern (set to "true" for rolling tags)
+  matchTag: "true"
+
+# -----------------------------------------------------------------------------
+# Labels and annotations
+# -----------------------------------------------------------------------------
+# -- Common labels to add to all resources
+commonLabels: {}
+# -- Pod-specific labels
+podLabels: {}
+# -- Pod annotations (e.g., prometheus.io/scrape: "true")
+podAnnotations: {}
+
+# -----------------------------------------------------------------------------
+# SearXNG settings
+# -----------------------------------------------------------------------------
+# SearXNG requires a secret key used to sign cookies and internal tokens.
+secret:
+  # -- Use an existing Secret containing the SEARXNG_SECRET key
+  existingSecret: ""
+  # -- Explicit secret value (a random value is generated and kept on upgrades otherwise)
+  value: ""
+
+# Rendered into /etc/searxng/settings.yml via a ConfigMap.
+# See https://docs.searxng.org/admin/settings/index.html
+config:
+  settings:
+    general:
+      debug: false
+      instance_name: SearXNG
+      enable_metrics: true
+    server:
+      base_url: http://searxng.local/
+      limiter: false
+      public_instance: false
+      image_proxy: true
+    engines:
+      - name: wikidata
+        disabled: true
+      - name: ahmia
+        disabled: true
+
+# -- Environment variables (SEARXNG_PORT, SEARXNG_BIND_ADDRESS, ...)
+env: {}
+# -- Additional environment variables in raw Kubernetes format
+extraEnv: []
+
+# -----------------------------------------------------------------------------
+# Security Context
+# The official image runs as the searxng user (uid/gid 977).
+# An init container creates and chowns the config/cache subdirectories.
+# -----------------------------------------------------------------------------
+# -- Pod-level security context
+podSecurityContext:
+  fsGroup: 977
+# -- Container-level security context
+containerSecurityContext:
+  runAsUser: 977
+  runAsGroup: 977
+  runAsNonRoot: true
+  readOnlyRootFilesystem: false
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# -----------------------------------------------------------------------------
+# Network
+# -----------------------------------------------------------------------------
+service:
+  # -- Service type
+  type: ClusterIP
+  # -- HTTP port SearXNG listens on
+  port: 8080
+  # -- Service annotations
+  annotations: {}
+
+# -----------------------------------------------------------------------------
+# Ingress
+# -----------------------------------------------------------------------------
+ingress:
+  # -- Enable Ingress
+  enabled: false
+  # -- Ingress class name
+  className: ""
+  # -- Ingress annotations
+  annotations: {}
+  hosts:
+    - host: searxng.local
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# -----------------------------------------------------------------------------
+# Persistence
+# A single volume holds both the config (/etc/searxng) and the cache
+# (/var/cache/searxng) as subdirectories, instead of two separate PVCs.
+# NOTE: with node-local storage classes (e.g. local-path) the volume lives on
+# one node, so pin the pod to that node via nodeSelector/affinity below.
+# -----------------------------------------------------------------------------
+persistence:
+  # -- Enable persistent storage via volumeClaimTemplates
+  enabled: true
+  # -- Use an existing PVC (overrides volumeClaimTemplates)
+  existingClaim: ""
+  # -- StorageClass for the PVC
+  storageClass: local-path
+  # -- Access mode
+  accessMode: ReadWriteOnce
+  # -- PVC size per replica
+  size: 3Gi
+  # -- Retain PVC when deleting the StatefulSet
+  retainOnDelete: true
+
+# -----------------------------------------------------------------------------
+# Resources
+# -----------------------------------------------------------------------------
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 512Mi
+
+# -- Resources for the init container (creates/chowns the volume subdirectories)
+initResources:
+  requests:
+    cpu: 10m
+    memory: 16Mi
+  limits:
+    cpu: 100m
+    memory: 64Mi
+
+# -----------------------------------------------------------------------------
+# Probes
+# -----------------------------------------------------------------------------
+startupProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 30
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 5
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 20
+  timeoutSeconds: 5
+
+# -----------------------------------------------------------------------------
+# Scheduling
+# local-path volumes are tied to a node, so use these to pin the pod to the
+# node that owns the storage.
+# -----------------------------------------------------------------------------
+# -- Node selector for pod assignment
+nodeSelector: {}
+# -- Tolerations for pod assignment
+tolerations: []
+# -- Affinity for pod assignment
+affinity: {}
+
+# -----------------------------------------------------------------------------
+# Prometheus ServiceMonitor
+# -----------------------------------------------------------------------------
+serviceMonitor:
+  # -- Enable Prometheus Operator ServiceMonitor
+  enabled: false
+  # -- Scrape interval
+  interval: 30s
+  # -- Scrape timeout
+  scrapeTimeout: 10s
+  # -- Metrics path (requires config.settings.general.enable_metrics: true)
+  path: /metrics
+  # -- Additional labels for the ServiceMonitor
+  labels: {}

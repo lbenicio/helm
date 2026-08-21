@@ -1,0 +1,110 @@
+suite: searxng statefulset
+templates:
+  - statefulset.yaml
+  - configmap.yaml
+  - secret.yaml
+tests:
+  - it: should be a StatefulSet
+    asserts:
+      - isKind:
+          of: StatefulSet
+        template: statefulset.yaml
+      - equal:
+          path: spec.replicas
+          value: 1
+        template: statefulset.yaml
+  - it: should use a single data volumeClaimTemplate
+    asserts:
+      - exists:
+          path: spec.volumeClaimTemplates
+        template: statefulset.yaml
+      - equal:
+          path: spec.volumeClaimTemplates[0].metadata.name
+          value: data
+        template: statefulset.yaml
+      - equal:
+          path: spec.volumeClaimTemplates[0].spec.storageClassName
+          value: local-path
+        template: statefulset.yaml
+  - it: should mount config and cache from the same volume
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[0]
+          value:
+            name: data
+            mountPath: /etc/searxng
+            subPath: config
+        template: statefulset.yaml
+      - equal:
+          path: spec.template.spec.containers[0].volumeMounts[1]
+          value:
+            name: data
+            mountPath: /var/cache/searxng
+            subPath: cache
+        template: statefulset.yaml
+  - it: should run as uid/gid 977
+    asserts:
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsUser
+          value: 977
+        template: statefulset.yaml
+      - equal:
+          path: spec.template.spec.containers[0].securityContext.runAsGroup
+          value: 977
+        template: statefulset.yaml
+  - it: should respect node scheduling settings
+    set:
+      nodeSelector:
+        kubernetes.io/hostname: node1
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: storage
+          effect: NoSchedule
+    asserts:
+      - equal:
+          path: spec.template.spec.nodeSelector
+          value:
+            kubernetes.io/hostname: node1
+        template: statefulset.yaml
+      - equal:
+          path: spec.template.spec.tolerations[0].key
+          value: dedicated
+        template: statefulset.yaml
+  - it: should use existingClaim instead of volumeClaimTemplates
+    set:
+      persistence:
+        existingClaim: my-claim
+    asserts:
+      - notExists:
+          path: spec.volumeClaimTemplates
+        template: statefulset.yaml
+      - equal:
+          path: spec.template.spec.volumes[1].persistentVolumeClaim.claimName
+          value: my-claim
+        template: statefulset.yaml
+  - it: should render settings.yml ConfigMap
+    asserts:
+      - isKind:
+          of: ConfigMap
+        template: configmap.yaml
+      - matchRegex:
+          path: metadata.name
+          pattern: ".*-config$"
+        template: configmap.yaml
+  - it: should create a Secret with SEARXNG_SECRET
+    asserts:
+      - isKind:
+          of: Secret
+        template: secret.yaml
+      - exists:
+          path: data.SEARXNG_SECRET
+        template: secret.yaml
+  - it: should not create a Secret when existingSecret is set
+    set:
+      secret:
+        existingSecret: my-secret
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: secret.yaml

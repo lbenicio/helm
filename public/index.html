@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lbenicio-community · Helm Charts</title>
     <link rel="stylesheet" href="style.css" />
+    <script defer src="https://analytics.4686189.xyz/script.js" data-website-id="3f22c199-1a17-4cff-8eb7-03f809e3b97b"></script>
   </head>
   <body>
     <div class="container">
@@ -13,8 +14,8 @@
 
       <div class="install">
         <p>Add the repository:</p>
-        <code>helm repo add lbenicio-community https://helm.lbenicio.dev</code>
-        <code>helm repo update</code>
+        <code class="umami--click--copy-command" onclick="copyToClipboard(this, 'helm repo add')">helm repo add lbenicio-community https://helm.lbenicio.dev</code>
+        <code class="umami--click--copy-command" onclick="copyToClipboard(this, 'helm repo update')">helm repo update</code>
       </div>
 
       <h2>Available Charts</h2>
@@ -22,7 +23,7 @@
       <div id="chart-list"></div>
 
       <p class="footer">
-        <a href="https://github.com/lbenicio/helm">View on GitHub</a>
+        <a href="https://github.com/lbenicio/helm" data-umami-event="github-link">View on GitHub</a>
       </p>
     </div>
     <script src="app.js"></script>

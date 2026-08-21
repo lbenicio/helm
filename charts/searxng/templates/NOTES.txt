@@ -1,0 +1,20 @@
+SearXNG deployed as a StatefulSet.
+
+{{- if .Values.ingress.enabled }}
+{{- range .Values.ingress.hosts }}
+  https://{{ .host }}
+{{- end }}
+{{- else }}
+  Access it by port-forwarding:
+
+    kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "searxng.fullname" . }} 8080:{{ .Values.service.port }}
+{{- end }}
+
+Notes:
+- Settings are stored in the "{{ include "searxng.fullname" . }}-config" ConfigMap
+  and copied into the persistent volume on pod startup.
+- The SEARXNG_SECRET is kept in the "{{ include "searxng.secretName" . }}" Secret.
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
+- The volume uses storageClass "{{ .Values.persistence.storageClass }}"; with
+  node-local storage, pin the pod to the storage node via nodeSelector/affinity.
+{{- end }}
