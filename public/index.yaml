@@ -166,7 +166,7 @@ entries:
     description: Self-hosted newsletter and mailing list manager
     digest: 9a2bbe690cd288faf4d95d1d44c3bbba85d42c176ad29926373b60cc157094d7
     home: https://listmonk.app
-    icon: https://listmonk.app/static/images/listmonk.svg
+    icon: https://cdn.lbenicio.dev/logos/listmonk.png
     keywords:
     - newsletter
     - mailing-list

@@ -4,7 +4,7 @@ description: Self-hosted newsletter and mailing list manager
 type: application
 version: 0.1.0
 appVersion: "4.1.0"
-icon: https://listmonk.app/static/images/listmonk.svg
+icon: https://cdn.lbenicio.dev/logos/listmonk.png
 keywords:
   - newsletter
   - mailing-list
