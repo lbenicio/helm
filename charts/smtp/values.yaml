@@ -75,6 +75,8 @@ service:
   type: ClusterIP
   # -- Service port (SMTP)
   port: 25
+  # -- NodePort used when service.type is NodePort
+  nodePort: null
   # -- Service annotations
   annotations: {}
 

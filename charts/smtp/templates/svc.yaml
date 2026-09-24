@@ -16,5 +16,8 @@ spec:
       targetPort: {{ .Values.service.port }}
       protocol: TCP
       name: smtp
+      {{- if .Values.service.nodePort }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
   selector:
     {{- include "smtp.selectorLabels" . | nindent 4 }}
