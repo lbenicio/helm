@@ -147,7 +147,7 @@ auth:
   role: auth
   image:
     repository: docker.io/lbenicio/kubernetes-dashboard-auth
-    tag: 1.4.13
+    tag: 1.4.16
   hostAliases: []
   scaling:
     replicas: 1
