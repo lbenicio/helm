@@ -88,7 +88,12 @@ make package
 make lint
 ```
 
-Charts are packaged and published to GitHub Pages automatically on every push to `main`.
+Charts are packaged and published to AWS S3 behind CloudFront automatically on every push to `main`.
+
+The deployment creates or updates the `helm` CloudFormation stack in `sa-east-1` from
+[`cloudformation.yaml`](./cloudformation.yaml). It uses the CloudFront hostname by default.
+Set the repository variable `AWS_CERTIFICATE_ARN` to an ACM certificate in `us-east-1`
+covering `helm.lbenicio.dev` to enable the custom domain.
 
 ## Contributing
 

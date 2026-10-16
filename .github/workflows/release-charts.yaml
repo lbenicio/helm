@@ -1,51 +1,109 @@
-name: Release Charts
+name: Release Charts to AWS
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - "charts/**"
+      - "landingpage/**"
+      - "cloudformation.yaml"
       - ".github/workflows/release-charts.yaml"
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  AWS_REGION: sa-east-1
+  STACK_NAME: helm
+  DOMAIN_NAME: helm.lbenicio.dev
 
 jobs:
   release:
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
       - name: Install Helm
         uses: azure/setup-helm@v5
 
-      - name: Package charts
-        run: |
-          mkdir -p public
-          for chart in charts/*/; do
-            helm package "$chart" -d public
-          done
-          helm repo index public
-          cp landingpage/index.html public/
-          cp landingpage/style.css public/
-          cp landingpage/app.js public/
-          cp landingpage/artifacthub-repo.yml public/
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
         with:
-          path: public
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
+      - name: Deploy CloudFormation stack
+        env:
+          CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          parameters=("DomainName=$DOMAIN_NAME")
+          if [ -n "${CERTIFICATE_ARN:-}" ]; then
+            parameters+=("CertificateArn=$CERTIFICATE_ARN")
+          fi
+          aws cloudformation deploy \
+            --region "$AWS_REGION" \
+            --stack-name "$STACK_NAME" \
+            --template-file cloudformation.yaml \
+            --parameter-overrides "${parameters[@]}" \
+            --no-fail-on-empty-changeset
+
+      - name: Package charts
+        run: make package
+
+      - name: Validate repository index
+        run: test -s public/index.yaml
+
+      - name: Resolve AWS resources
+        id: aws-resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          bucket="$(aws cloudformation describe-stacks --region "$AWS_REGION" --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='S3BucketName'].OutputValue | [0]" --output text)"
+          distribution="$(aws cloudformation describe-stacks --region "$AWS_REGION" --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDistributionId'].OutputValue | [0]" --output text)"
+          domain="$(aws cloudformation describe-stacks --region "$AWS_REGION" --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDomainName'].OutputValue | [0]" --output text)"
+          custom_domain="$(aws cloudformation describe-stacks --region "$AWS_REGION" --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='CustomDomainEnabled'].OutputValue | [0]" --output text)"
+          test -n "$bucket" && test "$bucket" != "None"
+          test -n "$distribution" && test "$distribution" != "None"
+          test -n "$domain" && test "$domain" != "None"
+          {
+            echo "bucket=$bucket"
+            echo "distribution=$distribution"
+            echo "domain=$domain"
+            echo "custom_domain=$custom_domain"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Sync repository to S3
+        run: aws s3 sync public/ "s3://${{ steps.aws-resources.outputs.bucket }}/" --delete
+
+      - name: Invalidate CloudFront
+        run: aws cloudfront create-invalidation --distribution-id "${{ steps.aws-resources.outputs.distribution }}" --paths "/*"
+
+      - name: Summary
+        if: always()
+        env:
+          BRANCH_NAME: ${{ github.ref_name }}
+          COMMIT_SHA: ${{ github.sha }}
+          JOB_STATUS: ${{ job.status }}
+          CLOUDFRONT_DOMAIN: ${{ steps.aws-resources.outputs.domain }}
+          CUSTOM_DOMAIN: ${{ steps.aws-resources.outputs.custom_domain }}
+        run: |
+          {
+            echo "## 🚀 Helm repository release"
+            echo ""
+            echo "| Field | Value |"
+            echo "|-------|-------|"
+            printf '| Branch | %s |\n' "$BRANCH_NAME"
+            printf '| Commit | %s |\n' "$COMMIT_SHA"
+            printf '| Status | %s |\n' "$JOB_STATUS"
+            printf '| CloudFront URL | https://%s |\n' "$CLOUDFRONT_DOMAIN"
+            printf '| Custom domain enabled | %s |\n' "$CUSTOM_DOMAIN"
+          } >> "$GITHUB_STEP_SUMMARY"

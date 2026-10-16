@@ -1,0 +1,185 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: S3 and CloudFront distribution for the lbenicio-community Helm repository.
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: helm.lbenicio.dev
+    AllowedPattern: "^[a-zA-Z0-9.-]+$"
+    Description: Custom domain for the Helm repository.
+
+  CertificateArn:
+    Type: String
+    Default: ""
+    Description: Optional ACM certificate ARN in us-east-1 covering DomainName.
+
+  PriceClass:
+    Type: String
+    Default: PriceClass_100
+    AllowedValues:
+      - PriceClass_All
+      - PriceClass_200
+      - PriceClass_100
+
+Conditions:
+  HasCertificate: !Not [!Equals [!Ref CertificateArn, ""]]
+
+Resources:
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Ref DomainName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      Tags:
+        - Key: Project
+          Value: helm
+        - Key: ManagedBy
+          Value: cloudformation
+
+  CloudFrontOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub "${AWS::StackName}-oac"
+        Description: CloudFront-only access to the private S3 origin.
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: AllowCloudFrontOACRead
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub "${SiteBucket.Arn}/*"
+            Condition:
+              StringEquals:
+                "AWS:SourceArn": !Sub "arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}"
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: "*"
+            Action: "s3:*"
+            Resource:
+              - !GetAtt SiteBucket.Arn
+              - !Sub "${SiteBucket.Arn}/*"
+            Condition:
+              Bool:
+                "aws:SecureTransport": "false"
+
+  SecurityHeadersPolicy:
+    Type: AWS::CloudFront::ResponseHeadersPolicy
+    Properties:
+      ResponseHeadersPolicyConfig:
+        Name: !Sub "${AWS::StackName}-security-headers"
+        Comment: Security headers for the Helm repository.
+        SecurityHeadersConfig:
+          StrictTransportSecurity:
+            Override: true
+            AccessControlMaxAgeSec: 63072000
+            IncludeSubdomains: true
+            Preload: true
+          ContentTypeOptions:
+            Override: true
+          FrameOptions:
+            Override: true
+            FrameOption: DENY
+          ReferrerPolicy:
+            Override: true
+            ReferrerPolicy: strict-origin-when-cross-origin
+          ContentSecurityPolicy:
+            Override: true
+            ContentSecurityPolicy: "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'"
+        CustomHeadersConfig:
+          Items:
+            - Header: Permissions-Policy
+              Value: "camera=(), microphone=(), geolocation=()"
+              Override: true
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        IPV6Enabled: true
+        DefaultRootObject: index.html
+        PriceClass: !Ref PriceClass
+        HttpVersion: http2and3
+        Aliases:
+          Fn::If:
+            - HasCertificate
+            - - !Ref DomainName
+            - !Ref AWS::NoValue
+        Origins:
+          - DomainName: !GetAtt SiteBucket.RegionalDomainName
+            Id: s3-origin
+            OriginAccessControlId: !GetAtt CloudFrontOAC.Id
+            S3OriginConfig: {}
+        DefaultCacheBehavior:
+          TargetOriginId: s3-origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods:
+            - GET
+            - HEAD
+            - OPTIONS
+          CachedMethods:
+            - GET
+            - HEAD
+          Compress: true
+          ResponseHeadersPolicyId: !Ref SecurityHeadersPolicy
+          ForwardedValues:
+            QueryString: false
+            Cookies:
+              Forward: none
+          MinTTL: 0
+          DefaultTTL: 60
+          MaxTTL: 3600
+        ViewerCertificate:
+          Fn::If:
+            - HasCertificate
+            - AcmCertificateArn: !Ref CertificateArn
+              SslSupportMethod: sni-only
+              MinimumProtocolVersion: TLSv1.2_2021
+            - CloudFrontDefaultCertificate: true
+        Restrictions:
+          GeoRestriction:
+            RestrictionType: none
+        Comment: !Sub "${AWS::StackName} Helm repository"
+      Tags:
+        - Key: Project
+          Value: helm
+
+Outputs:
+  S3BucketName:
+    Description: Private S3 bucket containing packaged charts.
+    Value: !Ref SiteBucket
+
+  CloudFrontDomainName:
+    Description: CloudFront hostname for the repository.
+    Value: !GetAtt CloudFrontDistribution.DomainName
+
+  CloudFrontDistributionId:
+    Description: CloudFront distribution ID for cache invalidation.
+    Value: !Ref CloudFrontDistribution
+
+  CustomDomainEnabled:
+    Description: Whether the custom domain certificate was configured.
+    Value: !If [HasCertificate, "true", "false"]

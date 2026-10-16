@@ -11,6 +11,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   - feat(searxng): add SearXNG chart (StatefulSet, single volume for config+cache, node scheduling for local-path storage)
 
+## [v0.1.1] — 2026-10-16
+
+### Added
+
+  - feat(infra): add an S3 and CloudFront CloudFormation stack for the Helm repository
+
+### Changed
+
+  - ci(release-charts): replace GitHub Pages deployment with AWS S3 synchronization and CloudFront invalidation
+  - docs(readme): document AWS deployment and ACM certificate configuration
+
 ## [v0.1.0] — 2026-06-17
 
 ### Added
