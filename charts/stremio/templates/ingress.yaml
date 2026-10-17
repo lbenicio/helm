@@ -24,13 +24,22 @@ spec:
       http:
         paths:
         {{- range .paths }}
+          {{- $service := default "client" .service }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
             backend:
               service:
+                {{- if eq $service "server" }}
+                name: {{ include "stremio.server.fullname" $ }}
+                port:
+                  number: {{ $.Values.server.httpPort }}
+                {{- else if eq $service "client" }}
                 name: {{ include "stremio.client.fullname" $ }}
                 port:
                   number: {{ $.Values.client.port }}
+                {{- else }}
+                {{- fail (printf "unsupported ingress service %q; expected client or server" $service) }}
+                {{- end }}
         {{- end }}
   {{- end }}
 {{- end }}

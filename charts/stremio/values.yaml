@@ -87,7 +87,7 @@ client:
 
   # -- Environment variables
   env: {}
-    # STREMIO_SERVER_URL: http://server.stremio.lan
+    # STREMIO_SERVER_URL: https://server.stremio.lan
 
   # -- Additional environment variables
   extraEnv: []
@@ -212,6 +212,8 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
+          # -- Ingress backend (`client` or `server`; defaults to `client`)
+          service: client
   # -- Ingress TLS configuration
   tls: []
 

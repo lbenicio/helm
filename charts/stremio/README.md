@@ -61,7 +61,7 @@ helm install stremio lbenicio-community/stremio --namespace default
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `hostAliases` | list | `[{hostnames:[server.stremio.lan],ip:127.0.0.1}]` | /etc/hosts entries |
-| `ingress.enabled` | bool | `false` | Enable ingress for client |
+| `ingress.enabled` | bool | `false` | Enable ingress for client and server |
 | `ingress.className` | string | `""` | Ingress class |
 | `ingress.hosts` | list | `[stremio.local]` | Host rules |
 | `podAnnotations` | object | `{prometheus.io/scrape: "true"}` | Pod annotations |
@@ -69,6 +69,8 @@ helm install stremio lbenicio-community/stremio --namespace default
 | `autoscaling.enabled` | bool | `false` | HPA for both server + client |
 
 ## Ingress with TLS
+
+Set `service: server` on a path to route it to the Stremio server HTTP API. Paths default to the client service.
 
 ```yaml
 ingress:
@@ -81,10 +83,17 @@ ingress:
       paths:
         - path: /
           pathType: Prefix
+          service: client
+    - host: server.stremio.lan
+      paths:
+        - path: /
+          pathType: Prefix
+          service: server
   tls:
     - secretName: stremio-tls
       hosts:
         - stremio.lan
+        - server.stremio.lan
 ```
 
 ## License
