@@ -202,7 +202,7 @@ Resources:
             - HasCertificate
             - AcmCertificateArn: !Ref CertificateArn
               SslSupportMethod: sni-only
-              MinimumProtocolVersion: TLSv1.2_2021
+              MinimumProtocolVersion: TLSv1.3_2025
             - CloudFrontDefaultCertificate: true
         Restrictions:
           GeoRestriction:
