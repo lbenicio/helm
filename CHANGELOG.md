@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.1.2] — 2026-10-31
+
 ### Added
 
   - feat(searxng): add SearXNG chart (StatefulSet, single volume for config+cache, node scheduling for local-path storage)
+
+### Changed
+
+- Bumped the project patch version to `0.1.2`.
+- Routed AWS deployment through GitHub’s `production` environment, restricted to the `main` branch.
 
 ## [v0.1.1] — 2026-10-16
 
