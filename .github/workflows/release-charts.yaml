@@ -42,7 +42,7 @@ jobs:
 
       - name: Deploy CloudFormation stack
         env:
-          CERTIFICATE_ARN: ${{ vars.AWS_CERTIFICATE_ARN }}
+          CERTIFICATE_ARN: ${{ secrets.AWS_CERTIFICATE_ARN }}
         shell: bash
         run: |
           set -euo pipefail
@@ -55,7 +55,7 @@ jobs:
             --stack-name "$STACK_NAME" \
             --template-file cloudformation.yaml \
             --parameter-overrides "${parameters[@]}" \
-            --tags awsApplication=arn:aws:resource-groups:sa-east-1:527540700211:group/lbenicio-community/06owkw4s6gp5r894wctvv2jj5u \
+            --tags Project=helm \
             --no-fail-on-empty-changeset
 
       - name: Package charts

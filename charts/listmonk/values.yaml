@@ -90,7 +90,7 @@ config:
     host: "postgresql.default.svc.cluster.local"
     port: 5432
     user: "listmonk"
-    password: "listmonk"
+    password: "" # Set a deployment-specific value when configuring the chart.
     database: "listmonk"
     sslmode: "disable"
 
