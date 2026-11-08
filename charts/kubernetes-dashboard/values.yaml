@@ -334,7 +334,7 @@ metricsScraper:
   enabled: true
   role: metrics-scraper
   image:
-    repository: docker.io/lbenicio/kubernetes-dashboard-scraper
+    repository: docker.io/lbenicio/kubernetes-dashboard-metrics-scraper
     tag: 1.2.6
   scaling:
     replicas: 1
