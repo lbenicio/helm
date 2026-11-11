@@ -144,6 +144,12 @@ Resources:
             - GET
             - HEAD
           Compress: true
+          FunctionAssociations:
+            Fn::If:
+              - HasCertificate
+              - - EventType: viewer-request
+                  FunctionARN: !GetAtt HostAllowlistFunction.FunctionMetadata.FunctionARN
+              - !Ref AWS::NoValue
           ResponseHeadersPolicyId: !Ref SecurityHeadersPolicy
           ForwardedValues:
             QueryString: false
@@ -211,6 +217,24 @@ Resources:
       Tags:
         - Key: Project
           Value: helm
+
+  HostAllowlistFunction:
+    Type: AWS::CloudFront::Function
+    Condition: HasCertificate
+    Properties:
+      Name: !Sub "${AWS::StackName}-host-allowlist"
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Allow requests only for the configured Helm hostname.
+        Runtime: cloudfront-js-2.0
+      FunctionCode: !Sub |
+        function handler(event) {
+          var host = event.request.headers.host && event.request.headers.host.value;
+          if (!host || host.toLowerCase() !== '${DomainName}'.toLowerCase()) {
+            return { statusCode: 403, statusDescription: 'Forbidden' };
+          }
+          return event.request;
+        }
 
 Outputs:
   S3BucketName:
