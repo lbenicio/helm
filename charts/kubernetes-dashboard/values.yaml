@@ -147,7 +147,7 @@ auth:
   role: auth
   image:
     repository: docker.io/lbenicio/kubernetes-dashboard-auth
-    tag: 1.4.16
+    tag: 8.0.0
   hostAliases: []
   scaling:
     replicas: 1
@@ -212,7 +212,7 @@ api:
   role: api
   image:
     repository: docker.io/lbenicio/kubernetes-dashboard-api
-    tag: 1.14.9
+    tag: 8.0.0
   scaling:
     replicas: 1
     revisionHistoryLimit: 10
@@ -272,7 +272,7 @@ web:
   role: web
   image:
     repository: docker.io/lbenicio/kubernetes-dashboard-web
-    tag: 1.7.14
+    tag: 8.0.0
   scaling:
     replicas: 1
     revisionHistoryLimit: 10
@@ -335,7 +335,7 @@ metricsScraper:
   role: metrics-scraper
   image:
     repository: docker.io/lbenicio/kubernetes-dashboard-metrics-scraper
-    tag: 1.2.6
+    tag: 8.0.0
   scaling:
     replicas: 1
     revisionHistoryLimit: 10
