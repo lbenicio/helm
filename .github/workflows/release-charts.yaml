@@ -26,7 +26,9 @@ env:
 jobs:
   release:
     runs-on: ubuntu-24.04
-    environment: production
+    environment:
+      name: production
+      url: ${{ steps.aws-resources.outputs.deployment_url }}
     steps:
       - uses: actions/checkout@v7
 
@@ -73,6 +75,10 @@ jobs:
           distribution="$(aws cloudformation describe-stacks --region "$AWS_REGION" --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDistributionId'].OutputValue | [0]" --output text)"
           domain="$(aws cloudformation describe-stacks --region "$AWS_REGION" --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='CloudFrontDomainName'].OutputValue | [0]" --output text)"
           custom_domain="$(aws cloudformation describe-stacks --region "$AWS_REGION" --stack-name "$STACK_NAME" --query "Stacks[0].Outputs[?OutputKey=='CustomDomainEnabled'].OutputValue | [0]" --output text)"
+          deployment_url="https://$domain"
+          if [ "$custom_domain" = "true" ]; then
+            deployment_url="https://$DOMAIN_NAME/"
+          fi
           test -n "$bucket" && test "$bucket" != "None"
           test -n "$distribution" && test "$distribution" != "None"
           test -n "$domain" && test "$domain" != "None"
@@ -81,6 +87,7 @@ jobs:
             echo "distribution=$distribution"
             echo "domain=$domain"
             echo "custom_domain=$custom_domain"
+            echo "deployment_url=$deployment_url"
           } >> "$GITHUB_OUTPUT"
 
       - name: Sync repository to S3
