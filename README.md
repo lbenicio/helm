@@ -1,6 +1,6 @@
 # lbenicio-community Helm Charts
 
-**Current version:** `0.1.2`
+**Current version:** `0.1.3`
 
 ![Version](https://img.shields.io/github/v/release/lbenicio/helm?label=Version&color=blue)
 [![License: GPLv3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE.txt)
