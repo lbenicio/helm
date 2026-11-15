@@ -106,3 +106,6 @@ Pull requests are welcome. Please ensure:
 ## License
 
 GPLv3 — see [LICENSE.txt](LICENSE.txt) for details.
+
+
+Before the first deployment, configure the two Cloudflare secrets above. If the hostname still has a DNS CNAME pointing to AWS, remove that conflicting record before Wrangler creates the Worker custom domain.
