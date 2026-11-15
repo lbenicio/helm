@@ -90,12 +90,9 @@ make package
 make lint
 ```
 
-Charts are packaged and published to AWS S3 behind CloudFront automatically on every push to `main`.
+Charts are packaged into a standard Helm repository and deployed to Cloudflare Workers on every push to `main`. The site is served at [helm.lbenicio.dev](https://helm.lbenicio.dev/).
 
-The deployment creates or updates the `helm` CloudFormation stack in `sa-east-1` from
-[`cloudformation.yaml`](./cloudformation.yaml). It uses the CloudFront hostname by default.
-Set the repository secret `AWS_CERTIFICATE_ARN` to an ACM certificate in `us-east-1`
-covering `helm.lbenicio.dev` to enable the custom domain.
+Configure the repository secrets `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` for GitHub Actions. The deployment uses the custom domain configured in [wrangler.toml](./wrangler.toml).
 
 ## Contributing
 
