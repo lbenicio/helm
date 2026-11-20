@@ -37,11 +37,16 @@ helm install my-release lbenicio-community/homebridge --namespace default \
 | `image.pullPolicy` | string | `IfNotPresent` | Image pull policy |
 | `replicaCount` | int | `1` | Number of replicas |
 | `hostNetwork` | bool | `false` | Enable hostNetwork for mDNS/Bonjour discovery |
+| `automountServiceAccountToken` | bool | `true` | Mount a Kubernetes API token into Pod containers |
 | `bluetooth.enabled` | bool | `false` | Enable Bluetooth hostPath volume mount |
 | `bluetooth.hostPath` | string | `/sys/class/bluetooth/hci0` | Host path for Bluetooth device |
 | `service.type` | string | `ClusterIP` | Service type |
 | `service.httpPort` | int | `8581` | HTTP port for the web UI |
 | `service.ports` | list | (4 ports) | Service ports (http, bonjour, alexa, controller) |
+| `extraContainers` | list | `[]` | Additional containers in the Homebridge Pod |
+| `extraVolumes` | list | `[]` | Additional Pod volumes available to Homebridge and sidecars |
+| `extraVolumeMounts` | list | `[]` | Additional mounts for the Homebridge container |
+| `terminationGracePeriodSeconds` | int | `30` | Pod shutdown grace period |
 | `ingress.enabled` | bool | `false` | Enable ingress for the web UI |
 | `ingress.className` | string | `""` | Ingress class name |
 | `ingress.hosts` | list | `[{"host":"homebridge.local","paths":[{"path":"/","pathType":"Prefix"}]}]` | Ingress host rules |
@@ -84,6 +89,10 @@ persistence:
   enabled: true
   existingClaim: "my-existing-homebridge-pvc"
 ```
+
+### Sidecar Containers
+
+Use `extraContainers` for tightly coupled local helpers, such as a camera decoder. The sidecar shares the Pod network namespace with Homebridge, so loopback endpoints work between containers. Define its volumes with `extraVolumes`; existing `hostNetwork` and node scheduling settings apply to the whole Pod. Use `extraInitContainers` when shared volumes need preparation before the containers start.
 
 ### Host Network & Bluetooth
 

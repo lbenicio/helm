@@ -70,6 +70,8 @@ containerSecurityContext:
 # -----------------------------------------------------------------------------
 # Host aliases for /etc/hosts entries
 # -----------------------------------------------------------------------------
+# -- Mount a Kubernetes service-account token into Pod containers
+automountServiceAccountToken: true
 # -- Host aliases to add to /etc/hosts
 hostAliases: []
   # - ip: "10.43.122.90"
@@ -247,3 +249,9 @@ config:
 extraVolumes: []
 # -- Additional volume mounts
 extraVolumeMounts: []
+# -- Additional init containers to prepare shared volumes before Pod containers start
+extraInitContainers: []
+# -- Additional containers to run alongside Homebridge in the same Pod
+extraContainers: []
+# -- Pod termination grace period in seconds
+terminationGracePeriodSeconds: 30
