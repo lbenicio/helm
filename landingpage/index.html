@@ -5,7 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>lbenicio-community · Helm Charts</title>
     <link rel="stylesheet" href="style.css" />
-    <script defer src="https://analytics.4686189.xyz/script.js" data-website-id="3f22c199-1a17-4cff-8eb7-03f809e3b97b"></script>
+    <script>
+      (function () {
+        if (!/(^|\.)lbenicio\.dev$/i.test(window.location.hostname)) return;
+        var doNotTrack = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+        if (doNotTrack === "1" || doNotTrack === "yes") return;
+
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { window.dataLayer.push(arguments); };
+        window.gtag("js", new Date());
+        window.gtag("config", "G-VZLEWCEY4R");
+
+        var script = document.createElement("script");
+        script.async = true;
+        script.src = "https://www.googletagmanager.com/gtag/js?id=G-VZLEWCEY4R";
+        document.head.appendChild(script);
+      })();
+    </script>
   </head>
   <body>
     <div class="container">
@@ -14,8 +30,8 @@
 
       <div class="install">
         <p>Add the repository:</p>
-        <code class="umami--click--copy-command" onclick="copyToClipboard(this, 'helm repo add')">helm repo add lbenicio-community https://helm.lbenicio.dev</code>
-        <code class="umami--click--copy-command" onclick="copyToClipboard(this, 'helm repo update')">helm repo update</code>
+        <code onclick="copyToClipboard(this, 'helm repo add')">helm repo add lbenicio-community https://helm.lbenicio.dev</code>
+        <code onclick="copyToClipboard(this, 'helm repo update')">helm repo update</code>
       </div>
 
       <h2>Available Charts</h2>
@@ -23,7 +39,7 @@
       <div id="chart-list"></div>
 
       <p class="footer">
-        <a href="https://github.com/lbenicio/helm" data-umami-event="github-link">View on GitHub</a>
+        <a href="https://github.com/lbenicio/helm" data-ga-event="github_link">View on GitHub</a>
       </p>
     </div>
     <script src="app.js"></script>
