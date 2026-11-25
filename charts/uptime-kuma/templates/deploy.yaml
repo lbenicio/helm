@@ -99,6 +99,9 @@ spec:
               mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
               subPath: ca.crt
               readOnly: true
+            {{- with .Values.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+            {{- end }}
       volumes:
         - name: data
           {{- if .Values.persistence.enabled }}
@@ -118,6 +121,9 @@ spec:
             items:
               - key: ca.crt
                 path: ca.crt
+        {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -181,3 +181,7 @@ serviceMonitor:
   labels: {}
 
 hostAliases: []
+
+# Additional pod mounts and volumes
+extraVolumeMounts: []
+extraVolumes: []

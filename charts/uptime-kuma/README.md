@@ -80,3 +80,6 @@ This chart is licensed under GPLv3.
 ---
 
 Made with ❤️ by [lbenicio](https://lbenicio.dev/)
+## Extra volumes
+
+Use `extraVolumeMounts` and `extraVolumes` to add mounts and pod volumes, for example to mount an additional CA bundle from a ConfigMap.
