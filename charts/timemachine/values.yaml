@@ -62,6 +62,10 @@ commonLabels: {}
 podLabels: {}
 # -- Pod annotations (e.g., prometheus.io/scrape: "true")
 podAnnotations: {}
+# -- Additional init containers for pod-local setup
+extraInitContainers: []
+# -- Additional pod volumes, for example a mounted policy script
+extraVolumes: []
 
 # -----------------------------------------------------------------------------
 # Keel auto-update annotations
