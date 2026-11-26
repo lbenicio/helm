@@ -1,0 +1,9 @@
+suite: listmonk smoke tests
+templates:
+  - configmap.yaml
+tests:
+  - it: renders the application ConfigMap
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: ConfigMap

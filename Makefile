@@ -1,5 +1,5 @@
 SHELL := /bin/bash
-.PHONY: all help package lint test changelog
+.PHONY: all help package lint test coverage changelog
 
 .DEFAULT_GOAL := help
 
@@ -36,11 +36,26 @@ lint: ## Lint charts (helm lint + kube-linter)
 	done
 
 test: ## Run helm-unittest on all charts
-	@echo "Running unit tests..."
-	@for chart in $$(ls -d charts/*/); do \
+	@set -euo pipefail; \
+	echo "Running unit tests..."; \
+	found=0; \
+	for chart in charts/*/; do \
+		if ! compgen -G "$$chart/tests/*_test.yaml" > /dev/null; then continue; fi; \
+		found=1; \
 		echo "  $$chart"; \
-		helm unittest $$chart 2>&1; \
-	done
+		helm unittest "$$chart"; \
+	done; \
+	if [ "$$found" -eq 0 ]; then echo "No Helm unit test suites were found."; exit 1; fi
+
+coverage: ## Run chart unit tests and write an LCOV coverage report
+	@set -euo pipefail; \
+	mkdir -p coverage; \
+	charts=(); \
+	for chart in charts/*/; do \
+		if compgen -G "$$chart/tests/*_test.yaml" > /dev/null; then charts+=("$$chart"); fi; \
+	done; \
+	if [ "$${#charts[@]}" -eq 0 ]; then echo "No Helm unit test suites were found."; exit 1; fi; \
+	helm unittest --coverage-format lcov --coverage-file coverage/helm.lcov "$${charts[@]}"
 
 changelog: ## Generate changelog (make changelog [--dry-run] <version>)
 	@V=$$(echo $(filter-out $@,$(MAKECMDGOALS)) | sed 's/--dry-run//g' | tr -d '-'); \

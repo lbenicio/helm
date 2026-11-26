@@ -1,0 +1,9 @@
+suite: speedtest smoke tests
+templates:
+  - serviceaccount.yaml
+tests:
+  - it: renders the service account
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: ServiceAccount

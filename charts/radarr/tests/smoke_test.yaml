@@ -1,0 +1,9 @@
+suite: radarr smoke tests
+templates:
+  - svc.yaml
+tests:
+  - it: renders the application Service
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: Service

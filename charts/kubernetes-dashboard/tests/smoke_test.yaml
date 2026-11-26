@@ -1,0 +1,9 @@
+suite: kubernetes-dashboard smoke tests
+templates:
+  - rbac/auth/serviceaccount.yaml
+tests:
+  - it: renders the dashboard service account
+    documentIndex: 0
+    asserts:
+      - isKind:
+          of: ServiceAccount

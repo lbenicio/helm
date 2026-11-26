@@ -40,3 +40,6 @@ Temporary Items
 
 # Trivy pre-commit hook cache
 .pre-commit-trivy-cache
+
+# Generated test coverage reports
+/coverage/
