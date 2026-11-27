@@ -1,0 +1,40 @@
+suite: stremio ingress backend routing
+templates:
+  - ingress.yaml
+tests:
+  - it: routes client and server hosts directly to their Services in one Ingress
+    set:
+      ingress:
+        enabled: true
+        hosts:
+          - host: stremio.lan
+            paths:
+              - path: /
+                pathType: Prefix
+                service: client
+          - host: server.stremio.lan
+            paths:
+              - path: /
+                pathType: Prefix
+                service: server
+    asserts:
+      - isKind:
+          of: Ingress
+      - equal:
+          path: spec.rules[0].host
+          value: stremio.lan
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.name
+          value: RELEASE-NAME-stremio-client
+      - equal:
+          path: spec.rules[0].http.paths[0].backend.service.port.number
+          value: 8080
+      - equal:
+          path: spec.rules[1].host
+          value: server.stremio.lan
+      - equal:
+          path: spec.rules[1].http.paths[0].backend.service.name
+          value: RELEASE-NAME-stremio-server
+      - equal:
+          path: spec.rules[1].http.paths[0].backend.service.port.number
+          value: 11470

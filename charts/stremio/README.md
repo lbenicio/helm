@@ -6,7 +6,7 @@ Complete Stremio media server and web client — deploy both with a single Helm 
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/stremio
+helm install my-release lbenicio-community/stremio --version 0.1.3
 ```
 
 ## Introduction
@@ -21,7 +21,7 @@ This chart deploys both the [Stremio server](https://www.stremio.com/) and the [
 ## Installing the Chart
 
 ```bash
-helm install stremio lbenicio-community/stremio --namespace default
+helm install stremio lbenicio-community/stremio --version 0.1.3 --namespace default
 ```
 
 ## Parameters
@@ -31,7 +31,7 @@ helm install stremio lbenicio-community/stremio --namespace default
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `server.image.repository` | string | `stremio/server` | Server image repository |
-| `server.image.tag` | string | `""` | Image tag |
+| `server.image.tag` | string | `v4.22.6` | Image tag |
 | `server.replicaCount` | int | `1` | Number of server replicas |
 | `server.httpPort` | int | `11470` | HTTP API port |
 | `server.streamPort` | int | `12470` | Streaming port |
@@ -49,7 +49,7 @@ helm install stremio lbenicio-community/stremio --namespace default
 |-----|------|---------|-------------|
 | `client.enabled` | bool | `true` | Enable web client |
 | `client.image.repository` | string | `lbenicio/stremio-web` | Client image |
-| `client.image.tag` | string | `""` | Image tag |
+| `client.image.tag` | string | `5.2.0` | Image tag |
 | `client.port` | int | `8080` | HTTP port |
 | `client.resources.requests.cpu` | string | `250m` | CPU request |
 | `client.resources.requests.memory` | string | `256Mi` | Memory request |

@@ -7,8 +7,8 @@ server:
   image:
     # -- Server image repository
     repository: stremio/server
-    # -- Server image tag (defaults to Chart.appVersion)
-    tag: ""
+    # -- Server image tag
+    tag: "v4.22.6"
     # -- Server image pull policy
     pullPolicy: IfNotPresent
 
@@ -74,8 +74,8 @@ client:
   image:
     # -- Client image repository
     repository: lbenicio/stremio-web
-    # -- Client image tag (defaults to Chart.appVersion)
-    tag: ""
+    # -- Client image tag
+    tag: "5.2.0"
     # -- Client image pull policy
     pullPolicy: IfNotPresent
 
