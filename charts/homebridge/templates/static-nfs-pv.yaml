@@ -15,6 +15,9 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
+  {{- if .Values.persistence.staticNfsPV.clearStaleClaimRef }}
+  claimRef: null
+  {{- end }}
   capacity:
     storage: {{ .Values.persistence.staticNfsPV.size }}
   volumeMode: Filesystem

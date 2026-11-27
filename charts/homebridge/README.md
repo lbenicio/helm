@@ -62,6 +62,7 @@ helm install my-release lbenicio-community/homebridge --version 0.1.20 --namespa
 | `persistence.staticNfsPV.name` | string | `""` | Existing CSI PV name |
 | `persistence.staticNfsPV.volumeHandle` | string | `""` | Existing CSI volume handle |
 | `persistence.staticNfsPV.volumeAttributes` | object | `{}` | CSI volume attributes for the existing PV |
+| `persistence.staticNfsPV.clearStaleClaimRef` | bool | `false` | Clear a stale claim reference while reusing a Released retained CSI PV |
 | `persistence.size` | string | `10Gi` | Storage size |
 | `persistence.accessMode` | string | `ReadWriteOnce` | Access mode |
 | `persistence.localPath` | string | `/var/local/k8s/homebridge` | Local path on the host |

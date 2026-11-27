@@ -220,6 +220,8 @@ persistence:
     volumeAttributes: {}
     # -- Existing CSI PV annotations to preserve
     annotations: {}
+    # -- Explicitly clear a stale claimRef when reusing a Released retained PV
+    clearStaleClaimRef: false
 
 # -----------------------------------------------------------------------------
 # Resource requests and limits
