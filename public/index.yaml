@@ -276,6 +276,24 @@ entries:
     urls:
     - radarr-0.1.0.tgz
     version: 0.1.0
+  rpi4-v4l2-device-plugin:
+  - apiVersion: v2
+    appVersion: 0.2.0
+    created: "2026-11-27T19:38:21.378124-03:00"
+    description: Allocate Raspberry Pi 4 V4L2 H.264 decoder and encoder devices to
+      Kubernetes workloads.
+    digest: f59d093f0e5480fa81160bd78c4b86e3a8afb1c53758ae37c1f32f7700a85e72
+    home: https://github.com/squat/generic-device-plugin
+    icon: https://cdn.simpleicons.org/raspberrypi
+    maintainers:
+    - name: lbenicio
+    name: rpi4-v4l2-device-plugin
+    sources:
+    - https://github.com/squat/generic-device-plugin
+    type: application
+    urls:
+    - rpi4-v4l2-device-plugin-0.1.0.tgz
+    version: 0.1.0
   searxng:
   - apiVersion: v2
     appVersion: 2026.6.22-952896d29
@@ -399,4 +417,4 @@ entries:
     urls:
     - whoami-0.1.2.tgz
     version: 0.1.2
-generated: "2026-11-27T17:02:06.432819-03:00"
+generated: "2026-11-27T19:38:21.362087-03:00"

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: rpi4-v4l2-device-plugin
+description: Allocate Raspberry Pi 4 V4L2 H.264 decoder and encoder devices to Kubernetes workloads.
+type: application
+version: 0.1.0
+appVersion: "0.2.0"
+icon: https://cdn.simpleicons.org/raspberrypi
+home: https://github.com/squat/generic-device-plugin
+sources:
+  - https://github.com/squat/generic-device-plugin
+maintainers:
+  - name: lbenicio

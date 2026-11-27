@@ -41,6 +41,7 @@ helm pull oci://ghcr.io/lbenicio/helm/whoami --version 0.1.0
 | [searxng](./charts/searxng) | 0.1.3 | Privacy-respecting metasearch engine with named NFS PVC support |
 | [timemachine](./charts/timemachine) | 0.1.6 | Samba Time Machine server with chart-managed static local PVs and PVCs |
 | [uptime-kuma](./charts/uptime-kuma) | 0.1.4 | Uptime monitoring with ConfigMap or Secret CA bundle support |
+| [rpi4-v4l2-device-plugin](./charts/rpi4-v4l2-device-plugin) | 0.1.0 | Paired Raspberry Pi 4 V4L2 H.264 decoder and encoder devices for Kubernetes workloads |
 
 ## Installing a Chart
 

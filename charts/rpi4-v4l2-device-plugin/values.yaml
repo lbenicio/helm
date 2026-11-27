@@ -1,0 +1,35 @@
+nameOverride: ""
+fullnameOverride: ""
+
+image:
+  # -- Generic device plugin image repository.
+  repository: squat/generic-device-plugin
+  # -- Pinned upstream commit tag. Keep this synchronized with the tested plugin source.
+  tag: "f7c3291"
+  # -- Image pull policy.
+  pullPolicy: IfNotPresent
+
+# -- Kubernetes extended-resource domain advertised by the plugin.
+resourceDomain: devic.es
+# -- Resource name for the paired decoder and encoder devices.
+resourceName: rpi4-v4l2m2m
+
+# -- Resource requests and limits for each node-level plugin pod.
+resources:
+  requests:
+    cpu: 50m
+    memory: 32Mi
+  limits:
+    cpu: 100m
+    memory: 64Mi
+
+# -- Node selector for nodes that provide the Pi V4L2 devices.
+nodeSelector: {}
+# -- Node affinity for nodes that provide the Pi V4L2 devices.
+affinity: {}
+# -- Tolerations for node taints.
+tolerations: []
+# -- Additional pod labels.
+podLabels: {}
+# -- Additional pod annotations.
+podAnnotations: {}

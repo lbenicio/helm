@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "rpi4-v4l2-device-plugin.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "rpi4-v4l2-device-plugin.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "rpi4-v4l2-device-plugin.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        {{- include "rpi4-v4l2-device-plugin.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      automountServiceAccountToken: false
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: generic-device-plugin
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - --device
+            - |
+              {"name":"{{ .Values.resourceName }}","groups":[{"paths":[{"path":"/dev/video10"},{"path":"/dev/video11"}]}]}
+            - --domain
+            - {{ .Values.resourceDomain | quote }}
+            - --plugin-directory
+            - /var/lib/kubelet/device-plugins
+            - --log-level
+            - info
+          securityContext:
+            privileged: true
+            runAsUser: 0
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: device-plugin-sockets
+              mountPath: /var/lib/kubelet/device-plugins
+            - name: video-decode
+              mountPath: /dev/video10
+              readOnly: true
+            - name: video-encode
+              mountPath: /dev/video11
+              readOnly: true
+      volumes:
+        - name: device-plugin-sockets
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+            type: Directory
+        - name: video-decode
+          hostPath:
+            path: /dev/video10
+            type: CharDevice
+        - name: video-encode
+          hostPath:
+            path: /dev/video11
+            type: CharDevice
