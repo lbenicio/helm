@@ -1,0 +1,6 @@
+apiVersion: v2
+name: minio-storage
+description: Single-instance MinIO using the cluster's custom OIDC-aware image and storage-node data path
+type: application
+version: 0.1.0
+appVersion: "2025-07-23"

@@ -1,0 +1,18 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.cluster.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  instances: {{ .Values.cluster.instances }}
+  imageName: {{ .Values.cluster.imageName | quote }}
+  enableSuperuserAccess: {{ .Values.cluster.enableSuperuserAccess }}
+  superuserSecret:
+    name: {{ .Values.cluster.superuserSecret }}
+  storage:
+    size: {{ .Values.cluster.storage.size }}
+    storageClass: {{ .Values.cluster.storage.storageClass }}
+  affinity:
+    {{- toYaml .Values.cluster.affinity | nindent 4 }}
+  resources:
+    {{- toYaml .Values.resources | nindent 4 }}

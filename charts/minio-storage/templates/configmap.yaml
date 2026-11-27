@@ -1,0 +1,75 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: minio-entrypoint
+  namespace: {{ .Release.Namespace }}
+data:
+  minio-entrypoint.sh: |
+    #!/bin/sh
+    set -eu
+
+    oidc_config_url=${MINIO_IDENTITY_OPENID_CONFIG_URL:-}
+    oidc_client_id=${MINIO_IDENTITY_OPENID_CLIENT_ID:-}
+    oidc_client_secret=${MINIO_IDENTITY_OPENID_CLIENT_SECRET:-}
+    oidc_scopes=${MINIO_IDENTITY_OPENID_SCOPES:-}
+    oidc_redirect_uri=${MINIO_IDENTITY_OPENID_REDIRECT_URI:-}
+    oidc_display_name=${MINIO_IDENTITY_OPENID_DISPLAY_NAME:-}
+    oidc_role_policy=${MINIO_IDENTITY_OPENID_ROLE_POLICY:-}
+    child_pid=
+
+    oidc_ready() {
+      [ -n "$oidc_config_url" ] && curl --fail --silent --show-error --cacert /root/.minio/certs/CAs/root-ca.crt --max-time 5 "$oidc_config_url" >/dev/null 2>&1
+    }
+
+    stop_child() {
+      if [ -n "$child_pid" ] && kill -0 "$child_pid" 2>/dev/null; then
+        kill -TERM "$child_pid" 2>/dev/null || true
+        wait "$child_pid" 2>/dev/null || true
+      fi
+      child_pid=
+    }
+
+    shutdown() {
+      stop_child
+      exit 0
+    }
+
+    trap shutdown TERM INT
+
+    start_child() {
+      mode=$1
+      shift
+      if [ "$mode" = oidc ]; then
+        export MINIO_IDENTITY_OPENID_CONFIG_URL="$oidc_config_url"
+        export MINIO_IDENTITY_OPENID_CLIENT_ID="$oidc_client_id"
+        export MINIO_IDENTITY_OPENID_CLIENT_SECRET="$oidc_client_secret"
+        export MINIO_IDENTITY_OPENID_SCOPES="$oidc_scopes"
+        export MINIO_IDENTITY_OPENID_REDIRECT_URI="$oidc_redirect_uri"
+        export MINIO_IDENTITY_OPENID_DISPLAY_NAME="$oidc_display_name"
+        export MINIO_IDENTITY_OPENID_ROLE_POLICY="$oidc_role_policy"
+        echo "Pocket ID OIDC is available; starting MinIO with OIDC enabled"
+      else
+        unset MINIO_IDENTITY_OPENID_CONFIG_URL MINIO_IDENTITY_OPENID_CLIENT_ID MINIO_IDENTITY_OPENID_CLIENT_SECRET MINIO_IDENTITY_OPENID_SCOPES MINIO_IDENTITY_OPENID_REDIRECT_URI MINIO_IDENTITY_OPENID_DISPLAY_NAME MINIO_IDENTITY_OPENID_ROLE_POLICY
+        echo "Pocket ID OIDC is unavailable; starting MinIO with S3-only authentication"
+      fi
+      /usr/bin/minio "$@" &
+      child_pid=$!
+    }
+
+    if oidc_ready; then current_mode=oidc; else current_mode=bootstrap; fi
+    start_child "$current_mode" "$@"
+    while :; do
+      if ! kill -0 "$child_pid" 2>/dev/null; then
+        child_status=0
+        wait "$child_pid" || child_status=$?
+        exit "$child_status"
+      fi
+      if oidc_ready; then desired_mode=oidc; else desired_mode=bootstrap; fi
+      if [ "$desired_mode" != "$current_mode" ]; then
+        stop_child
+        current_mode=$desired_mode
+        start_child "$current_mode" "$@"
+      fi
+      sleep 5
+    done

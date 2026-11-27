@@ -1,0 +1,94 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: minio
+  namespace: {{ .Release.Namespace }}
+spec:
+  serviceName: minio
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: minio
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: minio
+    spec:
+      automountServiceAccountToken: false
+      nodeSelector:
+        storage.lbenicio.dev/role: storage
+        storage.lbenicio.dev/k8s-storage-ready: "true"
+      tolerations:
+        - key: storage
+          operator: Equal
+          value: "true"
+          effect: NoSchedule
+      terminationGracePeriodSeconds: 60
+      containers:
+        - name: minio
+          # The pinned digest matches the previously deployed image; quay.io now rejects anonymous pulls.
+          image: ghcr.io/l33tlamer/minio-backup@sha256:a1ea29fa28355559ef137d71fc570e508a214ec84ff8083e39bc5428980b015e
+          imagePullPolicy: IfNotPresent
+          command:
+            - /opt/minio/minio-entrypoint.sh
+          args:
+            - server
+            - --address=:443
+            - --console-address
+            - :9001
+            - /data
+          ports:
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: console
+              containerPort: 9001
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: storage-minio-env
+          readinessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: console
+              scheme: HTTPS
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: console
+              scheme: HTTPS
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: data
+              mountPath: /data
+            - name: certs
+              mountPath: /root/.minio/certs
+              readOnly: true
+            - name: entrypoint
+              mountPath: /opt/minio
+              readOnly: true
+      volumes:
+        - name: data
+          hostPath:
+            path: /k8s/minio
+            type: Directory
+        - name: certs
+          secret:
+            secretName: minio-certs
+            defaultMode: 0400
+            items:
+              - key: public.crt
+                path: public.crt
+              - key: private.key
+                path: private.key
+              - key: root-ca.crt
+                path: CAs/root-ca.crt
+        - name: entrypoint
+          configMap:
+            name: minio-entrypoint
+            defaultMode: 0555

@@ -182,6 +182,18 @@ entries:
     urls:
     - listmonk-0.1.0.tgz
     version: 0.1.0
+  minio-storage:
+  - apiVersion: v2
+    appVersion: "2025-07-23"
+    created: "2026-11-27T20:58:00.471022-03:00"
+    description: Single-instance MinIO using the cluster's custom OIDC-aware image
+      and storage-node data path
+    digest: 49b4ae7cb97f9ba31fad2b54b16ead5ad84fa2cff209e98c5008496db110b568
+    name: minio-storage
+    type: application
+    urls:
+    - minio-storage-0.1.0.tgz
+    version: 0.1.0
   ping:
   - apiVersion: v2
     appVersion: v0.28.0
@@ -204,6 +216,18 @@ entries:
     urls:
     - pod-cleaner-0.1.1.tgz
     version: 0.1.1
+  postgres-cnpg:
+  - apiVersion: v2
+    appVersion: "18.7"
+    created: "2026-11-27T20:58:00.471236-03:00"
+    description: CloudNativePG single-instance cluster and stable service for the
+      local storage node
+    digest: 8791aaea7e26400c9098e2753d859eaf37ed0c40182eabfe807cad38dff5c425
+    name: postgres-cnpg
+    type: application
+    urls:
+    - postgres-cnpg-0.1.0.tgz
+    version: 0.1.0
   prowlarr:
   - apiVersion: v2
     appVersion: latest
@@ -276,6 +300,29 @@ entries:
     urls:
     - radarr-0.1.0.tgz
     version: 0.1.0
+  rke2-multus:
+  - apiVersion: v2
+    appVersion: 4.3.1
+    created: "2026-11-27T20:58:00.472053-03:00"
+    dependencies:
+    - condition: rke2-whereabouts.enabled
+      name: rke2-whereabouts
+      repository: file://./charts/rke2-whereabouts
+      version: 0.9.4
+    description: Multus Helm chart for Kubernetes
+    digest: 5b29a72cf421eb8648898888d89236e194a153a7090ef405066094a6ce204fce
+    home: https://github.com/k8snetworkplumbingwg/multus-cni
+    icon: https://raw.githubusercontent.com/k8snetworkplumbingwg/multus-cni/master/doc/images/Multus.png
+    maintainers:
+    - email: charts@rancher.com
+      name: Rancher Labs
+    name: rke2-multus
+    sources:
+    - https://github.com/intel/multus-cni
+    type: application
+    urls:
+    - rke2-multus-4.3.118-lbenicio.1.tgz
+    version: 4.3.118-lbenicio.1
   rpi4-v4l2-device-plugin:
   - apiVersion: v2
     appVersion: 0.2.0
@@ -417,4 +464,4 @@ entries:
     urls:
     - whoami-0.1.2.tgz
     version: 0.1.2
-generated: "2026-11-27T19:38:21.362087-03:00"
+generated: "2026-11-27T20:58:00.470284-03:00"

@@ -1,0 +1,42 @@
+cluster:
+  # -- Existing CloudNativePG cluster resource name.
+  name: postgres-cnpg
+  # -- PostgreSQL pod count.
+  instances: 1
+  # -- Pinned PostgreSQL container image.
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.7-system-trixie
+  # -- Enable the existing superuser Secret.
+  enableSuperuserAccess: true
+  # -- Existing Secret containing the PostgreSQL superuser credentials.
+  superuserSecret: postgres-cnpg-superuser
+  storage:
+    # -- Existing PostgreSQL data volume size.
+    size: 10Gi
+    # -- Existing storage provisioner.
+    storageClass: local-path
+  # -- Keep PostgreSQL pinned to the storage node.
+  affinity:
+    nodeSelector:
+      storage.lbenicio.dev/role: storage
+    tolerations:
+      - key: storage
+        operator: Equal
+        value: "true"
+        effect: NoSchedule
+
+# -- CPU and memory requests and limits for the PostgreSQL instance.
+resources:
+  requests:
+    cpu: 250m
+    memory: 256Mi
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+
+service:
+  # -- Preserve the existing stable client-facing Service name.
+  name: postgres
+  # -- Preserve the existing static ClusterIP.
+  clusterIP: 10.43.46.116
+  # -- Preserve the existing MetalLB address.
+  loadBalancerIP: 192.168.0.233
