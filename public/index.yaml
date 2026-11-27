@@ -3,7 +3,7 @@ entries:
   bazarr:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.847508-03:00"
+    created: "2026-11-27T16:41:44.623749-03:00"
     description: Bazarr (Sonarr, Radarr, Prowlarr, Bazarr, etc.)
     digest: 48ef2ad1be83b528ef0f6221dfd51a2228e057c6c817444414fa78734344a9e5
     home: https://github.com/lbenicio/helm
@@ -27,7 +27,7 @@ entries:
   glance:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.847855-03:00"
+    created: "2026-11-27T16:41:44.624075-03:00"
     description: A Helm chart for glance
     digest: 07d6b71bc7ccdbebcb7c731623b8af81be1354c88e80d6550aa978906f7f99c7
     name: glance
@@ -38,7 +38,7 @@ entries:
   helm-pilot:
   - apiVersion: v2
     appVersion: 0.2.5
-    created: "2026-11-27T16:26:18.848142-03:00"
+    created: "2026-11-27T16:41:44.624364-03:00"
     description: AI-powered Helm management dashboard for Kubernetes clusters
     digest: 0bd7365edcc87204b1a61a629e5bd093763b3e5d04421eb18e332b091a0872d3
     home: https://github.com/lbenicio/helm-pilot
@@ -62,19 +62,19 @@ entries:
   homebridge:
   - apiVersion: v2
     appVersion: beta-2026-11-24
-    created: "2026-11-27T16:26:18.848666-03:00"
+    created: "2026-11-27T16:41:44.624796-03:00"
     description: Homebridge with managed or existing persistent storage, including
       NFS and local recovery volumes
-    digest: ea58a6dc5a3d27b5930f70778873f5fa5a49b99a27ae5fa207d04eed717e2c02
+    digest: b12548137a9327516f6da4659a61f39886f8f7e607b494e50f8c119806aa7d00
     name: homebridge
     type: application
     urls:
-    - homebridge-0.1.19.tgz
-    version: 0.1.19
+    - homebridge-0.1.20.tgz
+    version: 0.1.20
   jellyfin:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.849009-03:00"
+    created: "2026-11-27T16:41:44.625056-03:00"
     description: Jellyfin (Sonarr, Radarr, Prowlarr, Bazarr, etc.)
     digest: 877adc90fec7d225ef365feb0c6eb6c295e0293b93c8ad4dd40194210e0588a0
     home: https://github.com/lbenicio/helm
@@ -98,7 +98,7 @@ entries:
   jellyseerr:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.849285-03:00"
+    created: "2026-11-27T16:41:44.625306-03:00"
     description: Jellyseerr (Sonarr, Radarr, Prowlarr, Bazarr, etc.)
     digest: bcb55e998ef0d15b21b0ec9f5e4242a06c405a50f9381fdcb7bd0b90944f6bba
     home: https://github.com/lbenicio/helm
@@ -121,7 +121,7 @@ entries:
     version: 0.1.0
   kubernetes-dashboard:
   - apiVersion: v2
-    created: "2026-11-27T16:26:18.861034-03:00"
+    created: "2026-11-27T16:41:44.636448-03:00"
     dependencies:
     - alias: nginx
       condition: nginx.enabled
@@ -163,7 +163,7 @@ entries:
   listmonk:
   - apiVersion: v2
     appVersion: 4.1.0
-    created: "2026-11-27T16:26:18.861353-03:00"
+    created: "2026-11-27T16:41:44.636805-03:00"
     description: Self-hosted newsletter and mailing list manager
     digest: f342746c7b9032a604b832945a71766597714fe8c8d7398b16a6d2a739626c32
     home: https://listmonk.app
@@ -185,7 +185,7 @@ entries:
   ping:
   - apiVersion: v2
     appVersion: v0.28.0
-    created: "2026-11-27T16:26:18.861628-03:00"
+    created: "2026-11-27T16:41:44.637212-03:00"
     description: Blackbox exporter for probing endpoints
     digest: 8555735e35744b5847700de4b16d282fdf7e3d1cce531e71fbe9b7fcd1a1e725
     name: ping
@@ -196,7 +196,7 @@ entries:
   pod-cleaner:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.861827-03:00"
+    created: "2026-11-27T16:41:44.637672-03:00"
     description: CronJob that periodically cleans up completed pods
     digest: fdf58bcaee3a99027ca78b42a36fd9963a417249e0c1c049077085a302d5f479
     name: pod-cleaner
@@ -207,7 +207,7 @@ entries:
   prowlarr:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.862477-03:00"
+    created: "2026-11-27T16:41:44.637955-03:00"
     description: Prowlarr (Sonarr, Radarr, Prowlarr, Bazarr, etc.)
     digest: 0804179fdf679fd0a4a83ed7bf99b037e2968d161ea95be076f2b56d4f23ed6a
     home: https://github.com/lbenicio/helm
@@ -231,7 +231,7 @@ entries:
   qbittorrent:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.862793-03:00"
+    created: "2026-11-27T16:41:44.638219-03:00"
     description: Qbittorrent (Sonarr, Radarr, Prowlarr, Bazarr, etc.)
     digest: 4504b0def490fecc96f353813e8e2e539c9e6b017943bb4199658d66be4cbc45
     home: https://github.com/lbenicio/helm
@@ -255,7 +255,7 @@ entries:
   radarr:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.863076-03:00"
+    created: "2026-11-27T16:41:44.638479-03:00"
     description: Radarr (Sonarr, Radarr, Prowlarr, Bazarr, etc.)
     digest: d5a37e861cb348f987ac87752ad7e81153ce031dea88d933f931eff79804b6f8
     home: https://github.com/lbenicio/helm
@@ -279,7 +279,7 @@ entries:
   searxng:
   - apiVersion: v2
     appVersion: 2026.6.22-952896d29
-    created: "2026-11-27T16:26:18.863577-03:00"
+    created: "2026-11-27T16:41:44.638946-03:00"
     description: Privacy-respecting metasearch engine with managed or existing PVCs,
       including NFS-backed storage
     digest: 656e6c3dca76c4fb51957ccf44de9d2a88f6db7a0da4879a8204812d0a850c0c
@@ -298,7 +298,7 @@ entries:
   smtp:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.863848-03:00"
+    created: "2026-11-27T16:41:44.639221-03:00"
     description: A Helm chart for smtp
     digest: 92f84613560534c9e0d746bb0cf5cdb5e953ae34a5b3ccff4b50d271cbacd3d5
     name: smtp
@@ -309,7 +309,7 @@ entries:
   sonarr:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.864217-03:00"
+    created: "2026-11-27T16:41:44.639491-03:00"
     description: Sonarr (Sonarr, Radarr, Prowlarr, Bazarr, etc.)
     digest: cd33b8b186cea36bc3bfcabdeb3b1cc065ff399601c9ee48f274132920bbec12
     home: https://github.com/lbenicio/helm
@@ -333,7 +333,7 @@ entries:
   speedtest:
   - apiVersion: v2
     appVersion: v0.2.91
-    created: "2026-11-27T16:26:18.864566-03:00"
+    created: "2026-11-27T16:41:44.63977-03:00"
     description: Internet performance exporter (speedtest, fast.com)
     digest: aca57016979df92cf9688d6ce8ed6b936afad26ecc70d88100bd0770e90e6a9c
     name: speedtest
@@ -344,7 +344,7 @@ entries:
   stremio:
   - apiVersion: v2
     appVersion: v4.22.6
-    created: "2026-11-27T16:26:18.864953-03:00"
+    created: "2026-11-27T16:41:44.640183-03:00"
     description: Helm chart for Stremio server + web client
     digest: c36f3f15d786ba98fb9dfa84e66693da7d17e57d7b2d211ba89b2514caa8d295
     keywords:
@@ -361,7 +361,7 @@ entries:
   timemachine:
   - apiVersion: v2
     appVersion: smb-20261124
-    created: "2026-11-27T16:26:18.865306-03:00"
+    created: "2026-11-27T16:41:44.640637-03:00"
     description: Time Machine Samba backup server with managed named local PVs, PVCs,
       and StorageClass support
     digest: 8fa08faf3faeb124acfe6e85b5b176e1b13986d4e2c90fad3354335e10874c47
@@ -380,7 +380,7 @@ entries:
   uptime-kuma:
   - apiVersion: v2
     appVersion: 2.3.2
-    created: "2026-11-27T16:26:18.865635-03:00"
+    created: "2026-11-27T16:41:44.641041-03:00"
     description: A self-hosted monitoring tool like Uptime Robot
     digest: 1207da6895e1a4846630302d8df8cffba7d695852a0d302392316096a1d34635
     name: uptime-kuma
@@ -391,7 +391,7 @@ entries:
   whoami:
   - apiVersion: v2
     appVersion: latest
-    created: "2026-11-27T16:26:18.865981-03:00"
+    created: "2026-11-27T16:41:44.641913-03:00"
     description: A Helm chart for whoami
     digest: 90cf80605688d0294fd3db8e0ccfe397bfeb7bffe037a66838509a1d1a2169f9
     name: whoami
@@ -399,4 +399,4 @@ entries:
     urls:
     - whoami-0.1.2.tgz
     version: 0.1.2
-generated: "2026-11-27T16:26:18.847169-03:00"
+generated: "2026-11-27T16:41:44.623399-03:00"

@@ -6,7 +6,7 @@ HomeKit support for the impatient — bring HomeKit to non-HomeKit smart home de
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/homebridge --version 0.1.19
+helm install my-release lbenicio-community/homebridge --version 0.1.20
 ```
 
 ## Introduction
@@ -22,7 +22,7 @@ This chart deploys [Homebridge](https://homebridge.io/), a lightweight Node.js s
 ## Installing the Chart
 
 ```bash
-helm install my-release lbenicio-community/homebridge --version 0.1.19 --namespace default \
+helm install my-release lbenicio-community/homebridge --version 0.1.20 --namespace default \
   --set persistence.enabled=true \
   --set persistence.storageClass=local-storage \
   --set persistence.localPath=/var/local/k8s/homebridge
@@ -58,6 +58,10 @@ helm install my-release lbenicio-community/homebridge --version 0.1.19 --namespa
 | `persistence.localPV.enabled` | bool | `false` | Create a static local PV for a chart-managed PVC |
 | `persistence.retainOnUninstall` | bool | `false` | Keep the chart-managed PVC when uninstalling the release |
 | `persistence.recoveryVolume.enabled` | bool | `false` | Manage a separate retained local recovery PV/PVC; it is not mounted by Homebridge |
+| `persistence.staticNfsPV.enabled` | bool | `false` | Manage a supplied CSI PV and bind the chart PVC to it |
+| `persistence.staticNfsPV.name` | string | `""` | Existing CSI PV name |
+| `persistence.staticNfsPV.volumeHandle` | string | `""` | Existing CSI volume handle |
+| `persistence.staticNfsPV.volumeAttributes` | object | `{}` | CSI volume attributes for the existing PV |
 | `persistence.size` | string | `10Gi` | Storage size |
 | `persistence.accessMode` | string | `ReadWriteOnce` | Access mode |
 | `persistence.localPath` | string | `/var/local/k8s/homebridge` | Local path on the host |
@@ -99,6 +103,11 @@ For a chart-managed NFS claim with a stable name, set `claimName`,
 the PVC and mounts it directly. `retainOnUninstall: true` keeps the claim if
 the release is removed. `existingClaim` remains available when another
 controller owns the claim.
+
+For a retained pre-existing CSI volume, configure `staticNfsPV` with the
+existing PV name, volume handle, volume attributes, and mount options. The
+chart manages that PV without changing its backing path and binds the named PVC
+to it.
 
 For a static local volume, set `localPV.enabled: true` and configure
 `localPath` and `nodeAffinityHost`. A local PV is created only when no

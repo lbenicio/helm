@@ -1,0 +1,34 @@
+{{- if .Values.persistence.staticNfsPV.enabled }}
+{{- if or (not .Values.persistence.staticNfsPV.name) (not .Values.persistence.staticNfsPV.volumeHandle) (not .Values.persistence.staticNfsPV.size) (empty .Values.persistence.staticNfsPV.volumeAttributes) }}
+{{- fail "enabled persistence.staticNfsPV requires name, volumeHandle, size, and volumeAttributes" }}
+{{- end }}
+{{- if .Values.persistence.localPV.enabled }}
+{{- fail "persistence.staticNfsPV and persistence.localPV cannot both be enabled" }}
+{{- end }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.persistence.staticNfsPV.name }}
+  annotations:
+    helm.sh/resource-policy: keep
+    {{- with .Values.persistence.staticNfsPV.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  capacity:
+    storage: {{ .Values.persistence.staticNfsPV.size }}
+  volumeMode: Filesystem
+  accessModes:
+    - {{ .Values.persistence.staticNfsPV.accessMode }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.staticNfsPV.reclaimPolicy }}
+  storageClassName: {{ .Values.persistence.staticNfsPV.storageClass }}
+  {{- with .Values.persistence.staticNfsPV.mountOptions }}
+  mountOptions:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  csi:
+    driver: {{ .Values.persistence.staticNfsPV.driver }}
+    volumeHandle: {{ .Values.persistence.staticNfsPV.volumeHandle | quote }}
+    volumeAttributes:
+      {{- toYaml .Values.persistence.staticNfsPV.volumeAttributes | nindent 6 }}
+{{- end }}

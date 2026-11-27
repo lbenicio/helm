@@ -15,7 +15,9 @@ spec:
   volumeMode: Filesystem
   accessModes:
     - {{ .Values.persistence.accessMode }}
-  {{- if .Values.persistence.localPV.enabled }}
+  {{- if .Values.persistence.staticNfsPV.enabled }}
+  volumeName: {{ .Values.persistence.staticNfsPV.name }}
+  {{- else if .Values.persistence.localPV.enabled }}
   volumeName: {{ .Values.persistence.localPV.name | default (.Values.persistence.claimName | default (printf "%s-data" (include "homebridge.fullname" .))) }}
   {{- end }}
   resources:

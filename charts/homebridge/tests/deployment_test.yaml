@@ -4,6 +4,7 @@ templates:
   - hpa.yaml
   - pvc.yaml
   - pv.yaml
+  - static-nfs-pv.yaml
   - recovery-pvc.yaml
   - recovery-pv.yaml
 tests:
@@ -175,6 +176,42 @@ tests:
           path: spec.template.spec.volumes[0].emptyDir
           value: {}
         template: deploy.yaml
+  - it: should bind a chart-managed claim to a supplied CSI PV
+    set:
+      persistence:
+        enabled: true
+        existingClaim: ""
+        claimName: homebridge-data-ntfs
+        storageClass: ntfs-storage
+        size: 10Gi
+        staticNfsPV:
+          enabled: true
+          name: existing-nfs-pv
+          driver: nfs.csi.k8s.io
+          volumeHandle: existing-volume-handle
+          size: 10Gi
+          accessMode: ReadWriteOnce
+          storageClass: ntfs-storage
+          reclaimPolicy: Retain
+          mountOptions:
+            - nfsvers=4.1
+          volumeAttributes:
+            server: 192.168.0.1
+            share: /k8s/ntfs
+            subDir: default/homebridge-data-ntfs
+    asserts:
+      - equal:
+          path: metadata.name
+          value: existing-nfs-pv
+        template: static-nfs-pv.yaml
+      - equal:
+          path: spec.csi.volumeAttributes.subDir
+          value: default/homebridge-data-ntfs
+        template: static-nfs-pv.yaml
+      - equal:
+          path: spec.volumeName
+          value: existing-nfs-pv
+        template: pvc.yaml
   - it: should create a static local PV only when explicitly enabled
     set:
       persistence:

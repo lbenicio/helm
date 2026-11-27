@@ -170,8 +170,6 @@ persistence:
     enabled: false
     # -- Static local PV name (defaults to the PVC name)
     name: ""
-    # -- PV name used when creating a static local PV
-    name: ""
   # -- Local path on the host
   localPath: /var/local/k8s/homebridge
   # -- Node affinity hostname for the local PV
@@ -198,6 +196,30 @@ persistence:
     localPath: ""
     # -- Node hostname that provides the recovery path
     nodeAffinityHost: ""
+  # -- Manage a pre-existing CSI PV and bind the chart-managed PVC to it
+  staticNfsPV:
+    # -- Enable management of an existing CSI PV
+    enabled: false
+    # -- Existing PersistentVolume name
+    name: ""
+    # -- CSI driver name
+    driver: nfs.csi.k8s.io
+    # -- Existing CSI volume handle
+    volumeHandle: ""
+    # -- Capacity of the existing CSI volume
+    size: ""
+    # -- Access mode of the existing CSI volume
+    accessMode: ReadWriteOnce
+    # -- StorageClass of the existing CSI volume
+    storageClass: ntfs-storage
+    # -- Reclaim policy of the existing CSI volume
+    reclaimPolicy: Retain
+    # -- Mount options from the existing PV
+    mountOptions: []
+    # -- CSI volume attributes from the existing PV
+    volumeAttributes: {}
+    # -- Existing CSI PV annotations to preserve
+    annotations: {}
 
 # -----------------------------------------------------------------------------
 # Resource requests and limits
