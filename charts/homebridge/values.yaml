@@ -220,8 +220,8 @@ persistence:
     volumeAttributes: {}
     # -- Existing CSI PV annotations to preserve
     annotations: {}
-    # -- Explicitly clear a stale claimRef when reusing a Released retained PV
-    clearStaleClaimRef: false
+    # -- Pre-bind the retained CSI PV to an existing PVC by name and namespace; set uid when replacing a stale reference
+    claimRef: {}
 
 # -----------------------------------------------------------------------------
 # Resource requests and limits

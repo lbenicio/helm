@@ -15,8 +15,18 @@ metadata:
     {{- toYaml . | nindent 4 }}
     {{- end }}
 spec:
-  {{- if .Values.persistence.staticNfsPV.clearStaleClaimRef }}
-  claimRef: null
+  {{- with .Values.persistence.staticNfsPV.claimRef }}
+  {{- if or (not .name) (not .namespace) }}
+  {{- fail "persistence.staticNfsPV.claimRef requires name and namespace" }}
+  {{- end }}
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: {{ .name }}
+    namespace: {{ .namespace }}
+    {{- with .uid }}
+    uid: {{ . | quote }}
+    {{- end }}
   {{- end }}
   capacity:
     storage: {{ .Values.persistence.staticNfsPV.size }}
