@@ -22,7 +22,7 @@ This chart deploys [Homebridge](https://homebridge.io/), a lightweight Node.js s
 ## Installing the Chart
 
 ```bash
-helm install my-release lbenicio-community/homebridge --namespace default \
+helm install my-release lbenicio-community/homebridge --version 0.1.18 --namespace default \
   --set persistence.enabled=true \
   --set persistence.storageClass=local-storage \
   --set persistence.localPath=/var/local/k8s/homebridge
@@ -33,7 +33,7 @@ helm install my-release lbenicio-community/homebridge --namespace default \
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `image.repository` | string | `homebridge/homebridge` | Container image repository |
-| `image.tag` | string | `""` | Image tag (defaults to Chart.appVersion) |
+| `image.tag` | string | `""` | Image tag (defaults to `beta-2026-11-24`) |
 | `image.pullPolicy` | string | `IfNotPresent` | Image pull policy |
 | `replicaCount` | int | `1` | Number of replicas |
 | `hostNetwork` | bool | `false` | Enable hostNetwork for mDNS/Bonjour discovery |
@@ -51,9 +51,10 @@ helm install my-release lbenicio-community/homebridge --namespace default \
 | `ingress.className` | string | `""` | Ingress class name |
 | `ingress.hosts` | list | `[{"host":"homebridge.local","paths":[{"path":"/","pathType":"Prefix"}]}]` | Ingress host rules |
 | `ingress.tls` | list | `[]` | Ingress TLS configuration |
-| `persistence.enabled` | bool | `false` | Enable persistent storage |
-| `persistence.existingClaim` | string | `""` | Use an existing PVC (claim name) |
+| `persistence.enabled` | bool | `false` | Enable persistent storage or a chart-managed PVC |
+| `persistence.existingClaim` | string | `""` | Mount an existing PVC, including NFS-backed claims |
 | `persistence.storageClass` | string | `local-storage` | Storage class name |
+| `persistence.localPV.enabled` | bool | `false` | Create a static local PV for a chart-managed PVC |
 | `persistence.size` | string | `10Gi` | Storage size |
 | `persistence.accessMode` | string | `ReadWriteOnce` | Access mode |
 | `persistence.localPath` | string | `/var/local/k8s/homebridge` | Local path on the host |
@@ -89,6 +90,15 @@ persistence:
   enabled: true
   existingClaim: "my-existing-homebridge-pvc"
 ```
+
+For a manually created NFS claim, set `existingClaim` to its PVC name. The
+chart mounts that claim and renders neither a PVC nor a local PV. To let the
+chart create an NFS claim, leave `existingClaim` empty and set
+`storageClass: ntfs-storage`; keep `localPV.enabled: false`.
+
+For a static local volume, set `localPV.enabled: true` and configure
+`localPath` and `nodeAffinityHost`. A local PV is created only when no
+`existingClaim` is supplied.
 
 ### Sidecar Containers
 

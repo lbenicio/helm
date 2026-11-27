@@ -1,0 +1,53 @@
+suite: uptime-kuma custom CA
+templates:
+  - deploy.yaml
+tests:
+  - it: mounts a ConfigMap CA and configures Node.js trust
+    set:
+      customCA:
+        enabled: true
+        configMap:
+          name: uptimekuma-ca
+          key: ca.pem
+        mountPath: /etc/uptime-kuma/ca.pem
+    asserts:
+      - contains:
+          path: spec.template.spec.containers[0].env
+          content:
+            name: NODE_EXTRA_CA_CERTS
+            value: /etc/uptime-kuma/ca.pem
+      - contains:
+          path: spec.template.spec.containers[0].volumeMounts
+          content:
+            name: custom-ca
+            mountPath: /etc/uptime-kuma/ca.pem
+            subPath: custom-ca.pem
+            readOnly: true
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: custom-ca
+            configMap:
+              name: uptimekuma-ca
+              items:
+                - key: ca.pem
+                  path: custom-ca.pem
+  - it: mounts a Secret CA source
+    set:
+      customCA:
+        enabled: true
+        configMap:
+          name: ""
+        secret:
+          name: custom-ca-secret
+          key: ca.crt
+    asserts:
+      - contains:
+          path: spec.template.spec.volumes
+          content:
+            name: custom-ca
+            secret:
+              secretName: custom-ca-secret
+              items:
+                - key: ca.crt
+                  path: custom-ca.pem

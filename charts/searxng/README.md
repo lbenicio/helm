@@ -6,7 +6,7 @@ Privacy-respecting metasearch engine — StatefulSet with a single persistent vo
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/searxng
+helm install my-release lbenicio-community/searxng --version 0.1.2
 ```
 
 ## Introduction
@@ -81,6 +81,11 @@ affinity:
 | `persistence.storageClass` | string | `local-path` | StorageClass |
 | `persistence.size` | string | `3Gi` | PVC size (holds config + cache) |
 | `persistence.retainOnDelete` | bool | `true` | Keep PVCs when deleting the StatefulSet |
+
+To mount a manually created PVC, set `persistence.existingClaim` to its name.
+This supports NFS-backed claims such as `ntfs-storage` and suppresses
+`volumeClaimTemplates`. To have the StatefulSet create its claim through NFS,
+leave `existingClaim` empty and set `persistence.storageClass: ntfs-storage`.
 | `initResources` | object | small | Resources for the init container (runs as root to chown the volume) |
 
 ### Network

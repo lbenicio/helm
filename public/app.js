@@ -1,10 +1,25 @@
+function trackAnalyticsEvent(eventName, parameters) {
+  if (typeof window.gtag === "function") {
+    window.gtag("event", eventName, parameters || {});
+  }
+}
+
+document.addEventListener("click", (event) => {
+  const target = event.target;
+  const trackedElement = target && typeof target.closest === "function"
+    ? target.closest("[data-ga-event]")
+    : null;
+  if (!trackedElement) return;
+  trackAnalyticsEvent(trackedElement.getAttribute("data-ga-event"), {
+    page_path: window.location.pathname,
+  });
+});
+
 function copyToClipboard(el, label) {
   navigator.clipboard
     .writeText(el.textContent.trim())
     .then(() => {
-      if (typeof umami !== "undefined") {
-        umami.track("copy-command", { command: label });
-      }
+      trackAnalyticsEvent("copy_command", { command: label });
       el.style.color = "var(--accent)";
       setTimeout(() => {
         el.style.color = "";
@@ -49,9 +64,7 @@ async function fetchCharts() {
       list.appendChild(div);
     }
 
-    if (typeof umami !== "undefined") {
-      umami.track("charts-loaded", { count: Object.keys(entries).length });
-    }
+    trackAnalyticsEvent("charts_loaded", { count: Object.keys(entries).length });
   } catch (e) {
     console.warn("Could not load chart list:", e);
   }

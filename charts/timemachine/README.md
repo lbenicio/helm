@@ -6,7 +6,7 @@ Samba-based Time Machine backup server for macOS — persistent, scalable, with 
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/timemachine
+helm install my-release lbenicio-community/timemachine --version 0.1.5
 ```
 
 ## Introduction
@@ -70,6 +70,12 @@ helm install timemachine lbenicio-community/timemachine \
 | `persistence.storageClass` | string | `local-path` | StorageClass |
 | `persistence.size` | string | `100Gi` | PVC size per replica |
 | `persistence.retainOnDelete` | bool | `true` | Keep PVCs when deleting StatefulSet |
+
+Use `persistence.existingClaim` to mount a custom PVC, including an NFS-backed
+claim. If no claim is supplied, the StatefulSet creates one PVC per replica
+using `persistence.storageClass`. Set this to `storage-local` to use the
+static local StorageClass defined for this cluster in
+`src/apps/timemachine/sc.yaml`.
 
 ### Network
 

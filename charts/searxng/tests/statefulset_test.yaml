@@ -83,6 +83,26 @@ tests:
           path: spec.template.spec.volumes[1].persistentVolumeClaim.claimName
           value: my-claim
         template: statefulset.yaml
+  - it: should apply an NFS class to chart-managed PVCs
+    set:
+      persistence:
+        enabled: true
+        existingClaim: ""
+        storageClass: ntfs-storage
+    asserts:
+      - equal:
+          path: spec.volumeClaimTemplates[0].spec.storageClassName
+          value: ntfs-storage
+        template: statefulset.yaml
+  - it: should mount an empty directory when persistence is disabled
+    set:
+      persistence:
+        enabled: false
+        existingClaim: ""
+    asserts:
+      - exists:
+          path: spec.template.spec.volumes[1].emptyDir
+        template: statefulset.yaml
   - it: should render settings.yml ConfigMap
     asserts:
       - isKind:

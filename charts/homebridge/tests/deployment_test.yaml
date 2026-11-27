@@ -3,6 +3,7 @@ templates:
   - deploy.yaml
   - hpa.yaml
   - pvc.yaml
+  - pv.yaml
 tests:
   - it: should be a StatefulSet
     asserts:
@@ -63,13 +64,15 @@ tests:
           value: data
         template: deploy.yaml
       - exists:
-          path: spec.template.spec.volumes[0].persistentVolumeClaim
+          path: spec.template.spec.volumes[0].emptyDir
         template: deploy.yaml
   - it: should create PVC when persistence enabled and no existingClaim
     set:
       persistence:
         enabled: true
         existingClaim: ""
+        localPV:
+          enabled: false
     asserts:
       - hasDocuments:
           count: 1
@@ -77,6 +80,71 @@ tests:
       - isKind:
           of: PersistentVolumeClaim
         template: pvc.yaml
+      - equal:
+          path: spec.storageClassName
+          value: local-storage
+        template: pvc.yaml
+      - hasDocuments:
+          count: 0
+        template: pv.yaml
+  - it: should consume an existing NFS claim without creating chart storage resources
+    set:
+      persistence:
+        enabled: true
+        existingClaim: homebridge-data-ntfs
+        storageClass: ntfs-storage
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: homebridge-data-ntfs
+        template: deploy.yaml
+      - hasDocuments:
+          count: 0
+        template: pvc.yaml
+      - hasDocuments:
+          count: 0
+        template: pv.yaml
+  - it: should create an NFS PVC without a local PV
+    set:
+      persistence:
+        enabled: true
+        existingClaim: ""
+        storageClass: ntfs-storage
+        localPV:
+          enabled: false
+    asserts:
+      - equal:
+          path: spec.storageClassName
+          value: ntfs-storage
+        template: pvc.yaml
+      - hasDocuments:
+          count: 0
+        template: pv.yaml
+  - it: should create a static local PV only when explicitly enabled
+    set:
+      persistence:
+        enabled: true
+        existingClaim: ""
+        localPV:
+          enabled: true
+        nodeAffinityHost: node1
+    asserts:
+      - isKind:
+          of: PersistentVolume
+        template: pv.yaml
+      - equal:
+          path: spec.nodeAffinity.required.nodeSelectorTerms[0].matchExpressions[0].values[0]
+          value: node1
+        template: pv.yaml
+  - it: should use an empty directory when persistence is disabled and no claim is supplied
+    set:
+      persistence:
+        enabled: false
+        existingClaim: ""
+    asserts:
+      - exists:
+          path: spec.template.spec.volumes[0].emptyDir
+        template: deploy.yaml
   - it: should not create PVC when persistence disabled
     set:
       persistence:

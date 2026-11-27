@@ -162,6 +162,9 @@ persistence:
   accessMode: ReadWriteOnce
   # -- Reclaim policy
   reclaimPolicy: Delete
+  # -- Create a static local PersistentVolume. Disable for existing or dynamically provisioned PVCs.
+  localPV:
+    enabled: false
   # -- Local path on the host
   localPath: /var/local/k8s/homebridge
   # -- Node affinity hostname for the local PV

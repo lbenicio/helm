@@ -1,9 +1,44 @@
 suite: timemachine smoke tests
 templates:
   - serviceaccount.yaml
+  - statefulset.yaml
 tests:
   - it: renders the service account
-    documentIndex: 0
     asserts:
       - isKind:
           of: ServiceAccount
+        template: serviceaccount.yaml
+  - it: mounts a supplied claim and skips volumeClaimTemplates
+    set:
+      persistence:
+        enabled: true
+        existingClaim: tm01-disk
+        storageClass: storage-local
+    asserts:
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: tm01-disk
+        template: statefulset.yaml
+      - notExists:
+          path: spec.volumeClaimTemplates
+        template: statefulset.yaml
+  - it: applies the configured storage class to chart-managed claims
+    set:
+      persistence:
+        enabled: true
+        existingClaim: ""
+        storageClass: storage-local
+    asserts:
+      - equal:
+          path: spec.volumeClaimTemplates[0].spec.storageClassName
+          value: storage-local
+        template: statefulset.yaml
+  - it: mounts an empty directory when persistence is disabled
+    set:
+      persistence:
+        enabled: false
+        existingClaim: ""
+    asserts:
+      - exists:
+          path: spec.template.spec.volumes[0].emptyDir
+        template: statefulset.yaml

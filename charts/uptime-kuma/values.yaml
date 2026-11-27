@@ -130,6 +130,23 @@ externalDatabase:
   dbName: uptime_kuma
 
 # -----------------------------------------------------------------------------
+# Additional CA bundle for outbound TLS connections
+# -----------------------------------------------------------------------------
+customCA:
+  # -- Mount a custom CA and configure NODE_EXTRA_CA_CERTS
+  enabled: false
+  # -- Existing ConfigMap source (set either this or secret.name)
+  configMap:
+    name: ""
+    key: ca.pem
+  # -- Existing Secret source (set either this or configMap.name)
+  secret:
+    name: ""
+    key: ca.crt
+  # -- Mounted file path used by NODE_EXTRA_CA_CERTS
+  mountPath: /etc/ssl/certs/custom-ca.pem
+
+# -----------------------------------------------------------------------------
 # Environment
 # -----------------------------------------------------------------------------
 env:

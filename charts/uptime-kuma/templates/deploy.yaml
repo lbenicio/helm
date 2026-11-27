@@ -1,3 +1,10 @@
+{{- if .Values.customCA.enabled }}
+  {{- if and .Values.customCA.configMap.name .Values.customCA.secret.name }}
+    {{- fail "customCA accepts either configMap.name or secret.name, not both" }}
+  {{- else if not (or .Values.customCA.configMap.name .Values.customCA.secret.name) }}
+    {{- fail "customCA.enabled requires customCA.configMap.name or customCA.secret.name" }}
+  {{- end }}
+{{- end }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -60,16 +67,19 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          {{- with .Values.env }}
+          {{- if or .Values.env .Values.extraEnv .Values.customCA.enabled }}
           env:
-            {{- range $key, $value := . }}
+            {{- range $key, $value := .Values.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
-          {{- end }}
           {{- with .Values.extraEnv }}
-          env:
             {{- toYaml . | nindent 12 }}
+          {{- end }}
+            {{- if .Values.customCA.enabled }}
+            - name: NODE_EXTRA_CA_CERTS
+              value: {{ .Values.customCA.mountPath | quote }}
+            {{- end }}
           {{- end }}
           {{- with .Values.resources }}
           resources:
@@ -99,6 +109,12 @@ spec:
               mountPath: /etc/ssl/certs/my-selfsigned-ca.crt
               subPath: ca.crt
               readOnly: true
+            {{- if .Values.customCA.enabled }}
+            - name: custom-ca
+              mountPath: {{ .Values.customCA.mountPath }}
+              subPath: custom-ca.pem
+              readOnly: true
+            {{- end }}
             {{- with .Values.extraVolumeMounts }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -121,6 +137,22 @@ spec:
             items:
               - key: ca.crt
                 path: ca.crt
+        {{- if .Values.customCA.enabled }}
+        - name: custom-ca
+          {{- if .Values.customCA.configMap.name }}
+          configMap:
+            name: {{ .Values.customCA.configMap.name }}
+            items:
+              - key: {{ .Values.customCA.configMap.key }}
+                path: custom-ca.pem
+          {{- else }}
+          secret:
+            secretName: {{ .Values.customCA.secret.name }}
+            items:
+              - key: {{ .Values.customCA.secret.key }}
+                path: custom-ca.pem
+          {{- end }}
+        {{- end }}
         {{- with .Values.extraVolumes }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

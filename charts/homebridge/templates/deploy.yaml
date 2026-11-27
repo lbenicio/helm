@@ -110,8 +110,15 @@ spec:
         {{- end }}
       volumes:
         - name: data
+          {{- if .Values.persistence.existingClaim }}
           persistentVolumeClaim:
-            claimName: {{ .Values.persistence.existingClaim | default (printf "%s-data" (include "homebridge.fullname" .)) }}
+            claimName: {{ .Values.persistence.existingClaim }}
+          {{- else if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-data" (include "homebridge.fullname" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
         {{- if .Values.bluetooth.enabled }}
         - name: bluetooth
           hostPath:

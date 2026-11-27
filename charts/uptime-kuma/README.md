@@ -6,7 +6,7 @@ A self-hosted monitoring tool like Uptime Robot, with a beautiful UI for trackin
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/uptime-kuma
+helm install my-release lbenicio-community/uptime-kuma --version 0.1.3
 ```
 
 ## Prerequisites
@@ -31,6 +31,12 @@ helm install my-release lbenicio-community/uptime-kuma
 | `persistence.enabled` | bool | `true` | Enable PVC for SQLite database |
 | `persistence.size` | string | `4Gi` | PVC size |
 | `persistence.storageClass` | string | `local-path` | Storage class |
+| `customCA.enabled` | bool | `false` | Mount an additional CA and set `NODE_EXTRA_CA_CERTS` |
+| `customCA.configMap.name` | string | `""` | Existing ConfigMap containing the CA bundle |
+| `customCA.configMap.key` | string | `ca.pem` | ConfigMap key containing the CA bundle |
+| `customCA.secret.name` | string | `""` | Existing Secret source, as an alternative to ConfigMap |
+| `customCA.secret.key` | string | `ca.crt` | Secret key containing the CA bundle |
+| `customCA.mountPath` | string | `/etc/ssl/certs/custom-ca.pem` | Mounted file and `NODE_EXTRA_CA_CERTS` path |
 | `resources.requests.cpu` | string | `100m` | CPU request |
 | `resources.requests.memory` | string | `128Mi` | Memory request |
 | `resources.limits.cpu` | string | `500m` | CPU limit |
@@ -42,6 +48,21 @@ helm install my-release lbenicio-community/uptime-kuma
 | `env.TZ` | string | `UTC` | Container timezone |
 
 ## Configuration
+
+### Additional CA bundle
+
+Mount an existing ConfigMap or Secret as an additional trust root for outbound
+TLS connections. Set exactly one source. The chart mounts the file read-only
+and configures Node.js to load it through `NODE_EXTRA_CA_CERTS`.
+
+```yaml
+customCA:
+  enabled: true
+  configMap:
+    name: uptimekuma-ca
+    key: ca.pem
+  mountPath: /etc/uptime-kuma/ca.pem
+```
 
 ### Ingress
 

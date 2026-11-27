@@ -1,8 +1,8 @@
 apiVersion: v2
 name: searxng
-description: Privacy-respecting metasearch engine. StatefulSet with a single local-path volume holding both config and cache, and node scheduling support for node-local storage.
+description: Privacy-respecting metasearch engine. StatefulSet with one configurable PVC for config and cache, including existing and NFS-backed claims.
 type: application
-version: 0.1.1
+version: 0.1.2
 appVersion: "2026.6.22-952896d29"
 keywords:
   - searxng
