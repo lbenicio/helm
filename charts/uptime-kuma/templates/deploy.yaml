@@ -4,6 +4,9 @@
   {{- else if not (or .Values.customCA.configMap.name .Values.customCA.secret.name) }}
     {{- fail "customCA.enabled requires customCA.configMap.name or customCA.secret.name" }}
   {{- end }}
+  {{- if and .Values.customCA.configMap.create (not .Values.customCA.configMap.name) }}
+    {{- fail "customCA.configMap.create requires customCA.configMap.name" }}
+  {{- end }}
 {{- end }}
 apiVersion: apps/v1
 kind: Deployment

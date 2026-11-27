@@ -236,6 +236,8 @@ persistence:
   enabled: true
   # -- Use an existing PVC (overrides volumeClaimTemplates)
   existingClaim: ""
+  # -- Name of a chart-managed PVC; empty uses one volumeClaimTemplate per replica
+  claimName: ""
   # -- StorageClass for the PVC
   storageClass: local-path
   # -- Access mode

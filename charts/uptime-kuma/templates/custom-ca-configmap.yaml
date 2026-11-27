@@ -1,0 +1,14 @@
+{{- if and .Values.customCA.enabled .Values.customCA.configMap.create }}
+{{- if not .Values.customCA.configMap.content }}
+{{- fail "customCA.configMap.create requires customCA.configMap.content (use --set-file)" }}
+{{- end }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.customCA.configMap.name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "uptime-kuma.labels" . | nindent 4 }}
+data:
+  {{ .Values.customCA.configMap.key }}: {{ .Values.customCA.configMap.content | quote }}
+{{- end }}

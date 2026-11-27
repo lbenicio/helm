@@ -124,6 +124,8 @@ persistence:
   enabled: true
   # -- Use an existing PVC (overrides volumeClaimTemplates)
   existingClaim: ""
+  # -- Name of a chart-managed PVC; empty uses volumeClaimTemplates
+  claimName: ""
   # -- StorageClass for the PVC
   storageClass: local-path
   # -- Access mode
@@ -134,6 +136,29 @@ persistence:
   mountPath: /opt/timemachine
   # -- Retain PVC when deleting the StatefulSet
   retainOnDelete: true
+  # -- Create a static local PV and named PVC for a specific host path
+  staticLocalPV:
+    # -- Enable a static local PV and named PVC
+    enabled: false
+    # -- Static PV name
+    name: ""
+    # -- Host path for the static local PV
+    localPath: ""
+    # -- Node hostname required by the static local PV
+    nodeAffinityHost: ""
+
+# -- Optionally create one shared StorageClass (enable in only one release)
+storageClass:
+  # -- Create the shared StorageClass
+  create: false
+  # -- StorageClass name
+  name: ""
+  # -- Kubernetes storage provisioner
+  provisioner: kubernetes.io/no-provisioner
+  # -- PV binding mode
+  volumeBindingMode: WaitForFirstConsumer
+  # -- Reclaim policy for dynamically provisioned volumes
+  reclaimPolicy: Delete
 
 # -----------------------------------------------------------------------------
 # Resources

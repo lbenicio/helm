@@ -2,6 +2,9 @@ suite: timemachine smoke tests
 templates:
   - serviceaccount.yaml
   - statefulset.yaml
+  - pv.yaml
+  - pvc.yaml
+  - storageclass.yaml
 tests:
   - it: renders the service account
     asserts:
@@ -33,6 +36,61 @@ tests:
           path: spec.volumeClaimTemplates[0].spec.storageClassName
           value: storage-local
         template: statefulset.yaml
+  - it: renders a named static local PV and PVC for Helm ownership
+    set:
+      persistence:
+        enabled: true
+        existingClaim: ""
+        claimName: tm01-disk
+        storageClass: storage-local
+        size: 3Ti
+        accessMode: ReadWriteOnce
+        retainOnDelete: true
+        staticLocalPV:
+          enabled: true
+          name: tm01-local
+          localPath: /mnt/disk1/tm
+          nodeAffinityHost: lbenicio-rpi4-storage1
+      storageClass:
+        create: true
+        name: storage-local
+    asserts:
+      - equal:
+          path: metadata.name
+          value: tm01-local
+        template: pv.yaml
+      - equal:
+          path: spec.local.path
+          value: /mnt/disk1/tm
+        template: pv.yaml
+      - equal:
+          path: spec.claimRef.name
+          value: tm01-disk
+        template: pv.yaml
+      - equal:
+          path: metadata.name
+          value: tm01-disk
+        template: pvc.yaml
+      - equal:
+          path: spec.volumeName
+          value: tm01-local
+        template: pvc.yaml
+      - equal:
+          path: metadata.name
+          value: storage-local
+        template: storageclass.yaml
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: tm01-disk
+        template: statefulset.yaml
+      - notExists:
+          path: spec.volumeClaimTemplates
+        template: statefulset.yaml
+  - it: renders no shared StorageClass unless explicitly enabled
+    asserts:
+      - hasDocuments:
+          count: 0
+        template: storageclass.yaml
   - it: mounts an empty directory when persistence is disabled
     set:
       persistence:

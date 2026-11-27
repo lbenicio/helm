@@ -1,0 +1,45 @@
+{{- if .Values.persistence.recoveryVolume.enabled }}
+{{- if or (not .Values.persistence.recoveryVolume.pvName) (not .Values.persistence.recoveryVolume.claimName) (not .Values.persistence.recoveryVolume.localPath) (not .Values.persistence.recoveryVolume.nodeAffinityHost) }}
+{{- fail "enabled persistence.recoveryVolume requires pvName, claimName, localPath, and nodeAffinityHost" }}
+{{- end }}
+{{- $pv := lookup "v1" "PersistentVolume" "" .Values.persistence.recoveryVolume.pvName }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.persistence.recoveryVolume.pvName }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  capacity:
+    storage: {{ .Values.persistence.recoveryVolume.size }}
+  volumeMode: Filesystem
+  accessModes:
+    - {{ .Values.persistence.recoveryVolume.accessMode }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.recoveryVolume.reclaimPolicy }}
+  storageClassName: {{ .Values.persistence.recoveryVolume.storageClass }}
+  local:
+    path: {{ .Values.persistence.recoveryVolume.localPath }}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - {{ .Values.persistence.recoveryVolume.nodeAffinityHost }}
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    namespace: {{ .Release.Namespace }}
+    name: {{ .Values.persistence.recoveryVolume.claimName }}
+    {{- if $pv }}
+    {{- with $pv.spec.claimRef }}
+    {{- with .uid }}
+    uid: {{ . | quote }}
+    {{- end }}
+    {{- end }}
+    {{- with .resourceVersion }}
+    resourceVersion: {{ . | quote }}
+    {{- end }}
+    {{- end }}
+{{- end }}

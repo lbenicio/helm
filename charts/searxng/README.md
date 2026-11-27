@@ -6,7 +6,7 @@ Privacy-respecting metasearch engine — StatefulSet with a single persistent vo
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/searxng --version 0.1.2
+helm install my-release lbenicio-community/searxng --version 0.1.3
 ```
 
 ## Introduction
@@ -76,16 +76,18 @@ affinity:
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `persistence.enabled` | bool | `true` | Enable PVC via volumeClaimTemplates |
+| `persistence.enabled` | bool | `true` | Enable persistent storage |
 | `persistence.existingClaim` | string | `""` | Use an existing PVC |
+| `persistence.claimName` | string | `""` | Name a chart-managed PVC instead of a volumeClaimTemplate |
 | `persistence.storageClass` | string | `local-path` | StorageClass |
 | `persistence.size` | string | `3Gi` | PVC size (holds config + cache) |
 | `persistence.retainOnDelete` | bool | `true` | Keep PVCs when deleting the StatefulSet |
 
-To mount a manually created PVC, set `persistence.existingClaim` to its name.
-This supports NFS-backed claims such as `ntfs-storage` and suppresses
-`volumeClaimTemplates`. To have the StatefulSet create its claim through NFS,
-leave `existingClaim` empty and set `persistence.storageClass: ntfs-storage`.
+To have the chart create and mount a named NFS PVC, set
+`persistence.claimName` and `persistence.storageClass: ntfs-storage`, leaving
+`existingClaim` empty. This is useful when adopting an already-bound claim.
+Without `claimName`, the StatefulSet creates one volumeClaimTemplate per
+replica. Set `existingClaim` when a separate controller owns the PVC.
 | `initResources` | object | small | Resources for the init container (runs as root to chown the volume) |
 
 ### Network

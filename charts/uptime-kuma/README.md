@@ -6,7 +6,7 @@ A self-hosted monitoring tool like Uptime Robot, with a beautiful UI for trackin
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/uptime-kuma --version 0.1.3
+helm install my-release lbenicio-community/uptime-kuma --version 0.1.4
 ```
 
 ## Prerequisites
@@ -34,6 +34,8 @@ helm install my-release lbenicio-community/uptime-kuma --version 0.1.3
 | `customCA.enabled` | bool | `false` | Mount an additional CA and set `NODE_EXTRA_CA_CERTS` |
 | `customCA.configMap.name` | string | `""` | Existing ConfigMap containing the CA bundle |
 | `customCA.configMap.key` | string | `ca.pem` | ConfigMap key containing the CA bundle |
+| `customCA.configMap.create` | bool | `false` | Let Helm create the CA ConfigMap |
+| `customCA.configMap.content` | string | `""` | PEM contents, normally supplied with `--set-file` |
 | `customCA.secret.name` | string | `""` | Existing Secret source, as an alternative to ConfigMap |
 | `customCA.secret.key` | string | `ca.crt` | Secret key containing the CA bundle |
 | `customCA.mountPath` | string | `/etc/ssl/certs/custom-ca.pem` | Mounted file and `NODE_EXTRA_CA_CERTS` path |
@@ -51,17 +53,26 @@ helm install my-release lbenicio-community/uptime-kuma --version 0.1.3
 
 ### Additional CA bundle
 
-Mount an existing ConfigMap or Secret as an additional trust root for outbound
-TLS connections. Set exactly one source. The chart mounts the file read-only
-and configures Node.js to load it through `NODE_EXTRA_CA_CERTS`.
+Mount a ConfigMap created by this chart or an existing ConfigMap/Secret as an
+additional trust root for outbound TLS connections. The chart mounts the file
+read-only and configures Node.js to load it through `NODE_EXTRA_CA_CERTS`.
 
 ```yaml
 customCA:
   enabled: true
   configMap:
+    create: true
     name: uptimekuma-ca
     key: ca.pem
   mountPath: /etc/uptime-kuma/ca.pem
+```
+
+Provide the PEM bundle at install time without duplicating it in values:
+
+```sh
+helm upgrade --install uptimekuma lbenicio-community/uptime-kuma \
+  --version 0.1.4 --namespace default -f values.yaml \
+  --set-file customCA.configMap.content=ca.pem
 ```
 
 ### Ingress

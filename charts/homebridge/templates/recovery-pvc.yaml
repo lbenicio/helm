@@ -1,0 +1,18 @@
+{{- if .Values.persistence.recoveryVolume.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.persistence.recoveryVolume.claimName }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    helm.sh/resource-policy: keep
+spec:
+  volumeMode: Filesystem
+  accessModes:
+    - {{ .Values.persistence.recoveryVolume.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.recoveryVolume.size }}
+  storageClassName: {{ .Values.persistence.recoveryVolume.storageClass }}
+  volumeName: {{ .Values.persistence.recoveryVolume.pvName }}
+{{- end }}

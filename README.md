@@ -37,8 +37,10 @@ helm pull oci://ghcr.io/lbenicio/helm/whoami --version 0.1.0
 | [whoami](./charts/whoami) | 0.1.0 | Lightweight HTTP server that prints OS and request information — ideal for ingress and network debugging |
 | [smtp](./charts/smtp) | 0.1.0 | SMTP relay service with smart-host support, relay domain filtering, and optional authentication |
 | [glance](./charts/glance) | 0.1.0 | Self-hosted dashboard that aggregates RSS feeds, bookmarks, and widgets into a single page |
-| [homebridge](./charts/homebridge) | 0.1.0 | HomeKit bridge for non-HomeKit smart home devices, with host networking and Bluetooth support |
-| [searxng](./charts/searxng) | 0.1.0 | Privacy-respecting metasearch engine — StatefulSet with a single volume and node scheduling for local-path storage |
+| [homebridge](./charts/homebridge) | 0.1.19 | HomeKit bridge with managed NFS claims and retained recovery storage |
+| [searxng](./charts/searxng) | 0.1.3 | Privacy-respecting metasearch engine with named NFS PVC support |
+| [timemachine](./charts/timemachine) | 0.1.6 | Samba Time Machine server with chart-managed static local PVs and PVCs |
+| [uptime-kuma](./charts/uptime-kuma) | 0.1.4 | Uptime monitoring with ConfigMap or Secret CA bundle support |
 
 ## Installing a Chart
 

@@ -1,0 +1,24 @@
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) .Values.persistence.claimName }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.persistence.claimName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "timemachine.labels" . | nindent 4 }}
+  {{- if .Values.persistence.retainOnDelete }}
+  annotations:
+    helm.sh/resource-policy: keep
+  {{- end }}
+spec:
+  accessModes:
+    - {{ .Values.persistence.accessMode }}
+  volumeMode: Filesystem
+  storageClassName: {{ .Values.persistence.storageClass }}
+  {{- if .Values.persistence.staticLocalPV.enabled }}
+  volumeName: {{ .Values.persistence.staticLocalPV.name }}
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.persistence.size }}
+{{- end }}

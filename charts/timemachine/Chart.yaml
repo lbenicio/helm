@@ -1,8 +1,8 @@
 apiVersion: v2
 name: timemachine
-description: Helm chart for Time Machine Samba backup server
+description: Time Machine Samba backup server with managed named local PVs, PVCs, and StorageClass support
 type: application
-version: 0.1.5
+version: 0.1.6
 appVersion: "smb-20261124"
 keywords:
   - timemachine

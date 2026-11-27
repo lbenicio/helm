@@ -6,7 +6,7 @@ Samba-based Time Machine backup server for macOS — persistent, scalable, with 
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/timemachine --version 0.1.5
+helm install my-release lbenicio-community/timemachine --version 0.1.6
 ```
 
 ## Introduction
@@ -65,17 +65,25 @@ helm install timemachine lbenicio-community/timemachine \
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| `persistence.enabled` | bool | `true` | Enable PVC via volumeClaimTemplates |
+| `persistence.enabled` | bool | `true` | Enable persistent storage |
 | `persistence.existingClaim` | string | `""` | Use existing PVC |
+| `persistence.claimName` | string | `""` | Name a chart-managed PVC instead of a volumeClaimTemplate |
 | `persistence.storageClass` | string | `local-path` | StorageClass |
 | `persistence.size` | string | `100Gi` | PVC size per replica |
 | `persistence.retainOnDelete` | bool | `true` | Keep PVCs when deleting StatefulSet |
+| `persistence.staticLocalPV.enabled` | bool | `false` | Create a static local PV and named PVC |
+| `persistence.staticLocalPV.name` | string | `""` | Static PV name |
+| `persistence.staticLocalPV.localPath` | string | `""` | Host path for the static local PV |
+| `persistence.staticLocalPV.nodeAffinityHost` | string | `""` | Node hostname for the static local PV |
+| `storageClass.create` | bool | `false` | Create one shared StorageClass (enable in one release only) |
+| `storageClass.name` | string | `""` | Shared StorageClass name |
 
-Use `persistence.existingClaim` to mount a custom PVC, including an NFS-backed
-claim. If no claim is supplied, the StatefulSet creates one PVC per replica
-using `persistence.storageClass`. Set this to `storage-local` to use the
-static local StorageClass defined for this cluster in
-`src/apps/timemachine/sc.yaml`.
+Use `persistence.staticLocalPV` with `claimName` to let Helm own a static local
+PV and its PVC for a specific host path. The shared `storageClass.create`
+option should be enabled in one release only. Alternatively, set `claimName`
+and a dynamic `persistence.storageClass` to let Helm create a named PVC, or use
+`existingClaim` when another controller owns the claim. With no `claimName`,
+the StatefulSet creates one PVC per replica using a volumeClaimTemplate.
 
 ### Network
 

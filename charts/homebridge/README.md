@@ -6,7 +6,7 @@ HomeKit support for the impatient — bring HomeKit to non-HomeKit smart home de
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/homebridge
+helm install my-release lbenicio-community/homebridge --version 0.1.19
 ```
 
 ## Introduction
@@ -22,7 +22,7 @@ This chart deploys [Homebridge](https://homebridge.io/), a lightweight Node.js s
 ## Installing the Chart
 
 ```bash
-helm install my-release lbenicio-community/homebridge --version 0.1.18 --namespace default \
+helm install my-release lbenicio-community/homebridge --version 0.1.19 --namespace default \
   --set persistence.enabled=true \
   --set persistence.storageClass=local-storage \
   --set persistence.localPath=/var/local/k8s/homebridge
@@ -53,8 +53,11 @@ helm install my-release lbenicio-community/homebridge --version 0.1.18 --namespa
 | `ingress.tls` | list | `[]` | Ingress TLS configuration |
 | `persistence.enabled` | bool | `false` | Enable persistent storage or a chart-managed PVC |
 | `persistence.existingClaim` | string | `""` | Mount an existing PVC, including NFS-backed claims |
+| `persistence.claimName` | string | `""` | Name a chart-managed PVC instead of using the default `<release>-data` |
 | `persistence.storageClass` | string | `local-storage` | Storage class name |
 | `persistence.localPV.enabled` | bool | `false` | Create a static local PV for a chart-managed PVC |
+| `persistence.retainOnUninstall` | bool | `false` | Keep the chart-managed PVC when uninstalling the release |
+| `persistence.recoveryVolume.enabled` | bool | `false` | Manage a separate retained local recovery PV/PVC; it is not mounted by Homebridge |
 | `persistence.size` | string | `10Gi` | Storage size |
 | `persistence.accessMode` | string | `ReadWriteOnce` | Access mode |
 | `persistence.localPath` | string | `/var/local/k8s/homebridge` | Local path on the host |
@@ -91,14 +94,19 @@ persistence:
   existingClaim: "my-existing-homebridge-pvc"
 ```
 
-For a manually created NFS claim, set `existingClaim` to its PVC name. The
-chart mounts that claim and renders neither a PVC nor a local PV. To let the
-chart create an NFS claim, leave `existingClaim` empty and set
-`storageClass: ntfs-storage`; keep `localPV.enabled: false`.
+For a chart-managed NFS claim with a stable name, set `claimName`,
+`storageClass: ntfs-storage`, and leave `existingClaim` empty. The chart creates
+the PVC and mounts it directly. `retainOnUninstall: true` keeps the claim if
+the release is removed. `existingClaim` remains available when another
+controller owns the claim.
 
 For a static local volume, set `localPV.enabled: true` and configure
 `localPath` and `nodeAffinityHost`. A local PV is created only when no
 `existingClaim` is supplied.
+
+Set `persistence.recoveryVolume.enabled` to manage a separate retained local
+PV/PVC for a recovery copy. The recovery claim is not mounted in the Homebridge
+pod.
 
 ### Sidecar Containers
 

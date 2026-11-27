@@ -1,0 +1,14 @@
+{{- if .Values.storageClass.create }}
+{{- if not .Values.storageClass.name }}
+{{- fail "storageClass.create requires storageClass.name" }}
+{{- end }}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageClass.name }}
+  annotations:
+    helm.sh/resource-policy: keep
+provisioner: {{ .Values.storageClass.provisioner }}
+volumeBindingMode: {{ .Values.storageClass.volumeBindingMode }}
+reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+{{- end }}

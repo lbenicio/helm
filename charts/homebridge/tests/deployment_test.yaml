@@ -4,6 +4,8 @@ templates:
   - hpa.yaml
   - pvc.yaml
   - pv.yaml
+  - recovery-pvc.yaml
+  - recovery-pv.yaml
 tests:
   - it: should be a StatefulSet
     asserts:
@@ -120,6 +122,59 @@ tests:
       - hasDocuments:
           count: 0
         template: pv.yaml
+  - it: should create a named NFS PVC and mount it from the StatefulSet
+    set:
+      persistence:
+        enabled: true
+        existingClaim: ""
+        claimName: homebridge-data-ntfs
+        storageClass: ntfs-storage
+        size: 10Gi
+        accessMode: ReadWriteOnce
+        retainOnUninstall: true
+    asserts:
+      - equal:
+          path: metadata.name
+          value: homebridge-data-ntfs
+        template: pvc.yaml
+      - equal:
+          path: spec.storageClassName
+          value: ntfs-storage
+        template: pvc.yaml
+      - equal:
+          path: spec.template.spec.volumes[0].persistentVolumeClaim.claimName
+          value: homebridge-data-ntfs
+        template: deploy.yaml
+  - it: should manage an optional recovery PV and PVC without mounting either
+    set:
+      persistence:
+        recoveryVolume:
+          enabled: true
+          pvName: homebridge-data-local-backup
+          claimName: homebridge-data-local-backup
+          storageClass: local-storage
+          size: 10Gi
+          accessMode: ReadWriteOnce
+          reclaimPolicy: Retain
+          localPath: /var/local/k8s/homebridge
+          nodeAffinityHost: lbenicio-rpi4-slave1
+    asserts:
+      - equal:
+          path: spec.local.path
+          value: /var/local/k8s/homebridge
+        template: recovery-pv.yaml
+      - equal:
+          path: spec.claimRef.name
+          value: homebridge-data-local-backup
+        template: recovery-pv.yaml
+      - equal:
+          path: spec.volumeName
+          value: homebridge-data-local-backup
+        template: recovery-pvc.yaml
+      - equal:
+          path: spec.template.spec.volumes[0].emptyDir
+          value: {}
+        template: deploy.yaml
   - it: should create a static local PV only when explicitly enabled
     set:
       persistence:

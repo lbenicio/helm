@@ -154,6 +154,8 @@ persistence:
   enabled: false
   # -- Use an existing PVC (claim name) instead of creating one
   existingClaim: ""
+  # -- Name for a chart-managed PVC; empty uses <release>-data
+  claimName: ""
   # -- Storage class name
   storageClass: local-storage
   # -- Storage size
@@ -164,11 +166,38 @@ persistence:
   reclaimPolicy: Delete
   # -- Create a static local PersistentVolume. Disable for existing or dynamically provisioned PVCs.
   localPV:
+    # -- Enable a static local PersistentVolume
     enabled: false
+    # -- Static local PV name (defaults to the PVC name)
+    name: ""
+    # -- PV name used when creating a static local PV
+    name: ""
   # -- Local path on the host
   localPath: /var/local/k8s/homebridge
   # -- Node affinity hostname for the local PV
   nodeAffinityHost: ""
+  # -- Keep chart-managed claims when uninstalling the release
+  retainOnUninstall: false
+  # -- Optional local recovery volume kept separate from the active workload volume
+  recoveryVolume:
+    # -- Manage a separate, retained local recovery volume
+    enabled: false
+    # -- Recovery PersistentVolume name
+    pvName: ""
+    # -- Recovery PersistentVolumeClaim name
+    claimName: ""
+    # -- StorageClass for the recovery volume
+    storageClass: local-storage
+    # -- Recovery volume capacity
+    size: 10Gi
+    # -- Recovery volume access mode
+    accessMode: ReadWriteOnce
+    # -- Reclaim policy for the recovery PV
+    reclaimPolicy: Retain
+    # -- Local host path for the recovery PV
+    localPath: ""
+    # -- Node hostname that provides the recovery path
+    nodeAffinityHost: ""
 
 # -----------------------------------------------------------------------------
 # Resource requests and limits

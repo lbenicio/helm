@@ -137,8 +137,12 @@ customCA:
   enabled: false
   # -- Existing ConfigMap source (set either this or secret.name)
   configMap:
+    # -- Create the ConfigMap from customCA.configMap.content
+    create: false
     name: ""
     key: ca.pem
+    # -- PEM contents, usually passed with --set-file
+    content: ""
   # -- Existing Secret source (set either this or configMap.name)
   secret:
     name: ""
