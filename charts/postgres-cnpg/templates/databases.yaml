@@ -1,0 +1,13 @@
+{{- range $database := .Values.databases }}
+{{- $spec := omit $database "resourceName" }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  name: {{ $database.resourceName | default $database.name | required "databases entries require name" | quote }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  cluster:
+    name: {{ $.Values.cluster.name | quote }}
+{{- toYaml $spec | nindent 2 }}
+---
+{{- end }}

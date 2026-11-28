@@ -24,6 +24,16 @@ cluster:
         value: "true"
         effect: NoSchedule
 
+# -- PostgreSQL roles managed by CloudNativePG. Each item uses the
+# DatabaseRole spec fields except `resourceName` and `cluster`; `name` is both
+# the PostgreSQL role name and, by default, the Kubernetes resource name.
+databaseRoles: []
+
+# -- PostgreSQL databases managed by CloudNativePG. Each item uses the
+# Database spec fields except `resourceName` and `cluster`; `name` is the
+# PostgreSQL database name.
+databases: []
+
 # -- CPU and memory requests and limits for the PostgreSQL instance.
 resources:
   requests:

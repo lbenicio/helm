@@ -1,0 +1,13 @@
+{{- range $role := .Values.databaseRoles }}
+{{- $spec := omit $role "resourceName" }}
+apiVersion: postgresql.cnpg.io/v1
+kind: DatabaseRole
+metadata:
+  name: {{ $role.resourceName | default $role.name | required "databaseRoles entries require name" | quote }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  cluster:
+    name: {{ $.Values.cluster.name | quote }}
+{{- toYaml $spec | nindent 2 }}
+---
+{{- end }}

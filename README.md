@@ -44,7 +44,7 @@ helm pull oci://ghcr.io/lbenicio/helm/whoami --version 0.1.0
 | [rpi4-v4l2-device-plugin](./charts/rpi4-v4l2-device-plugin) | 0.1.0 | Paired Raspberry Pi 4 V4L2 H.264 decoder and encoder devices for Kubernetes workloads |
 | [rke2-multus](./charts/rke2-multus) | 4.3.118-lbenicio.1 | RKE2 Multus with explicit CNI installer resource bounds |
 | [minio-storage](./charts/minio-storage) | 0.1.2 | Single-instance MinIO with restricted container security settings, S3-only credentials, TLS, and storage-node data path |
-| [postgres-cnpg](./charts/postgres-cnpg) | 0.1.0 | Single-instance CloudNativePG cluster pinned to the local storage node |
+| [postgres-cnpg](./charts/postgres-cnpg) | 0.1.1 | Single-instance CloudNativePG cluster with optional managed roles and databases |
 
 ## Installing a Chart
 
