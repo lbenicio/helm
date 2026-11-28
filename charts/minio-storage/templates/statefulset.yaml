@@ -33,7 +33,7 @@ spec:
           image: ghcr.io/l33tlamer/minio-backup@sha256:a1ea29fa28355559ef137d71fc570e508a214ec84ff8083e39bc5428980b015e
           imagePullPolicy: IfNotPresent
           command:
-            - /opt/minio/minio-entrypoint.sh
+            - /usr/bin/minio
           args:
             - server
             - --address=:{{ .Values.minio.apiPort }}
@@ -50,9 +50,26 @@ spec:
           env:
             - name: HOME
               value: {{ .Values.minio.homeDirectory | quote }}
-          envFrom:
-            - secretRef:
-                name: storage-minio-env
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: storage-minio-env
+                  key: MINIO_ROOT_USER
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: storage-minio-env
+                  key: MINIO_ROOT_PASSWORD
+            - name: MINIO_SERVER_URL
+              valueFrom:
+                secretKeyRef:
+                  name: storage-minio-env
+                  key: MINIO_SERVER_URL
+            - name: MINIO_BROWSER_REDIRECT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: storage-minio-env
+                  key: MINIO_BROWSER_REDIRECT_URL
           readinessProbe:
             httpGet:
               path: /minio/health/live
@@ -80,9 +97,6 @@ spec:
             - name: certs
               mountPath: /tmp/.minio/certs
               readOnly: true
-            - name: entrypoint
-              mountPath: /opt/minio
-              readOnly: true
       volumes:
         - name: tmp
           emptyDir: {}
@@ -103,7 +117,3 @@ spec:
                 path: private.key
               - key: root-ca.crt
                 path: CAs/root-ca.crt
-        - name: entrypoint
-          configMap:
-            name: minio-entrypoint
-            defaultMode: 0555

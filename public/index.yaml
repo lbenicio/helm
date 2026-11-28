@@ -185,6 +185,17 @@ entries:
   minio-storage:
   - apiVersion: v2
     appVersion: "2025-07-23"
+    created: "2026-11-28T01:05:30.424284-03:00"
+    description: Single-instance MinIO with S3-only credentials, TLS, and the storage-node
+      data path
+    digest: 9dd09ddaed106e5fde79478b5a806fbbccf758171b0c6c503f731b144be6d758
+    name: minio-storage
+    type: application
+    urls:
+    - minio-storage-0.1.2.tgz
+    version: 0.1.2
+  - apiVersion: v2
+    appVersion: "2025-07-23"
     created: "2026-11-27T21:39:44.611912-03:00"
     description: Single-instance MinIO using the cluster's custom OIDC-aware image
       and storage-node data path
