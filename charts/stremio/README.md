@@ -1,17 +1,17 @@
 # stremio
 
-Complete Stremio media server and web client — deploy both with a single Helm chart.
+Stremio media server, web client, and optional metadata worker in one Helm chart.
 
 ## TL;DR
 
 ```bash
 helm repo add lbenicio-community https://helm.lbenicio.dev/
-helm install my-release lbenicio-community/stremio --version 0.1.3
+helm install my-release lbenicio-community/stremio --version 0.1.4
 ```
 
 ## Introduction
 
-This chart deploys both the [Stremio server](https://www.stremio.com/) and the [Stremio Web](https://github.com/Stremio/stremio-web) client. The server handles streaming and metadata, while the web client provides the browser-based UI. Both are deployed as separate Deployments within a single release, with shared configuration for host aliases, autoscaling, and Prometheus monitoring.
+This chart deploys the [Stremio server](https://www.stremio.com/) and [Stremio Web](https://github.com/Stremio/stremio-web) client, with an optional worker that continuously prefetches ranked torrent metadata. Each component runs in its own Deployment. The worker stores verified torrent info dictionaries in PostgreSQL and warms Redis for fast server lookups.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ This chart deploys both the [Stremio server](https://www.stremio.com/) and the [
 ## Installing the Chart
 
 ```bash
-helm install stremio lbenicio-community/stremio --version 0.1.3 --namespace default
+helm install stremio lbenicio-community/stremio --version 0.1.4 --namespace default
 ```
 
 ## Parameters
@@ -42,6 +42,20 @@ helm install stremio lbenicio-community/stremio --version 0.1.3 --namespace defa
 | `server.resources.limits.memory` | string | `4096Mi` | Memory limit |
 | `server.keel.enabled` | bool | `true` | Keel auto-update |
 | `server.keel.policy` | string | `force` | Keel policy |
+
+### Worker
+
+| Key | Type | Default | Description |
+|-----|------|---------|-------------|
+| `worker.enabled` | bool | `false` | Enable the continuous metadata crawler |
+| `worker.image.repository` | string | `lbenicio/stremio-worker` | Worker image |
+| `worker.image.tag` | string | `0.1.0` | Worker image tag |
+| `worker.args` | list | `[all]` | Crawler mode; `all`, `movies`, or `shows` |
+| `worker.env` | object | `{STREMIO_WORKER_STATE_DIR: /var/lib/stremio-worker}` | Environment variables |
+| `worker.extraEnv` | list | `[]` | Additional environment variables, including Secret references |
+| `worker.resources` | object | requests `250m`/`256Mi`, limits `1000m`/`1Gi` | Worker resource requests and limits |
+
+The worker requires PostgreSQL and Redis connection environment variables. Supply credentials using `worker.extraEnv` entries with Kubernetes `valueFrom.secretKeyRef`.
 
 ### Client
 

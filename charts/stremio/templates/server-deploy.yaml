@@ -67,16 +67,15 @@ spec:
             - name: stream
               containerPort: {{ .Values.server.streamPort }}
               protocol: TCP
-          {{- with .Values.server.env }}
+          {{- if or .Values.server.env .Values.server.extraEnv }}
           env:
-            {{- range $key, $value := . }}
+            {{- range $key, $value := .Values.server.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
-          {{- end }}
-          {{- with .Values.server.extraEnv }}
-          env:
+            {{- with .Values.server.extraEnv }}
             {{- toYaml . | nindent 12 }}
+            {{- end }}
           {{- end }}
           {{- if .Values.server.resources }}
           resources:

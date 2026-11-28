@@ -1,8 +1,8 @@
 apiVersion: v2
 name: stremio
-description: Helm chart for Stremio server + web client
+description: Helm chart for Stremio server, web client, and metadata prefetch worker
 type: application
-version: 0.1.3
+version: 0.1.4
 appVersion: "v4.22.6"
 keywords:
   - stremio

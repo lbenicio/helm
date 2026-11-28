@@ -67,6 +67,57 @@ server:
     pollSchedule: "@every 24h"
     matchTag: "true"
 
+worker:
+  # -- Enable the continuous movie and series metadata crawler
+  enabled: false
+
+  image:
+    # -- Worker image repository
+    repository: lbenicio/stremio-worker
+    # -- Worker image tag
+    tag: "0.1.0"
+    # -- Worker image pull policy
+    pullPolicy: IfNotPresent
+
+  # -- Arguments passed to stremio-worker (all crawls movies and shows)
+  args:
+    - all
+
+  # -- Environment variables
+  env:
+    STREMIO_WORKER_STATE_DIR: /var/lib/stremio-worker
+
+  # -- Additional environment variables, including valueFrom secret references
+  extraEnv: []
+  # - name: DATABASE_URL
+  #   valueFrom:
+  #     secretKeyRef:
+  #       name: postgres-app
+  #       key: uri
+
+  # -- Worker resource requests and limits
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+  # -- Worker container security context
+  securityContext:
+    runAsUser: 10001
+    runAsGroup: 10001
+    runAsNonRoot: true
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: false
+    capabilities:
+      drop:
+        - ALL
+
+  # -- Worker-specific pod annotations
+  podAnnotations: {}
+
 client:
   # -- Enable Stremio Web client
   enabled: true

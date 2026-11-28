@@ -36,6 +36,13 @@ Client fullname.
 {{- end }}
 
 {{/*
+Worker fullname.
+*/}}
+{{- define "stremio.worker.fullname" -}}
+{{- printf "%s-worker" (include "stremio.fullname" .) | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/*
 Common labels.
 */}}
 {{- define "stremio.labels" -}}
