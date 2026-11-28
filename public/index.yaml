@@ -185,6 +185,17 @@ entries:
   minio-storage:
   - apiVersion: v2
     appVersion: "2025-07-23"
+    created: "2026-11-27T21:39:44.611912-03:00"
+    description: Single-instance MinIO using the cluster's custom OIDC-aware image
+      and storage-node data path
+    digest: 064e9cf31fe22f370745d196c4c1897b995398c3a0172eee1678b168d89aeac2
+    name: minio-storage
+    type: application
+    urls:
+    - minio-storage-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
+    appVersion: "2025-07-23"
     created: "2026-11-27T20:58:00.471022-03:00"
     description: Single-instance MinIO using the cluster's custom OIDC-aware image
       and storage-node data path

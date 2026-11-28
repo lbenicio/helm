@@ -19,7 +19,7 @@ data:
     child_pid=
 
     oidc_ready() {
-      [ -n "$oidc_config_url" ] && curl --fail --silent --show-error --cacert /root/.minio/certs/CAs/root-ca.crt --max-time 5 "$oidc_config_url" >/dev/null 2>&1
+      [ -n "$oidc_config_url" ] && curl --fail --silent --show-error --cacert /tmp/.minio/certs/CAs/root-ca.crt --max-time 5 "$oidc_config_url" >/dev/null 2>&1
     }
 
     stop_child() {

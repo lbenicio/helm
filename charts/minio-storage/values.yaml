@@ -1,3 +1,25 @@
+minio:
+  # The Service keeps port 443 and forwards to this unprivileged listener.
+  apiPort: 9000
+  consolePort: 9001
+  homeDirectory: /tmp
+
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  runAsNonRoot: true
+  fsGroup: 1000
+  fsGroupChangePolicy: OnRootMismatch
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  capabilities:
+    drop:
+      - ALL
+
 # -- CPU and memory requests and limits for the MinIO container.
 resources:
   requests:

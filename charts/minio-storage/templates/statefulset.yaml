@@ -16,6 +16,8 @@ spec:
         app.kubernetes.io/name: minio
     spec:
       automountServiceAccountToken: false
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
       nodeSelector:
         storage.lbenicio.dev/role: storage
         storage.lbenicio.dev/k8s-storage-ready: "true"
@@ -34,17 +36,20 @@ spec:
             - /opt/minio/minio-entrypoint.sh
           args:
             - server
-            - --address=:443
+            - --address=:{{ .Values.minio.apiPort }}
             - --console-address
-            - :9001
+            - :{{ .Values.minio.consolePort }}
             - /data
           ports:
             - name: https
-              containerPort: 443
+              containerPort: {{ .Values.minio.apiPort }}
               protocol: TCP
             - name: console
-              containerPort: 9001
+              containerPort: {{ .Values.minio.consolePort }}
               protocol: TCP
+          env:
+            - name: HOME
+              value: {{ .Values.minio.homeDirectory | quote }}
           envFrom:
             - secretRef:
                 name: storage-minio-env
@@ -61,18 +66,28 @@ spec:
               scheme: HTTPS
             initialDelaySeconds: 30
             periodSeconds: 20
+          securityContext:
+            {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
             - name: data
               mountPath: /data
+            - name: tmp
+              mountPath: /tmp
+            - name: minio-home
+              mountPath: /tmp/.minio
             - name: certs
-              mountPath: /root/.minio/certs
+              mountPath: /tmp/.minio/certs
               readOnly: true
             - name: entrypoint
               mountPath: /opt/minio
               readOnly: true
       volumes:
+        - name: tmp
+          emptyDir: {}
+        - name: minio-home
+          emptyDir: {}
         - name: data
           hostPath:
             path: /k8s/minio
@@ -80,7 +95,7 @@ spec:
         - name: certs
           secret:
             secretName: minio-certs
-            defaultMode: 0400
+            defaultMode: 0440
             items:
               - key: public.crt
                 path: public.crt
